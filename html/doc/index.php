@@ -16,7 +16,7 @@ block systems, Spamikaze does no tests for open proxy or open relay
 vulnerabilities.  Spamikaze is passive and completely driven by mail
 coming into a system's spamtrap addresses.
 
-Note: this documentation is still a work in progress. (Rik, 5/21/2004)
+<p>Note: this documentation is still a work in progress. (Rik, 5/21/2004)
 
 <ul>
 <li><a href="intro.php">Introduction</a>
