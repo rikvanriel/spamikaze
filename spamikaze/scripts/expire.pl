@@ -71,7 +71,7 @@ sub main
     {
         my $sthexpire = $dbh->prepare( $expiresql );
         $ip = "$octa.$octb.$octc.$octd";
-        if ($Spamikaze::extratime > 0 && $total == 1 && mxdontexpire($ip) < 1) {
+        if ($total == 1 && mxdontexpire($ip) < 1) {
             $bonustime = $spamtime + $Spamikaze::firsttime;
             if ($bonustime <= time()){
                 # print $total, "\t";
