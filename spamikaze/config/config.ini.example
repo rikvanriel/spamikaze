@@ -1,3 +1,8 @@
+# Spamikaze example config file.
+#
+# Copy to /etc/spamikaze/config or ~/.spamikaze/config and make sure
+# all the values are correct, especially BackupMX !
+
 [Database]
 # the database type you're connecting to
 Type=Pg/MySQL
@@ -15,3 +20,11 @@ IgnoreRFC1918=1
 IgnoreBOGON=0
 # IP addresses that should not be listed, like your own mail servers
 BackupMX=1.2.3.4 2.3.4.5
+
+[Expire]
+# time (in hours) the first spam causes a host to be blocked
+FirstTime = 360
+# extra time (in hours) subsequent spams cause a host to be blocked
+ExtraTime = 360
+# after this many spams, don't expire a host from the database automatically
+MaxSpamPerIp = 10

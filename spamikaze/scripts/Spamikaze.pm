@@ -54,9 +54,17 @@ BEGIN {
 	$dbuser = $cfg->val( 'Database', 'Username' );
 	$dbpwd  = $cfg->val( 'Database', 'Password' );
 	$dbbase = $cfg->val( 'Database', 'Name' );
+
 	@MXBACKUP = split ( ' ', $cfg->val( 'Mail', 'BackupMX' ) );
 	$ignoreRFC1918 = $cfg->val( 'Mail', 'IgnoreRFC1918' );
 	$ignoreBOGON   = $cfg->val( 'Mail', 'IgnoreBOGON' );
+
+	$firsttime = $cfg->val ( 'Expire', 'FirstTime' );
+	$extratime = $cfg->val ( 'Expire', 'ExtraTime' );
+	$maxspamperip = $cfg->val ( 'Expire', 'MaxSpamPerIp' );
+	# convert listing times from hours to seconds
+	$firsttime *= 3600;
+	$extratime *= 3600;
 
 	#
 	# We need to check values !!!
