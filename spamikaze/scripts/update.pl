@@ -6,7 +6,8 @@
 
 use strict;
 
-unshift (@INC,"/home/sys_scripts/");
+unshift (@INC, "/home/sys_scripts/");
+unshift (@INC, "/opt/spamikaze/scripts");
 
 use Spamikaze;
 my $dbh = Spamikaze::DBConnect;

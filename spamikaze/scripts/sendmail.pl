@@ -11,7 +11,8 @@
 #     http://spamikaze.surriel.com/
 
 use strict;
-unshift (@INC,"/path/spamikaze/");
+unshift (@INC, "/path/spamikaze/");
+unshift (@INC, "/opt/spamikaze/scripts");
 
 # $ticks            // Unix timestamp ticks.
 # $mta_bl_location  // Path and file of your blocklist.

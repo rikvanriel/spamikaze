@@ -8,7 +8,7 @@
 use strict;
 use warnings;
 
-unshift ( @INC, "/path/to/" );
+unshift (@INC, "/opt/spamikaze/scripts");
 
 # Use the new pm, this will load the config.pl and
 # set the variables for the db.
