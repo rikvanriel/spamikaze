@@ -7,20 +7,12 @@
 use strict;
 use DBI;
 
-require "/home/sys_scripts/config.pl";
+unshift (@INC, "/home/webapps/spamikaze/spamikaze/spamikaze/scripts");
+unshift (@INC, "/opt/spamikaze/scripts");
+require Spamikaze;
+
 our @DONTEXPIRE;
-our $dbuser;
-our $dbpwd;
-our $dbbase;
-our $dbport;
-our $dbtype;
-our $dbhost;
-
-my $ticks = 10 * 24 * 60 * 60;  # 15 days ?
 my $bonustime;
-my $extratime = 30 * 24 * 60 * 60;
-my $maxspamsperip = 3;
-
 
 sub mxdontexpire
 {
@@ -48,9 +40,7 @@ sub main
     my $octd;
     my $hostname;
 
-    my $dbh = DBI->connect( "dbi:$dbtype:dbname=$dbbase;host=$dbhost;port=$dbport",
-                            "$dbuser", "$dbpwd", { RaiseError => 1 }) || die
-                            "Database connection not made: $DBI::errstr";
+    my $dbh = Spamikaze::DBConnect();
 
     my $sql = "SELECT 
                     COUNT(spammers.id) as total,
@@ -77,7 +67,7 @@ sub main
         my $sthexpire = $dbh->prepare( $expiresql );
         $ip = "$octa.$octb.$octc.$octd";
         if ($total == 1 && mxdontexpire($ip) < 1) {
-            $bonustime = $spamtime + $ticks;
+            $bonustime = $spamtime + $firsttime;
             if ($bonustime <= time()){
                 print $total, "\t";
                 $sthexpire->execute($octa, $octb, $octc, $octd);
