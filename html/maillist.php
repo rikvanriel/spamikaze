@@ -8,6 +8,8 @@
   require("menu.inc.php");
 ?>
 
+<h1>Spamikaze Mailing List</h1>
+
 The Spamikaze discussion and development mailing list is
 <i>spamikaze(at)nl.linux.org</i>.
 
