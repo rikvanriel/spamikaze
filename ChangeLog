@@ -1,3 +1,42 @@
+2005-03-05  Hans Wolters  <h-wolters@humbolt>
+
+	* spamikaze/scripts/daemon.pl:
+	Using the Spamikaze.pm to handle connections to the database
+
+	* spamikaze/scripts/daemon.pl:
+	K, this is the first public entrie for the daemon.
+
+	What does it do:
+
+	1. Delete entries older then one year (250 entries per run).
+	2. Handle the expire (maximum of 500 ipnumbers per run).
+
+	Please backup your stuff before you testdrive this and make sure
+	it has the correct settings for the Spamikaze.pm, etc....
+
+	Enjoy,
+
+	Hans
+
+2005-03-04  Cor Gest  <cor@humbolt.nl.linux.org>
+
+	* ChangeLog: ChangeLog Updated
+
+2005-02-06  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/smtperror-exim:
+	Recognise all of these formats of error message, instead of just the
+	first one:
+
+	2005-02-06 11:12:00 SMTP protocol violation: synchronization error (input sent without waiting for greeting): rejected connection from H=[80.51.119.253]
+
+	2005-02-06 11:11:38 SMTP protocol violation: synchronization error (next input sent too soon): rejected "Mail From: <reichbloom@yahoo.com>" H=(localhost) [217.153.19.27] next input="Rcpt To: <dmitri_3@SPAMTRAPDOMAIN>\r\n"
+
+	2005-02-06 11:12:00 SMTP protocol violation: synchronization error (next input sent too soon): rejected "HELO localhost" H=[217.238.99.186] next input="Mail From: <jackson@yahoo.com>\r\n"
+
+	* spamikaze/scripts/rbldnsd.pl, spamikaze/scripts/smtperror-exim:
+	script that checks for SMTP protocol violations and blocklists those hosts
+
 2005-02-06  Rik van Riel  <riel@humbolt>
 
 	* spamikaze/scripts/smtperror-exim:
