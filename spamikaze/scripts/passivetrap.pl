@@ -39,6 +39,18 @@ sub from_daemon
 	if ($mail =~ /^From:\s+\<?postmaster/mi) {
 		return 1;
 	}
+	if ($mail =~ /^From:\s+\<?(majordomo|listar|ecartis|mailman)/mi) {
+		return 1;
+	}
+	if ($mail =~ /^From:\s+\<?(\w+-owner|owner-|\w+-request)/mi) {
+		return 1;
+	}
+	if ($mail =~ /^From:?\s+\<?(bounce-.*@.*(lyris|list|mail))/mi) {
+		return 1;
+	}
+	if ($mail =~ /^Your (mail to|message|email).*could not be delivered/m) {
+		return 1;
+	}
 
 	return 0;
 }
