@@ -32,7 +32,8 @@ MaxSpamPerIp = 10
 [DNSBL]
 Domain = spamikaze.example.com
 ZoneFile = /tmp/spamikaze-dnsbl.zone
-UrlBase = http://spamikaze.example.com/listing?ip=
+UrlBase = Listed by Spamikaze, see http://spamikaze.example.com/listing?ip=
+Address = 192.0.2.1
 TTL = 300
 PrimaryNS = ns.example.com
 SecondaryNSes = ns2.example.com ns.example.net
