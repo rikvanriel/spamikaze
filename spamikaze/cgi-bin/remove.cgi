@@ -11,11 +11,11 @@
 #     http://spamikaze.surriel.com/
 
 use strict;
-use DBI;
 use CGI qw(:standard :html4 -no_xhtml);
 use CGI::Carp;
 
-require "/path/config.pl";
+unshift (@INC, "/opt/spamikaze/scripts");
+require Spamikaze;
 our $dbuser;
 our $dbpwd;
 our $dbbase;
@@ -120,9 +120,7 @@ sub remove_from_db
     my $dbh;
     
 	# DBI connect params.
-    $dbh = DBI->connect( "dbi:$dbtype:dbname=$dbbase;host=$dbhost;port=$dbport",
-                         $dbuser, $dbpwd, { RaiseError => 1 }) || die
-                         "Database connection not made\n";
+	$dbh = Spamikaze::DBConnect();
                          
 	my $sql = "UPDATE ipnumbers SET visible = 0 WHERE
 			octa = ? AND
