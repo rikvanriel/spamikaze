@@ -125,15 +125,13 @@ sub storeip
 
 }
 
-sub stdin_mail
+sub process_mail
 {
-	my $mail;
-
-	read STDIN,$mail,15000 or die;
+	my ( $mail ) = @_;
 
 	if (&from_daemon($mail)) {
 		print "from daemon\n";
-		exit 0;
+		return 0;
 	}
 
 	while ($mail =~ /Received:(.*?)(?=\n\w)/sg) {
@@ -141,16 +139,19 @@ sub stdin_mail
 		if ($ip && !Spamikaze::MXBackup($ip) ) {
 			storeip($ip);
 			print "$ip\n";
-			exit 0;
+			return 1;
 		}
 	}
 
+	return 0;
 }
 
 sub maildir_daemon
 {
-	print "passivetrap maildir daemon mode not implemented yet\n";
-	print "wait for the next commit...\n";
+	my ( $dir ) = @_;
+	chdir $dir || die "$ARGV[-1] : couldn't chdir to $dir...\n";
+
+	print "maildir mode still not implemented...\n";
 	exit 1;
 }
 
@@ -158,17 +159,27 @@ sub main
 {
 	# Take email from standard input if no arguments specified;
 	# this way passivetrap stays compatible with the last version.
+
 	if ($#ARGV == -1) {
-		&stdin_mail();
+		my $mail;
+		read STDIN,$mail,15000 or die;
+
+		&process_mail($mail);
+
+		exit 0;
 	}
 
 	# If we're called with the -d argument, process data from a
 	# maildir, which is basically our spool directory.
+
 	if ($ARGV[0] eq '-d') {
-		&maildir_daemon();
+		&maildir_daemon($ARGV[1]);
 	}
 
-	print "usage: /path/to/passivetrap.pl [ -d ]\n";
+	# This isn't a situation we recognise.  Bail out and
+	# warn the user...
+
+	print "usage: /path/to/passivetrap.pl [ -d directory ]\n";
 	print "see also http://spamikaze.nl.linux.org/doc/\n";
 	exit 1;
 }
