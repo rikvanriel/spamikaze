@@ -20,64 +20,70 @@ my $dbhost;
 my @MXBACKUP;
 my $ignoreBOGON;
 my $ignoreRFC1918;
-my @RFC1918Addresses = ( '10\.', '172.1[6-9]\.', '172.2[0-9]\.', '172.3[0-2]', '192.168.' );
-
+my @RFC1918Addresses =
+  ( '10\.', '172.1[6-9]\.', '172.2[0-9]\.', '172.3[0-2]', '192.168.' );
 
 my $VERSION = "Spamikaze.pm Version .1\n";
 
-BEGIN
-{
+BEGIN {
 
 	my $configfile;
 
 	if ( -f "$ENV{HOME}/.spamikaze/config" ) {
 
-		$configfile	= "$ENV{HOME}/.spamikaze/config";
+		$configfile = "$ENV{HOME}/.spamikaze/config";
 
-	} elsif ( -f "/etc/spamikaze/config" ) {
+	}
+	elsif ( -f "/etc/spamikaze/config" ) {
 
-		$configfile	= "/etc/spamikaze/config";
+		$configfile = "/etc/spamikaze/config";
 
-	} else {
+	}
+	else {
 
 		print "ERROR: Missing ~/.spamikaze/config or /etc/spamikaze/config\n";
 		exit 1;
 
 	}
-	
-	my $cfg		= new Config::IniFiles( -file => $configfile );
 
-	$dbhost 	= $cfg->val( 'Database', 'Node' );
-	$dbport 	= $cfg->val( 'Database', 'Port' );
-	$dbtype 	= $cfg->val( 'Database', 'Type' );
-	$dbuser 	= $cfg->val( 'Database', 'Username' );
-	$dbpwd		= $cfg->val( 'Database', 'Password' );
-	$dbbase 	= $cfg->val( 'Database', 'Name' );
-	@MXBACKUP	= split( ' ', $cfg->val( 'Mail', 'BackupMX' ) );
-	$ignoreRFC1918	= $cfg->val( 'Mail', 'IgnoreRFC1918' );
-	$ignoreBOGON	= $cfg->val( 'Mail', 'IgnoreBOGON' );
+	my $cfg = new Config::IniFiles( -file => $configfile );
+
+	$dbhost = $cfg->val( 'Database', 'Node' );
+	$dbport = $cfg->val( 'Database', 'Port' );
+	$dbtype = $cfg->val( 'Database', 'Type' );
+	$dbuser = $cfg->val( 'Database', 'Username' );
+	$dbpwd  = $cfg->val( 'Database', 'Password' );
+	$dbbase = $cfg->val( 'Database', 'Name' );
+	@MXBACKUP = split ( ' ', $cfg->val( 'Mail', 'BackupMX' ) );
+	$ignoreRFC1918 = $cfg->val( 'Mail', 'IgnoreRFC1918' );
+	$ignoreBOGON   = $cfg->val( 'Mail', 'IgnoreBOGON' );
+
 	#
 	# We need to check values !!!
 	#
 
 }
 
-sub Version 
-{ 
-    return $VERSION; 
+sub Version {
+	return $VERSION;
 }
 
-sub DBConnect
-{
-    my $dbh = DBI->connect("dbi:$dbtype:dbname=$dbbase;host=$dbhost;port=$dbport",
-                        "$dbuser", "$dbpwd", { RaiseError => 1 }) || die
-                        "Database connection not made: $DBI::errstr";
-    return $dbh;
+sub DBConnect {
+	my $dbh =
+	  DBI->connect( "dbi:$dbtype:dbname=$dbbase;host=$dbhost;port=$dbport",
+		"$dbuser", "$dbpwd", { RaiseError => 1 } )
+	  || die "Database connection not made: $DBI::errstr";
+	return $dbh;
 }
 
-sub MXBackup
-{
-	my ( $ip ) = @_;
+sub GetDBType {
+
+	return $dbtype;
+
+}
+
+sub MXBackup {
+	my ($ip) = @_;
 	my $mxhosts;
 
 	#
@@ -100,44 +106,45 @@ sub MXBackup
 		$reversed_ip =~ s/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/$4.$3.$2.$1/;
 		my $resolver = Net::DNS::Resolver->new;
 		my $query    = $resolver->search("$reversed_ip.bogons.cymru.com");
-	
+
 		if ($query) {
 
-			foreach my $rr ($query->answer) {
+			foreach my $rr ( $query->answer ) {
 
 				next unless $rr->type eq "A";
 				return 1;
 
 			}
 
-		} else {
+		}
+		else {
 
-			if ( ! $resolver->errorstring =~ /NXDOMAIN/ ) {
+			if ( !$resolver->errorstring =~ /NXDOMAIN/ ) {
 
 				warn "query failed: ", $resolver->errorstring, "\n";
-			
+
 			}
 
 		}
 
-	} elsif ( $ignoreRFC1918 eq 'true' ) {
+	}
+	elsif ( $ignoreRFC1918 eq 'true' ) {
 
 		foreach my $ipaddress (@RFC1918Addresses) {
 
-			if ($ip =~ /^$ipaddress/) {
+			if ( $ip =~ /^$ipaddress/ ) {
 
 				return 1;
 
 			}
-			
+
 		}
 
 	}
 
-	
 	foreach $mxhosts (@MXBACKUP) {
 
-		if ($ip =~ /^$mxhosts/) {
+		if ( $ip =~ /^$mxhosts/ ) {
 
 			return 1;
 
