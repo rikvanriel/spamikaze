@@ -1,3 +1,55 @@
+2004-06-04  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/Spamikaze.pm:
+	also allow numerical 1 for true in IgnoreBOGON and IgnoreRFC1918
+
+2004-06-02  Hans Wolters  <h-wolters@humbolt>
+
+	* spamikaze/spamikaze-mysql-update.sql, spamikaze/spamikaze-mysql.sql:
+
+	Tuning the indexes for named.pl:
+
+	alter table ipnumbers add index idx_visible(visible);
+
+2004-06-01  Hans Wolters  <h-wolters@humbolt>
+
+	* spamikaze/spamikaze-mysql-update.sql, spamikaze/spamikaze-mysql.sql:
+
+	Added a new index for some extra speed. For those of you who already are using
+	the new tables, use the following:
+
+	alter table ipentries add index idx_dl(date_logged);
+
+2004-05-31  Rik van Riel  <riel@humbolt>
+
+	* html/download.php: comment out non-working http download link
+
+	* html/doc/config.php: small enhancement
+
+	* html/doc/docmenu.inc.php: <h2> documentation index
+
+	* html/doc/config.php: and close the last </pre> ;)
+
+	* html/doc/config.php: add Example: everywhere
+
+	* html/doc/config.php, html/doc/install.php:
+	basic config file documentation
+
+2004-05-28  Cor Gest  <cor@nl.linux.org>
+
+	* ChangeLog: ChangeLog Updated
+
+2004-05-27  Hans Wolters  <h-wolters@humbolt>
+
+	* spamikaze/php/remove.php:
+
+	New tables
+
+	* spamikaze/php/spamlisting.php:
+
+	This should make it run on the new tables. I will test it this weekend and
+	will try to add the countries again.
+
 2004-05-27  Hans Wolters  <h-wolters@humbolt>
 
 	* spamikaze/php/remove.php:
@@ -498,7 +550,7 @@
 2004-02-01  riel  <riel@cleopatra>
 
 	* /home/CVS/spamikaze/TODO-database: 		Database reorganisation
-			$Id: ChangeLog,v 1.3 2004/05/28 00:30:43 cor Exp $
+			$Id: ChangeLog,v 1.4 2004/06/05 03:19:20 cor Exp $
 
 
 	In order to facilitate more flexible blocklisting, expiry, removal and
