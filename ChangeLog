@@ -1,3 +1,32 @@
+2004-06-21  Rik van Riel  <riel@humbolt>
+
+	* TODO: -  * make sure web scripts work with new database layout
+	+  * make sure cgi apps can run on various sites without modification
+	+    (include header & footer, specified by config file)
+
+	* spamikaze/cgi-bin/remove.cgi:
+	remove.cgi now uses Spamikaze module too
+
+	* spamikaze/scripts/Spamikaze.pm:
+	don't spit out an error message if {HOME} isn't defined
+
+	* spamikaze/cgi-bin/listing.cgi: s/received spam/spamtrap hit/
+
+	* spamikaze/cgi-bin/listing.cgi: make listing script use config file
+
+2004-06-20  Rik van Riel  <riel@humbolt>
+
+	* html/doc/intro.php: fix typo
+
+2004-06-05  Cor Gest  <cor@nl.linux.org>
+
+	* ChangeLog: ChangeLog Updated
+
+2004-06-04  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/Spamikaze.pm:
+	also allow numerical 1 for true in IgnoreBOGON and IgnoreRFC1918
+
 2004-06-04  Rik van Riel  <riel@humbolt>
 
 	* spamikaze/scripts/Spamikaze.pm:
@@ -550,7 +579,7 @@
 2004-02-01  riel  <riel@cleopatra>
 
 	* /home/CVS/spamikaze/TODO-database: 		Database reorganisation
-			$Id: ChangeLog,v 1.4 2004/06/05 03:19:20 cor Exp $
+			$Id: ChangeLog,v 1.5 2004/06/21 02:33:22 cor Exp $
 
 
 	In order to facilitate more flexible blocklisting, expiry, removal and
