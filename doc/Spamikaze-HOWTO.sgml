@@ -1,0 +1,116 @@
+<!doctype linuxdoc system>
+<linuxdoc>
+<article>
+<titlepag>
+<title>Spamikaze-HOWTO</title>
+<author>
+    <name>Rik van Riel,
+        <htmlurl url="riel@nl.linux.org"
+                 name="riel@nl.linux.org">,
+    <newline>Hans Wolters,
+       <htmlurl url="h-wolters@nl.linux.org"
+                name="h-wolters@nl.linux.org">
+    </name>
+</author>
+<date>v1.0, May 26th, 2003</date>
+<abstract>
+Installation and configuration of spamikaze.
+</abstract>
+</titlepag>
+
+<toc>
+<sect><heading>Disclaimer</heading>
+
+<sect><heading>Introduction</heading>
+
+<sect><heading>The software</heading>
+
+<sect1><heading>Requirements</heading>
+
+<sect2><heading>General</heading>
+
+<sect2><heading>Perl</heading>
+
+<p>List of Perl modules from CPAN.
+
+<sect2><heading>PHP</heading>
+
+<sect><heading>Configuration</heading>
+
+<p>We are assuming you already have the required software installed
+and running. If not then please get a version for your OS and install
+it with the guidelines of that package.
+
+<sect1><heading>MySQL</heading>
+
+<p>Creating a new database for spamikaze. At the prompt you can use
+mysqladmin to create a new database.
+
+<verb>
+    mysqladmin -u root -p create spamikaze
+</verb>
+
+<p>You will be prompted for the mysql root password, enter it. If no
+errors are shown you need to login as mysql root to the database
+server in order to grant privileges to the new spamikaze directory:
+
+<verb>
+    mysql -u root -p mysql
+</verb>
+
+<p>Again you will be prompted for a password, enter it.
+
+<p>Once you are in you should grant privileges with to a user at either
+localhost or a webserver able to access this mysql server. It is not
+recommended to use a remote server without using some sort of encryption.
+The following example will use user spamikaze at localhost. You need to
+grant select, insert and update privileges at least. It is recommended
+to hold back any other privileges at this time:
+
+<verb>
+mysql> GRANT SELECT, INSERT, UPDATE ON spamikaze.* TO
+        spamikaze@localhost IDENTIFIED BY 's0m3leetpassw0rd';
+</verb>
+
+<p>Once this is done you only need to flush the privileges:
+
+<verb>
+mysql> FLUSH PRIVILEGES;
+</verb>
+
+<p>The last thing to do with mysql is read the spamikaze-sf.sql into the newly
+created database.
+
+<verb>
+    mysql -u root -p spamikaze < /path/spamikaze-sf.sql
+</verb>
+
+<p>Again you will be prompted for a password, enter it.
+
+<sect1><heading>Postgresql</heading>
+
+<p>Creating a new database for spamikaze. At the prompt you can use
+createdb or pgsql to create a new database.
+
+<verb>
+   createdb spamikaze
+</verb>
+
+<p>The last thing to do with mysql is read the spamikaze-sf.sql into the newly
+created database.
+
+<verb>
+    psql -h localhost -f /path/spamikaze-pg.sql spamikaze
+</verb>
+
+<sect1><heading>Webserver</heading>
+
+<sect><heading>Setting up spamtraps</heading>
+
+<sect><heading>Sendmail</heading>
+
+<sect><heading>DNS</heading>
+
+</article>
+</linuxdoc>
+

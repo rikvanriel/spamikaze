@@ -1,0 +1,36 @@
+		Database reorganisation
+		$Id: TODO-database,v 1.1 2004/03/20 19:46:11 riel Exp $
+
+
+In order to facilitate more flexible blocklisting, expiry, removal and
+whitelisting policies, a database redesign is necessary.  Before we can
+come up with such a new design, however, we should think about exactly
+what we want to store in the database.
+
+If you have ideas for other things that need to be stored, please email
+spamikaze@nl.linux.org or commit your idea to the list below.
+
+Data to store:
+- IP address of spam sending host
+- time each spam arrived
+- time of each IP address removal
+- number of spams received from each IP address
+- number of spams received from each IP address since last removal
+- time the IP address will automatically expire from the database,
+  calculated by the listing&expiry policy at the time the spam is
+  received
+- first characters of the subject of the spam (small enough to avoid
+  most unique tokens, 30 chars?)
+- storing headers from active ip's that are being blacklisted
+- email addresses to whitelist
+- ip addresses to whitelist
+- number of IP addresses listed, per /24 (updated at listing and
+  unlisting time, used for easy block escalation)
+- same for /16 and /8 blocks, but for statistics only
+- maybe also support for cidr networkranges
+- the country each IP address is in, for statistics
+- the host name (from reverse DNS) for each IP address, for statistics
+  and per-domain queries
+
+The design of the database tables should be done once we have the
+requirements, or maybe earlier if the new design is flexible enough ;)

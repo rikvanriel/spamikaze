@@ -1,0 +1,872 @@
+2004-02-08  army  <army@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/config/config.ini.example:
+	An example how the configfile will we looking like. Other items have to
+	be added in the future.
+
+2004-02-07  army  <army@cleopatra>
+
+	* /home/CVS/spamikaze/TODO, /home/CVS/spamikaze/TODO-database:
+	Updated both lists with my wishes.
+
+2004-02-01  riel  <riel@cleopatra>
+
+	* /home/CVS/spamikaze/TODO-database: 		Database reorganisation
+			$Id: ChangeLog,v 1.1 2004/03/20 19:46:11 riel Exp $
+
+
+	In order to facilitate more flexible blocklisting, expiry, removal and
+	whitelisting policies, a database redesign is necessary.  Before we can
+	come up with such a new design, however, we should think about exactly
+	what we want to store in the database.
+
+	If you have ideas for other things that need to be stored, please email
+	spamikaze@nl.linux.org or commit your idea to the list below.
+
+	Data to store:
+	- IP address of spam sending host
+	- time each spam arrived
+	- time of each IP address removal
+	- number of spams received from each IP address
+	- number of spams received from each IP address since last removal
+	- time the IP address will automatically expire from the database,
+	  calculated by the listing&expiry policy at the time the spam is
+	  received
+	- first characters of the subject of the spam (small enough to avoid
+	  most unique tokens, 30 chars?)
+	- email addresses to whitelist
+	- number of IP addresses listed, per /24 (updated at listing and
+	  unlisting time, used for easy block escalation)
+	- same for /16 and /8 blocks, but for statistics only
+	- the country each IP address is in, for statistics
+	- the host name (from reverse DNS) for each IP address, for statistics
+	  and per-domain queries
+
+
+	The design of the database tables should be done once we have the
+	requirements, or maybe earlier if the new design is flexible enough ;)
+
+2004-02-01  Cor Gest  <cor@clsnet.nl>
+
+	* /home/CVS/spamikaze/ChangeLog: *** empty log message ***
+
+2003-12-12  Cor Gest  <cor@clsnet.nl>
+
+	* /home/CVS/spamikaze/ChangeLog: ChangeLog Updated
+
+2003-12-12  cor gest  <cor@clsnet.nl>
+
+	* /home/CVS/spamikaze/ChangeLog: ChangeLog Updated
+
+
+2003-12-12  cor gest  <cor@clsnet.nl>
+
+	* /home/CVS/spamikaze/ChangeLog: ChangeLog Updated
+
+2003-12-12  cor gest  <cor@clsnet.nl>
+
+	* /home/CVS/spamikaze/ChangeLog: ChangeLog Updated
+
+2003-11-02  riel  <riel@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/scripts/named.pl:
+	expiry is done by expire.pl, remove time code from named.pl
+
+	* /home/CVS/spamikaze/spamikaze/country.sql:
+	dump to initialise country table
+
+2003-11-02  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/latest.sql:
+	latest.sql
+
+2003-11-02  riel  <riel@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/scripts/named.pl:
+	expiry is done by expire.pl, remove time code from named.pl
+
+	* /home/CVS/spamikaze/spamikaze/country.sql:
+	dump to initialise country table
+
+2003-11-02  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/latest.sql:
+	latest.sql
+
+2003-11-01  riel  <riel@cleopatra>
+
+	* /home/CVS/spamikaze/config.pl:
+	config.pl can be found in spamikaze/config
+
+2003-11-01  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/scripts/passivetrap.pl:
+
+	Earlier entries of the stored ip number should be set to visible too.
+
+2003-11-01  riel  <riel@cleopatra>
+
+	* /home/CVS/spamikaze/expire.pl:
+	the latest expire.pl is in spamikaze/scripts/
+
+2003-10-25  Cor Gest  <cor@clsnet.nl>
+
+	* /home/CVS/spamikaze/ChangeLog: ChangeLog Updated
+
+2003-10-24  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/fqdn.sql:
+
+	dump of domain names.
+
+	* /home/CVS/spamikaze/spamikaze/scripts/sethostn.pl:
+
+	Sets the fqdn_id from the info in the new table. I will add a list of
+	hostnames in a gzipped dump of my table.
+
+	* /home/CVS/spamikaze/spamikaze/scripts/sendmail.pl:
+
+	Sendmail.pl will not need to expire by itself anymore, it will just need
+	to fetch the visible ip numbers.
+
+	* /home/CVS/spamikaze/spamikaze/scripts/gethostname.pl:
+
+	This will need one more additional table:
+
+	CREATE TABLE `country` (
+	  `id` int(11) NOT NULL auto_increment,
+	    `country` char(2) NOT NULL default '',
+	      PRIMARY KEY  (`id`),
+	        UNIQUE KEY `idx_country` (`country`)
+	        ) TYPE=MyISAM;
+
+	and another field in the spammers table:
+
+	ALTER TABLE spammers ADD c_id SMALLINT NOT NULL;
+
+	It will store the countries from where the spammers will
+	are spamming. This alteration and the one for the fqdn will
+	be used to setup an admin/abuse interface in the future.
+
+	More details later.
+
+	Regards,
+
+	Hans Wolters
+
+	* /home/CVS/spamikaze/spamikaze/scripts/expire.pl:
+
+	Ok, this is a new expire that will use different options and will look
+	for hostnames, etc....
+
+	What do you need for it to work:
+
+	A new table fqdn:
+
+	CREATE TABLE `fqdn` (
+	  `id` int(11) NOT NULL auto_increment,
+	    `hostname` varchar(200) NOT NULL default '',
+	      PRIMARY KEY  (`id`),
+	        UNIQUE KEY `idx_hostname` (`hostname`(40))
+	        ) TYPE=MyISAM;
+
+	An altered spammers table:
+
+	ALTER TABLE spammers ADD fqdn_id INT NOT NULL;
+
+	What will expire.pl do:
+
+	It will look for hostnames and ranges that will not be
+	expired. Empty hostnames (blackholes) will not be expired
+	anyhow. Currently I have a working setup that will start
+	the expire at 7 days and look for a new variable ($extratime)
+	for the additional expire time for attempt 2 and higher.
+
+	Beware of using this since you need to fill the fqdn table
+	first. Some altered scripts for this will follow.
+
+	* /home/CVS/spamikaze/spamikaze/scripts/postfix.pl, /home/CVS/spamikaze/spamikaze/scripts/sendmail.pl:
+
+	postfix: deleted the ticks line, the new expire.pl will be used to
+	         expire.
+
+	sendmail: made the connection use the Spamikaze.pm
+
+	* /home/CVS/spamikaze/spamikaze/config/config.pl:
+
+	New var name for ranges that will not be expired.
+
+	* /home/CVS/spamikaze/spamikaze/scripts/Spamikaze.pm, /home/CVS/spamikaze/spamikaze/scripts/postfix.pl:
+
+	Parses a postfix blacklist, uses the Spamikaze.pm to connect to the database.
+
+2003-10-24  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/fqdn.sql:
+
+	dump of domain names.
+
+	* /home/CVS/spamikaze/spamikaze/scripts/sethostn.pl:
+
+	Sets the fqdn_id from the info in the new table. I will add a list of
+	hostnames in a gzipped dump of my table.
+
+	* /home/CVS/spamikaze/spamikaze/scripts/sendmail.pl:
+
+	Sendmail.pl will not need to expire by itself anymore, it will just need
+	to fetch the visible ip numbers.
+
+	* /home/CVS/spamikaze/spamikaze/scripts/gethostname.pl:
+
+	This will need one more additional table:
+
+	CREATE TABLE `country` (
+	  `id` int(11) NOT NULL auto_increment,
+	    `country` char(2) NOT NULL default '',
+	      PRIMARY KEY  (`id`),
+	        UNIQUE KEY `idx_country` (`country`)
+	        ) TYPE=MyISAM;
+
+	and another field in the spammers table:
+
+	ALTER TABLE spammers ADD c_id SMALLINT NOT NULL;
+
+	It will store the countries from where the spammers will
+	are spamming. This alteration and the one for the fqdn will
+	be used to setup an admin/abuse interface in the future.
+
+	More details later.
+
+	Regards,
+
+	Hans Wolters
+
+	* /home/CVS/spamikaze/spamikaze/scripts/expire.pl:
+
+	Ok, this is a new expire that will use different options and will look
+	for hostnames, etc....
+
+	What do you need for it to work:
+
+	A new table fqdn:
+
+	CREATE TABLE `fqdn` (
+	  `id` int(11) NOT NULL auto_increment,
+	    `hostname` varchar(200) NOT NULL default '',
+	      PRIMARY KEY  (`id`),
+	        UNIQUE KEY `idx_hostname` (`hostname`(40))
+	        ) TYPE=MyISAM;
+
+	An altered spammers table:
+
+	ALTER TABLE spammers ADD fqdn_id INT NOT NULL;
+
+	What will expire.pl do:
+
+	It will look for hostnames and ranges that will not be
+	expired. Empty hostnames (blackholes) will not be expired
+	anyhow. Currently I have a working setup that will start
+	the expire at 7 days and look for a new variable ($extratime)
+	for the additional expire time for attempt 2 and higher.
+
+	Beware of using this since you need to fill the fqdn table
+	first. Some altered scripts for this will follow.
+
+	* /home/CVS/spamikaze/spamikaze/scripts/postfix.pl, /home/CVS/spamikaze/spamikaze/scripts/sendmail.pl:
+
+	postfix: deleted the ticks line, the new expire.pl will be used to
+	         expire.
+
+	sendmail: made the connection use the Spamikaze.pm
+
+	* /home/CVS/spamikaze/spamikaze/config/config.pl:
+
+	New var name for ranges that will not be expired.
+
+	* /home/CVS/spamikaze/spamikaze/scripts/Spamikaze.pm, /home/CVS/spamikaze/spamikaze/scripts/postfix.pl:
+
+	Parses a postfix blacklist, uses the Spamikaze.pm to connect to the database.
+
+2003-09-26  Cor Gest  <cor@clsnet.nl>
+
+	* /home/CVS/spamikaze/ChangeLog: ChangeLog Updated
+
+2003-09-21  army  <army@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/cgi-bin/listing.cgi, /home/CVS/spamikaze/spamikaze/cgi-bin/remove.cgi:
+	Fixed a stupid mistake I introduced in a early patch.
+
+2003-09-21  army  <army@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/cgi-bin/listing.cgi, /home/CVS/spamikaze/spamikaze/cgi-bin/remove.cgi:
+	Fixed a stupid mistake I introduced in a early patch.
+
+2003-09-14  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/scripts/passivetrap.pl:
+	Updated the path to the pm. It was pointing to a private path used by me
+
+	* /home/CVS/spamikaze/spamikaze/scripts/passivetrap.pl:
+	15000 bytes is more then enough. Helps to work with a heavy load.
+
+2003-09-11  Cor Gest  <cor@clsnet.nl>
+	
+	* /home/CVS/spamikaze/ChangeLog: ChangeLog Updated
+
+2003-09-10  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/scripts/Spamikaze.pm:
+
+	First setup for the Spamikaze.pm. I will test it some more and begin
+	storing the db connections using the new pm soon.
+
+2003-09-10  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/scripts/Spamikaze.pm:
+
+	First setup for the Spamikaze.pm. I will test it some more and begin
+	storing the db connections using the new pm soon.
+
+2003-08-27  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/TODO:
+	$_ doesn't handle 0.x.x.x
+
+2003-08-24  Cor Gest  <cor@clsnet.nl>
+
+	* /home/CVS/spamikaze/ChangeLog: ChangeLog Updated
+
+2003-08-24  army  <army@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/scripts/named.pl:
+	Fixed a little problem with creating the new zonefile. BIND now always
+	takes a correct zone even when named.pl crashes or is running for a
+	long time.
+
+2003-08-24  army  <army@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/scripts/named.pl:
+	Fixed a little problem with creating the new zonefile. BIND now always
+	takes a correct zone even when named.pl crashes or is running for a
+	long time.
+
+2003-08-15  army  <army@cleopatra>
+
+	* /home/CVS/spamikaze/TODO: Removed some items that have been solved.
+
+	* /home/CVS/spamikaze/spamikaze/scripts/popchecker.pl:
+	Script is now strict-compliant.
+
+	* /home/CVS/spamikaze/spamikaze/cgi-bin/listing.cgi, /home/CVS/spamikaze/spamikaze/cgi-bin/remove.cgi:
+	Both scripts are now strict-compliant.
+
+	* /home/CVS/spamikaze/doc/Spamikaze-HOWTO.sgml:
+	First setup for the Postgresql-part.
+
+	* /home/CVS/spamikaze/doc/Spamikaze-HOWTO.sgml:
+	Added the MySQL-section to Configuration.
+
+2003-08-14  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/TODO:
+	Some additions, droped the site layout to a future version
+
+2003-08-13  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/expire.pl:
+	Database code
+
+2003-08-13  Cor Gest  <cor@clsnet.nl>
+
+	* /home/CVS/spamikaze/ChangeLog: ChangeLog Updated
+
+	* /home/CVS/spamikaze/p2p-design:
+	Concept for debate
+
+2003-08-13  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/config.pl, /home/CVS/spamikaze/expire.pl:
+	ok gang,
+
+	This is an example of how the expire could be. I dropped them in the
+	main dir and will remove them once I had comments.
+
+	The idea.
+
+	In the config.pl we have a @DONTEXPIRE. This will enable us
+	to make sure certain ranges will not expire.
+
+	The expire.pl should be run seperate (doesn't expire yet) and
+	will expire ipnr's that are not listed in @DONTEXPIRE and are:
+
+	* listed once in the db and are older then time() - $ticks.
+	* expire ipnumbers listed <= $maxspamsperip and ore older then time()
+	  and $ticks.
+
+	Calculation for the ipnumbers with more then one spam:
+	$bonustime = $spamtime + ($ticks * $total);
+	If this is <= time() they can expire.
+
+	The $maxspamperip will enable some of us to run a real dangerous list :-)
+
+	The idea would be to run this expire instead of having sendmail.pl
+	and named.pl looking at the the expiretime. They could just select
+	everything that's not 0/FALSE (visible field).
+
+	Any comments are welcome.
+
+	Hans
+
+	p.s. $_ will not list ipnr's starting with 0, we need some more bugfixing.
+
+	* /home/CVS/spamikaze/INSTALL:
+	Altered the install a little.
+
+	* /home/CVS/spamikaze/spamikaze/scripts/passivetrap.pl:
+	Deleted comments that no long belong in here
+
+	* /home/CVS/spamikaze/spamikaze/scripts/statscountry.pl:
+	Will be added in a later version
+
+	* /home/CVS/spamikaze/spamikaze/config/config.pl:
+	removed some comments about the portnumbers for the database servers, this
+	needs to be done in the documentation.
+
+	* /home/CVS/spamikaze/spamikaze/scripts/named.pl:
+	Not much, Hans S. shall we switch to a switch case kind of checking? Seems
+	logical but I wonder if it's not default in perl.
+
+	* /home/CVS/spamikaze/spamikaze/cgi-bin/listing.cgi, /home/CVS/spamikaze/spamikaze/cgi-bin/remove.cgi:
+	Postgres
+
+2003-08-13  Cor Gest  <cor@clsnet.nl>
+
+	* /home/CVS/spamikaze/doc/p2pweb-design.sgml:
+	placeholder for documentation on p2p trusted network
+
+
+2003-08-13  Cor Gest  <cor@clsnet.nl>
+
+	* /home/CVS/spamikaze/p2p-design:
+	Concept for debate
+
+2003-08-13  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/config.pl, /home/CVS/spamikaze/expire.pl:
+	ok gang,
+
+	This is an example of how the expire could be. I dropped them in the
+	main dir and will remove them once I had comments.
+
+	The idea.
+
+	In the config.pl we have a @DONTEXPIRE. This will enable us
+	to make sure certain ranges will not expire.
+
+	The expire.pl should be run seperate (doesn't expire yet) and
+	will expire ipnr's that are not listed in @DONTEXPIRE and are:
+
+	* listed once in the db and are older then time() - $ticks.
+	* expire ipnumbers listed <= $maxspamsperip and ore older then time()
+	  and $ticks.
+
+	Calculation for the ipnumbers with more then one spam:
+	$bonustime = $spamtime + ($ticks * $total);
+	If this is <= time() they can expire.
+
+	The $maxspamperip will enable some of us to run a real dangerous list :-)
+
+	The idea would be to run this expire instead of having sendmail.pl
+	and named.pl looking at the the expiretime. They could just select
+	everything that's not 0/FALSE (visible field).
+
+	Any comments are welcome.
+
+	Hans
+
+	p.s. $_ will not list ipnr's starting with 0, we need some more bugfixing.
+
+	* /home/CVS/spamikaze/INSTALL:
+	Altered the install a little.
+
+	* /home/CVS/spamikaze/spamikaze/scripts/passivetrap.pl:
+	Deleted comments that no long belong in here
+
+	* /home/CVS/spamikaze/spamikaze/scripts/statscountry.pl:
+	Will be added in a later version
+
+	* /home/CVS/spamikaze/spamikaze/config/config.pl:
+	removed some comments about the portnumbers for the database servers, this
+	needs to be done in the documentation.
+
+	* /home/CVS/spamikaze/spamikaze/scripts/named.pl:
+	Not much, Hans S. shall we switch to a switch case kind of checking? Seems
+	logical but I wonder if it's not default in perl.
+
+	* /home/CVS/spamikaze/spamikaze/cgi-bin/listing.cgi, /home/CVS/spamikaze/spamikaze/cgi-bin/remove.cgi:
+	Postgres
+
+2003-08-13  Cor Gest  <cor@clsnet.nl>
+
+	* /home/CVS/spamikaze/doc/p2pweb-design.sgml:
+	placeholder for documentation on p2p trusted network
+
+2003-08-09  army  <army@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/scripts/named.pl:
+	Removed a debug statement.
+
+2003-08-08  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/config/config.pl:
+	;
+
+	* /home/CVS/spamikaze/spamikaze/config/config.pl:
+	Added @BLACKLISTDOMAINS and @BLACKLISTRANGES. No matter what kind of expire
+	we will use, this can be handy. Code for the expire will follow.
+
+2003-07-31  Cor Gest  <cor@clsnet.nl>
+
+	* /home/CVS/spamikaze/ChangeLog: ChangeLog Updated
+
+2003-07-29  army  <army@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/scripts/named.pl:
+	Named.pl now works with Postgresql. The code is quite a mess, but maybe
+	we can merge code with MySQL.
+
+	* /home/CVS/spamikaze/spamikaze/config/config.pl:
+	Fixed a typo because the selection for a dbserver has changed.
+
+2003-07-29  army  <army@cleopatra>
+
+	* spamikaze/scripts/named.pl:
+	Named.pl now works with Postgresql. The code is quite a mess, but maybe
+	we can merge code with MySQL.
+
+	* spamikaze/config/config.pl:
+	Fixed a typo because the selection for a dbserver has changed.
+
+2003-07-28  riel  <riel@cleopatra>
+
+	* spamikaze/cgi-bin/listing.cgi: correct google URL s/./:/
+
+2003-07-28  Cor Gest  <cor@clsnet.nl>
+
+	* ChangeLog: ChangeLog Updated
+
+2003-07-27  h-wolters  <h-wolters@cleopatra>
+
+	* spamikaze/scripts/sendmail.pl, spamikaze/scripts/getcountries.pl, spamikaze/scripts/named.pl:
+	More changes in the connection handler
+
+	* INSTALL:
+
+	Extra options in the config.pl mentioned
+
+	* spamikaze/scripts/passivetrap.pl:
+	port host and type are working for both postgres and mysql, trimmed down
+	the connect part to handle it without the check on the dbtype.
+
+2003-07-27  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/scripts/sendmail.pl, /home/CVS/spamikaze/spamikaze/scripts/getcountries.pl, /home/CVS/spamikaze/spamikaze/scripts/named.pl:
+	More changes in the connection handler
+
+	* /home/CVS/spamikaze/INSTALL:
+
+	Extra options in the config.pl mentioned
+
+	* /home/CVS/spamikaze/spamikaze/scripts/passivetrap.pl:
+	port host and type are working for both postgres and mysql, trimmed down
+	the connect part to handle it without the check on the dbtype.
+
+2003-07-25  army  <army@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/scripts/passivetrap.pl:
+	Passivetrap.pl is now capable of working with both MySQL as Postgresql.
+
+	* /home/CVS/spamikaze/spamikaze/config/config.pl: Added variables for:
+	- type of dbserver;
+	- the host the database is running on;
+	- the port of the dbserver.
+	The last two are currently only used for Postgresql dbservers.
+
+	* /home/CVS/spamikaze/spamikaze/spamikaze-pg.sql:
+	Adding the database layout for Postgresql 7
+
+2003-07-21  army  <army@cleopatra>
+
+	* /home/CVS/spamikaze/TODO:
+	Updated the todolist with things we needed to do before the next release.
+
+	* /home/CVS/spamikaze/spamikaze/scripts/passivetrap.pl:
+	Here are some backports from my pgsql-tree:
+	- passivetrap.pl now uses strict;
+	- fixed variables in main because of the introduction of strict;
+	- changed a shift to be consistent in the way we handle parameters.
+
+2003-07-21  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/scripts/passivetrap.pl:
+	Path
+
+	* /home/CVS/spamikaze/spamikaze/scripts/passivetrap.pl:
+
+	K, this should fix the security problem Hans Spaans mentioned. It's the old
+	situation. The patch from John does check for empty lines correctly but it
+	disables people to import spam using mbox? format. We should take a closer
+	look to this.
+
+2003-07-20  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/scripts/passivetrap.pl:
+
+	Earlier solution that was patched needs a closer look.
+
+	* /home/CVS/spamikaze/spamikaze/php/spamlisting.php:
+	Cidr function for php, adjusted view for spamlisting.php, countries
+	added.
+
+2003-07-16  Cor Gest  <cor@cleopatra.clsnet.nl>
+
+	* /home/CVS/spamikaze/ChangeLog: ChangeLog updated
+
+2003-07-13  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/scripts/getcountries.pl:
+	Store the countries in the database
+
+	* /home/CVS/spamikaze/spamikaze/scripts/statscountry.pl:
+	Script to parse a png with ip's blocked per country, see the file
+	to alter your database.
+
+	* /home/CVS/spamikaze/spamikaze/php/spamlisting.php:
+	Support for /24 listing. One only needs to enter the first three
+	octs without a trailing dot.
+
+2003-07-13  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/scripts/getcountries.pl:
+	Store the countries in the database
+
+	* /home/CVS/spamikaze/spamikaze/scripts/statscountry.pl:
+	Script to parse a png with ip's blocked per country, see the file
+	to alter your database.
+
+	* /home/CVS/spamikaze/spamikaze/php/spamlisting.php:
+	Support for /24 listing. One only needs to enter the first three
+	octs without a trailing dot.
+
+2003-07-09  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/cgi-bin/listing.cgi, /home/CVS/spamikaze/spamikaze/cgi-bin/remove.cgi, /home/CVS/spamikaze/spamikaze/scripts/passivetrap.pl, /home/CVS/spamikaze/spamikaze/scripts/popchecker.pl:
+	patch from Hans Spaans
+
+2003-07-09  Cor Gest  <cor@cleopatra.clsnet.nl>
+
+	* /home/CVS/spamikaze/CREDITS: minor entry
+
+	* /home/CVS/spamikaze/ChangeLog: ChangeLog Updated
+
+2003-06-30  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/cgi-bin/remove.cgi, /home/CVS/spamikaze/spamikaze/scripts/named.pl, /home/CVS/spamikaze/spamikaze/scripts/passivetrap.pl, /home/CVS/spamikaze/spamikaze/scripts/popchecker.pl, /home/CVS/spamikaze/spamikaze/scripts/sendmail.pl, /home/CVS/spamikaze/spamikaze/cgi-bin/listing.cgi:
+	Patch from Hans Spaans to make sure our own functions will not be in the
+	namespace of internal perl functions.
+
+	* /home/CVS/spamikaze/CREDITS:
+	First entries
+
+	* /home/CVS/spamikaze/spamikaze/scripts/passivetrap.pl, /home/CVS/spamikaze/spamikaze/config/config.pl:
+	Looping only through the headers (John Bokma).
+
+2003-06-30  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/cgi-bin/remove.cgi, /home/CVS/spamikaze/spamikaze/scripts/named.pl, /home/CVS/spamikaze/spamikaze/scripts/passivetrap.pl, /home/CVS/spamikaze/spamikaze/scripts/popchecker.pl, /home/CVS/spamikaze/spamikaze/scripts/sendmail.pl, /home/CVS/spamikaze/spamikaze/cgi-bin/listing.cgi:
+	Patch from Hans Spaans to make sure our own functions will not be in the
+	namespace of internal perl functions.
+
+	* /home/CVS/spamikaze/CREDITS:
+	First entries
+
+	* /home/CVS/spamikaze/spamikaze/scripts/passivetrap.pl, /home/CVS/spamikaze/spamikaze/config/config.pl:
+	Looping only through the headers (John Bokma).
+
+2003-06-27  Cor Gest  <cor@cleopatra.clsnet.nl>
+
+	* /home/CVS/spamikaze/CREDITS: CREDITS file invoked
+
+	please fill as appropriate
+
+	it is in linux-kernel credit-file standards
+
+2003-06-26  Cor Gest  <cor@cleopatra.clsnet.nl>
+
+	* /home/CVS/spamikaze/ChangeLog: ChangeLog Updated
+
+2003-06-26  riel  <riel@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/scripts/passivetrap.pl, /home/CVS/spamikaze/spamikaze/scripts/popchecker.pl, /home/CVS/spamikaze/spamikaze/cgi-bin/remove.cgi, /home/CVS/spamikaze/spamikaze/cgi-bin/listing.cgi:
+	* Parameters are now handled more safely
+	* CGI parameters contain an empty string when the parameter doesn't
+	  exist
+	* CGI-scripts now produce some more sane html and its html4 based
+		(Hans Spaans)
+
+2003-06-26  riel  <riel@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/scripts/passivetrap.pl, /home/CVS/spamikaze/spamikaze/scripts/popchecker.pl, /home/CVS/spamikaze/spamikaze/cgi-bin/remove.cgi, /home/CVS/spamikaze/spamikaze/cgi-bin/listing.cgi:
+	* Parameters are now handled more safely
+	* CGI parameters contain an empty string when the parameter doesn't
+	  exist
+	* CGI-scripts now produce some more sane html and its html4 based
+		(Hans Spaans)
+
+2003-06-25  Cor Gest  <cor@cleopatra.clsnet.nl>
+
+	* /home/CVS/spamikaze/ChangeLog: ChangeLog Updated (post-version-0.1)
+
+2003-06-24  Cor Gest  <cor@cleopatra.clsnet.nl>
+
+	* /home/CVS/spamikaze/ChangeLog:
+	The log since publication of version 0.1
+
+	* /home/CVS/spamikaze/ChangeLog-pre-version-0.1: file-name  says it all
+
+2003-06-24  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/html/logo/spamikaze.png:
+	-rw-rw-r--    1 hans     hans        16014 Jun 15 20:17 spamikaze.jpg
+	-rw-rw-r--    1 hans     hans          929 Jun 24 22:32 spamikaze.png
+
+	That's better
+
+	* /home/CVS/spamikaze/html/template.html:
+	K guys, with a little help from Niwo this file could be the template for
+	the site. It holds some extra links to non-excisting images but just parse
+	the logo in it (the small one).
+
+	Once I have the time to work on the site again I will help improve it. This
+	far it runs on most browsers ok but we need to validate that before going live.
+
+	Rik, I don't like to distribute the layout for Spamikaze, can we use the blanks for that?
+
+	Regards,
+
+	Hans
+
+2003-06-24  Cor Gest  <cor@clsnet.nl>
+
+	* /home/CVS/spamikaze/ChangeLog:
+	The log since publication of version 0.1
+
+	* /home/CVS/spamikaze/ChangeLog-pre-version-0.1: file-name  says it all
+
+2003-06-24  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/html/logo/spamikaze.png:
+	-rw-rw-r--    1 hans     hans        16014 Jun 15 20:17 spamikaze.jpg
+	-rw-rw-r--    1 hans     hans          929 Jun 24 22:32 spamikaze.png
+
+	That's better
+
+	* /home/CVS/spamikaze/html/template.html:
+	K guys, with a little help from Niwo this file could be the template for
+	the site. It holds some extra links to non-excisting images but just parse
+	the logo in it (the small one).
+
+	Once I have the time to work on the site again I will help improve it. This
+	far it runs on most browsers ok but we need to validate that before going live.
+
+	Rik, I don't like to distribute the layout for Spamikaze, can we use the blanks for that?
+
+	Regards,
+
+	Hans
+
+2003-06-22  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/INSTALL, /home/CVS/spamikaze/spamikaze/config/config.pl, /home/CVS/spamikaze/spamikaze/scripts/passivetrap.pl, /home/CVS/spamikaze/spamikaze/scripts/popchecker.pl:
+	our @MXBACKUP in the config.pl
+
+2003-06-22  riel  <riel@cleopatra>
+
+	* /home/CVS/spamikaze/html/index.php: link to log of presentation
+
+2003-06-22  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/config/config.pl:
+	Config file for the Perl scripts
+
+	* /home/CVS/spamikaze/INSTALL, /home/CVS/spamikaze/spamikaze/cgi-bin/listing.cgi, /home/CVS/spamikaze/spamikaze/cgi-bin/remove.cgi, /home/CVS/spamikaze/spamikaze/scripts/named.pl, /home/CVS/spamikaze/spamikaze/scripts/passivetrap.pl, /home/CVS/spamikaze/spamikaze/scripts/sendmail.pl:
+	Central configuration for Perl. See the install.
+
+	* /home/CVS/spamikaze/INSTALL:
+	Update by Horacio J. Pe=F1a
+
+	--- INSTALL.orig        2003-06-18 17:40:34.000000000 -0300
+	+++ INSTALL     2003-06-21 21:45:55.000000000 -0300
+	@@ -9,7 +9,7 @@
+
+	 At the prompt you can use mysqladmin to create a new database.
+
+	 -    mysqladmin -u yourusername -r create spamikaze
+	 +    mysqladmin -u root -p create spamikaze
+
+2003-06-22  Cor Gest  <cor@clsnet.nl>
+
+	* /home/CVS/spamikaze/ChangeLog: ChangeLog Updated
+
+2003-06-20  riel  <riel@cleopatra>
+
+	* /home/CVS/spamikaze/html/download.php:
+	paragraph breaks, keep http download url on spamikaze virthost
+
+2003-06-20  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/html/download.php: *** empty log message ***
+
+	* /home/CVS/spamikaze/html/download.php:
+	download link to pub instead of /pub
+
+2003-06-20  riel  <riel@cleopatra>
+
+	* /home/CVS/spamikaze/html/index.php: spamikaze 0.1 released
+
+	* /home/CVS/spamikaze/html/download.php: download URLs
+
+2003-06-20  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/spamikaze/scripts/passivetrap.pl, /home/CVS/spamikaze/spamikaze/scripts/popchecker.pl:
+	Altered @MXBACKUP
+
+2003-06-20  riel  <riel@cleopatra>
+
+	* /home/CVS/spamikaze/html/download.php:
+	paragraph breaks, keep http download url on spamikaze virthost
+
+2003-06-20  h-wolters  <h-wolters@cleopatra>
+
+	* /home/CVS/spamikaze/html/download.php: *** empty log message ***
+
+	* /home/CVS/spamikaze/html/download.php:
+	download link to pub instead of /pub
+
+2003-06-20  riel  <riel@cleopatra>
+
+	* /home/CVS/spamikaze/html/index.php: spamikaze 0.1 released
+
+	* /home/CVS/spamikaze/html/download.php: download URLs
+
+
+
+
+
+
+
+
+
+
+
+	

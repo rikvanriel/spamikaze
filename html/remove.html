@@ -1,0 +1,18 @@
+<HTML>
+<HEAD>
+	<TITLE>PSBL removal</TITLE>
+</HEAD>
+<BODY>
+	<H1>PSBL removal</H1>
+
+To remove your mail server from the PSBL, just fill in its IP address
+and it should be gone from the DNSBL within 5 minutes, after which you
+can resend your email to me.
+
+<FORM ACTION="/cgi-bin/remove.cgi" METHOD="POST">
+<INPUT TYPE="text" NAME="ip" VALUE="127.0.0.2" SIZE="40">
+<INPUT TYPE="submit" NAME="ip" VALUE="Remove IP">
+</FORM>
+
+</BODY>
+</HTML>

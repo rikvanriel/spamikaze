@@ -1,0 +1,151 @@
+PROJECT:	Spamikaze
+DISCRIPTION:	Spamprevention application
+SUBJECT:	Web-of-trust
+TITLE:		Design of the interaction between trusted contributors
+		on submissions to a shared Database whitin an
+		anonymous peer-2-peer networked environment.         
+VERSION:	0.0.1
+STATUS:		concept of design
+DATE:		2003-08-13
+AUTHOR:		Cor Gest <cor@nl.linux.org>
+
+
+1. Introduction
+
+Besides all the allready built-in features in Spamikaze to keep the
+spam-DB current and up-to-date it still is maily an stand-alone
+application whithout interaction with other users.
+  
+Formation of a group of tursted contributors relies heavy on a lot of
+hand-work which is not what one really wants if an computer is at hand to
+do the dirty-work.
+
+The creation of an shared database is called for, but has the problen of
+integrity and trustworthyness of the data it contains.
+Prevention of false-positives and third-party whitelisting must be
+prevented.
+
+
+2. Legend of used terminology
+<blab> 
+ Filled as we go on and have consensus on the name-calling thingies.
+</blab>
+
+Main-node: The most significat Spamikaze box in an environment.  
+	   main box of an ISP or big network.
+	   These should be the "trust" center.
+	
+node:	   Any another Spamikaze-box.
+	   Not trusted by Default.
+
+3. Possible setups
+
+3.1 Basic stand-alone setup
+<blab>
+Not really much to say here, this should be understood anyway. 
+</blab>
+
+3.2 Networked setup
+<blab>
+Needs more study, because this depends on the implementation of the
+web-of-trust
+</blab>
+
+4. Web of trust
+Trust is OK, checking is Better!
+
+This addresses the main problem : who to trust and how to prevent
+ID-theft of an trusted contributor.
+Also prevention of retalliation by third-parties against contributors
+must be prevented by keeping contributors in anonymity on the DB-level.
+An other problem is preventing poisoning of the data itsef with bogus entries.
+
+All this needs some careful tweaking and tooling and scrutiny of
+allready exsisting tools and methods of filetranfer ID-checking and
+data-integrity checks.
+
+5. Design proposal
+
+5.1 Between Spamikaze servers
+ Mainnode-2-Mainnode
+    This is the least problematic, for this could be done with rsync.
+
+ Mainnode-2-node
+    Just a simple download would suffice, or one-way rsync.
+
+ node-2-node
+    rsync could do the trick here also
+
+Alternatively every node could just use GNUnet as the distributed Database.
+
+5.2 Feeding the DB
+
+5.2.1 local Network 
+
+Local-users 
+users which have MX witch is served by the node simply
+forward to an preset mail-address.
+
+Remote-users    
+some could be given the priviledge to do as local-users, but this is
+unsafe and needs extra checking, so auto-insert should be out of the question.
+
+
+6.0 Building the network 
+
+An p2p anonymous encrypted filesharing network is working and could be used for
+contributing entries to Spamikaze-nodes.
+This network, GNUnet, is allready up-and-running, so Spamikaze could use
+this resource as an distributed database-repository.
+
+There is just one problem, anybody can get info from the gnunet.
+So the content will be visible to everybody. 
+To put gnunet to good use but keeping the contributors anonymos to third
+parties gpg/pgp could be put to good use.
+
+
+6.1 Required software
+every Spamikaze-node needs an public-key
+every contributor must be known to (at least one ) Spamikaze-node
+every contributor mus have gpg/pgp installed
+every contributor and Spamikaze-node must have GNUnet installed
+
+6.1.1 Fileconventions
+
+There must be an agreed filename-mantra to Distinguish Spamikaze-files from the
+rest of the content whithin GNUnet.
+Every file must be encrypted with the public-key of a Spamikaze-node.
+Every filename consists of the senders gpg-key and an DTG-code.
+
+This would workout as filename:
+  1024D-sk-11F9C48B-200308130515
+
+1024D 11F9C48B is the normal gpg-key notation of the contributor
+the 'space' is replaced by -sk- 
+This also identifies the file as an "Spamikaze-file"
+
+the last part is the date-time-group-code written as yyyymmddHHmm
+
+In this system every entry is traceable to the a sender,
+which has no way to DE-crypt the contents. 
+Nobody can snoop in the contens.
+The Spamikaze-node knows who send it, when and can decrypt the contents.
+
+I will forgo the: encrypt a spam-message-body with a public-key rename it as
+predefined-filename+timestamp ascii-file and pipe it to gnunet-insert.
+(multiple-file insertion is possible)
+This depends mainly on the skills of the contributor and the MUA used.
+
+7. Server-side
+On the serverside the main choice is which contributions to take on
+this can be done script-wise on known-contributors gpg-key'ed-filenames
+from de GNUnet Database.
+The rest ought to be relative simple to gpg-decrypt the message and put it
+in the Spamikaze-DB, which in turn could be distributed in the same way. 
+
+
+
+
+Links
+
+GNUnet http://www.ovmj.org/GNUnet/

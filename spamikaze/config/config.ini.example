@@ -1,0 +1,8 @@
+[Database]
+Type=Pg/MySQL
+Host=localhost
+Port=5432
+Name=
+Username=
+Password=
+

@@ -1,0 +1,33 @@
+#
+#
+# SPAMIKAZE
+#
+#
+#
+# Linux-Kernel style CREDITS lookup invoked for easier grepping:
+#
+# N: stands for your Name
+# E: email-adress
+# P: GPG/PGP thingies like Public-keys or fingerprints
+# D: desciption of your involvement in the Project
+# W: web-address, if you have one or want it to be Public knowledge
+# S: snail-mail adress, as above in W:
+#
+#
+N: Rik van Riel
+
+N: Hans Wolters
+E: h-wolters@nl.linux.org
+D: dbi, popchecker, etc..
+S: +31 36 522 2206
+
+N: Hans Spaans
+D: Patch for several files.
+
+N: John Bokma
+D: Patch for passivetrap.pl.
+
+N: Cor Gest
+E: cor@nl.linux.org
+D: Changelog, CVS
+
