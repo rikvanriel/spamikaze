@@ -67,16 +67,16 @@ sub main
         my $sthexpire = $dbh->prepare( $expiresql );
         $ip = "$octa.$octb.$octc.$octd";
         if ($total == 1 && mxdontexpire($ip) < 1) {
-            $bonustime = $spamtime + $firsttime;
+            $bonustime = $spamtime + $Spamikaze::{firsttime};
             if ($bonustime <= time()){
                 print $total, "\t";
                 $sthexpire->execute($octa, $octb, $octc, $octd);
                 print "$octa.$octb.$octc.$octd\n";
             }
         }
-        elsif (($total < $maxspamsperip) && (mxdontexpire($ip) < 1))
+        elsif (($total < $Spamikaze::{maxspamsperip}) && (mxdontexpire($ip) < 1))
         {
-            $bonustime = $spamtime + ($extratime * $total);
+            $bonustime = $spamtime + ($Spamikaze::{extratime} * $total);
             if ($bonustime <= time()){
                 print $total, "\t";
                 $sthexpire->execute($octa, $octb, $octc, $octd);
