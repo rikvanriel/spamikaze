@@ -11,7 +11,9 @@
 
 <h1>An Introduction to Spamikaze</h1>
 
-Spamikaze is based on the following premises:
+Spamikaze is based on the following premises, which appear to be true
+on the sites where the authors are running Spamikaze:
+
 <ul>
 <li>Almost all spam received at spamtrap addresses is spam
 <li>Almost all spam is sent from IP addresses that are not mail servers,
@@ -36,20 +38,23 @@ Spamikaze is based on the following premises:
 
 <p>Spamikaze roughly works as follows:
 <ol>
-<li>A spamtrap receives an email (most probably spam)
+<li>A spamtrap receives an email (most probably spam).
 <li>The passivetrap script figures out which IP address delivered the
-    email to the spamtrap's email server
-<li>... TBD
+    email to the spamtrap's email server.
+<li>The IP address gets added to the local Spamikaze blocklist.
+<li>Spamikaze notifies other Spamikaze systems of the spamtrap event
+    (future functionality, not currently implemented).
+<li>The local mail server will reject mail from the IP address that
+    sent mail into the spam trap.
+<li>After a configurable number of days the IP address is automatically
+    dropped from the blocklist.
+<li>Alternatively, somebody removes the IP address from the list using
+    the web interface. This happens in the rare cases where the spam comes
+    from an actual mail server that also wants to send legitimate mail
+    to a mail server protected by the local Spamikaze list.
+<li>If a new spamtrap hit happens from the same IP address, the timeout
+    is extended, or the IP address is listed again.
 </ol>
-
-<p>When a spamtrap address receives email, chances are very big that:
-(1) the email is spam and (2) the email was not sent by a legitimate
-mail server, but instead by an open relay or an open proxy.  Spamikaze
-will then add the IP address that delivered the mail to your mail
-server to a blocklist.  Since some of those IP addresses (1% ?) may
-be legitimate mail servers, with people who want to send you email,
-Spamikaze has a removal mechanism.  One simple web site visit allows
-anybody to remove an IP address from the list and send you email.
 
 <ul>
 <li><a href="/doc">Index</a>
