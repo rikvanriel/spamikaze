@@ -22,6 +22,8 @@ IgnoreBOGON=0
 BackupMX=1.2.3.4 2.3.4.5
 # ignore mail that looks like bounce messages
 IgnoreBounces=1
+# whitelist(s) of known-good mail servers, to never block
+WhitelistZones=whitelist.surriel.com whitelist.example.tld
 
 [Expire]
 # time (in hours) the first spam causes a host to be blocked

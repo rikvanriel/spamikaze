@@ -14,6 +14,7 @@
 use strict;
 use warnings;
 use FindBin;
+use Net::DNS;
 use lib "$FindBin::Bin";
 
 use Spamikaze;
@@ -139,6 +140,22 @@ sub storeip
 
 }
 
+sub whitelisted
+{
+	my ( $revip ) = @_;
+	$revip =~ s/(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/$4.$3.$2.$1/;
+	my $res = new Net::DNS::Resolver;
+	my $zone;
+	
+	foreach $zone (@Spamikaze::whitelist_zones) {
+		my $query = $res->query($revip . "." . $zone, "A");
+		if (defined $query) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
 sub process_mail
 {
 	my ( $mail ) = @_;
@@ -149,7 +166,7 @@ sub process_mail
 
 	while ($mail =~ /Received:(.*?)(?=\n\w)/sg) {
 		my $ip = parsereceived($1);
-		if ($ip && !Spamikaze::MXBackup($ip) ) {
+		if ($ip && !Spamikaze::MXBackup($ip) && !whitelisted($ip)) {
 			storeip($ip);
 			return 1;
 		}

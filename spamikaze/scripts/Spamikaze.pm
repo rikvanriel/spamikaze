@@ -30,6 +30,7 @@ my @MXBACKUP;
 my $ignoreBOGON;
 my $ignoreRFC1918;
 our $ignorebounces;
+our @whitelist_zones;
 
 # expire.pl
 our $firsttime;
@@ -88,6 +89,7 @@ BEGIN {
 	$dbbase = $cfg->val( 'Database', 'Name' );
 
 	@MXBACKUP = split ( ' ', $cfg->val( 'Mail', 'BackupMX' ) );
+	@whitelist_zones = split ( ' ', $cfg->val ( 'Mail', 'WhitelistZones' ) );
 	$ignoreRFC1918 = $cfg->val( 'Mail', 'IgnoreRFC1918' );
 	$ignoreBOGON   = $cfg->val( 'Mail', 'IgnoreBOGON' );
 	$ignorebounces = $cfg->val( 'Mail', 'IgnoreBounces' );
