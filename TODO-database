@@ -7,17 +7,16 @@ what we want to store in the database.
 
 The new database layout will look something like this:
 
-CREATE TABLE ipentries (
-  id int(11) NOT NULL auto_increment,
-  date_received timestamp(14) NOT NULL,
-  date_logged timestamp(14) NOT NULL,
-  date_mail timestamp(14) NOT NULL,
-  id_subject int(11) NOT NULL default '0',
-  id_ip int(11) NOT NULL default '0',
-  PRIMARY KEY  (id),
-  UNIQUE KEY idx_spamentry (date_received,date_logged,date_mail)
-);
- 
+CREATE TABLE `ipentries` (
+  `id` int(11) NOT NULL auto_increment,
+    `date_received` int(11) NOT NULL default '0',
+      `date_logged` int(11) NOT NULL default '0',
+        `date_mail` int(11) NOT NULL default '0',
+          `id_subject` int(11) NOT NULL default '0',
+            `id_ip` int(11) NOT NULL default '0',
+              PRIMARY KEY  (`id`)
+              )
+
 CREATE TABLE ipnumbers (
   id int(11) NOT NULL auto_increment,
   octa smallint(6) NOT NULL default '0',
