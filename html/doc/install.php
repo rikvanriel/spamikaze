@@ -38,13 +38,13 @@ configured, you can install the needed perl modules with the following
 commands:
 
 <p><tt>
-cpan&gt; install DBI;
-cpan&gt; install DBI::mysql;
-cpan&gt; install Config::IniFiles;
+cpan&gt; install DBI;<br>
+cpan&gt; install DBI::mysql;<br>
+cpan&gt; install Config::IniFiles;<br>
 cpan&gt; install Net::DNS;
 </tt>
 
-If these modules need other modules to work, and CPAN asks you whether
+<p>If these modules need other modules to work, and CPAN asks you whether
 or not to install the dependencies, answer yes.
 
 <h2>Database</h2>
