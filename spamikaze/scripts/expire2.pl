@@ -5,22 +5,18 @@
 #   <insert GPL 2 or later in here>
 
 use strict;
-use DBI;
+use warnings;
 
-require "/home/sys_scripts/config.pl";
+unshift (@INC, "/home/webapps/spamikaze/spamikaze/spamikaze/scripts");
+unshift (@INC, "/opt/spamikaze/scripts");
+require Spamikaze;
+
 our @DONTEXPIRE;
-our $dbuser;
-our $dbpwd;
-our $dbbase;
-our $dbport;
-our $dbtype;
-our $dbhost;
 
 my $ticks = 15 * 24 * 60 * 60;  # 15 days ?
 my $bonustime;
 my $extratime = 30 * 24 * 60 * 60;
 my $maxspamsperip = 10;
-
 
 sub mxdontexpire
 {
@@ -48,10 +44,7 @@ sub main
     my $octd;
     my $hostname;
 
-    my $dbh = DBI->connect( "dbi:$dbtype:dbname=$dbbase;host=$dbhost;port=$dbport",
-                            "$dbuser", "$dbpwd", { RaiseError => 1 }) || die
-                            "Database connection not made: $DBI::errstr";
-
+    my $dbh = Spamikaze::DBConnect();
 
     my $sql = "SELECT
                     COUNT(ipentries.id) AS total,
