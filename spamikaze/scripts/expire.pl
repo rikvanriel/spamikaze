@@ -14,7 +14,7 @@ use warnings;
 
 unshift (@INC, "/home/webapps/spamikaze/spamikaze/spamikaze/scripts");
 unshift (@INC, "/opt/spamikaze/scripts");
-use Spamikaze;
+require Spamikaze;
 
 our @DONTEXPIRE = ('127.0.0.2');
 
@@ -97,3 +97,9 @@ sub main
 }
 
 &main;
+
+# get rid of perl warnings that would litter cron email
+my $nowarn = $Spamikaze::extratime;
+$nowarn = $Spamikaze::firsttime;
+$nowarn = $Spamikaze::maxspamperip;
+
