@@ -2,16 +2,14 @@
 
 
 Before next release:
-  * basic documentation and postgres documentation.
-    - missing: documentation of the web interface
+  * review the documentation for completeness
   * test the current cvs tree on different machines.
-  * Fix the $_, this doesn't handle 0.x.x.x ipnumbers.
+
+For later versions:
   * Add whitelist mailserver table
   * Add whitelist zone file so more then one mailservers can use it
     within a company/org.
   * Add evidence table
-
-For later versions:
   * the perl scripts in cgi-bin should be able to do the same as there 
     php ones.
   * Add evidence table
