@@ -128,7 +128,10 @@ sub grabinfo
 	#
 	# first, get the times where we received spam
 	#
-	my $sql = "SELECT spamtime AS time FROM spammers WHERE
+	my $sql = "SELECT 
+                    date_logged AS time FROM ipentries, ipnumbers
+               WHERE
+            id_ip = ipnumbers.id AND
 			octa = ? AND
 			octb = ? AND
 			octc = ? AND
