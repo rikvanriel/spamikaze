@@ -1,0 +1,13 @@
+[Database]
+Node     	= localhost
+Port     	= 5432
+Type     	= Pg
+Name     	= spamikaze
+Username	= spamikaze
+Password 	= spamikaze
+
+[Mail]
+BackupMX 	= 82.92.92.64 212.204.245.220
+IgnoreBOGON	= true
+IgnoreRFC1918	= true
+
