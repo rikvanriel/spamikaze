@@ -43,6 +43,13 @@ our $dnsbl_ttl;
 our $dnsbl_primary_ns;
 our @dnsbl_secondary_nses;
 
+# cgi scripts
+our $web_header;
+our $web_footer;
+our $web_listname;
+our $web_listingurl;
+our $web_removalurl;
+
 my @RFC1918Addresses =
   ( '10\.', '172\.1[6-9]\.', '172\.2[0-9]\.', '172\.3[0-2]\.', '192\.168\.' );
 
@@ -95,6 +102,12 @@ BEGIN {
 	$dnsbl_ttl = $cfg->val ('DNSBL', 'TTL' );
 	$dnsbl_primary_ns = $cfg->val ('DNSBL', 'PrimaryNS' );
 	@dnsbl_secondary_nses = $cfg->val ('DNSBL', 'SecondaryNSes' );
+
+	$web_header = $cfg->val ('Web', 'Header' );
+	$web_footer = $cfg->val ('Web', 'Footer' );
+	$web_listname = $cfg->val ('Web', 'ListName' );
+	$web_listingurl = $cfg->val ('Web', 'ListingURL' );
+	$web_removalurl = $cfg->val ('Web', 'RemovalURL' );
 
 	#
 	# We need to check values !!!
