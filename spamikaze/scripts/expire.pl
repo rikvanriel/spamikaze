@@ -99,8 +99,3 @@ sub main
 
 &main;
 
-# get rid of perl warnings that would litter cron email
-my $nowarn = $Spamikaze::extratime;
-$nowarn = $Spamikaze::firsttime;
-$nowarn = $Spamikaze::maxspamperip;
-
