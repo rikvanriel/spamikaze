@@ -42,9 +42,8 @@ while(1) {
     my $octd;
     my $hostname;
 
-    my $dbh = DBI->connect( "dbi:$dbtype:dbname=$dbbase;host=$dbhost;port=$dbport",
-                            "$dbuser", "$dbpwd", { RaiseError => 1 }) || die
-                            "Database connectie niet gelukt: $DBI::errstr";
+
+    my $dbh = Spamikaze::DBConnect();
 
     my $aantal = $dbh->do( "DELETE FROM ipentries WHERE date_logged < 
                             (UNIX_TIMESTAMP(NOW()) - 31536000) LIMIT 250" );
