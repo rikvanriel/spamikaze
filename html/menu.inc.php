@@ -4,6 +4,6 @@
 <td><a href="/download.php">Download</a>
 <td><a href="/doc">Documentation</a>
 <td><a href="http://mail.nl.linux.org/spamikaze">Mailing list</a>
-<td><a href="/stats/">Web stats</a>
+<!-- <td><a href="/stats/">Web stats</a> -->
 </tr></table>
 <hr>
