@@ -52,7 +52,7 @@ BEGIN {
 
 	my $configfile;
 
-	if ( -f "$ENV{HOME}/.spamikaze/config" ) {
+	if ( defined $ENV{HOME} and -f "$ENV{HOME}/.spamikaze/config" ) {
 
 		$configfile = "$ENV{HOME}/.spamikaze/config";
 
