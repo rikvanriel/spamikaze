@@ -146,7 +146,7 @@ sub whitelisted
 	$revip =~ s/(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/$4.$3.$2.$1/;
 	my $res = new Net::DNS::Resolver;
 	my $zone;
-	
+
 	foreach $zone (@Spamikaze::whitelist_zones) {
 		my $query = $res->query($revip . "." . $zone, "A");
 		if (defined $query) {
