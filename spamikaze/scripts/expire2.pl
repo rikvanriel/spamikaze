@@ -9,7 +9,7 @@ use warnings;
 
 unshift (@INC, "/home/webapps/spamikaze/spamikaze/spamikaze/scripts");
 unshift (@INC, "/opt/spamikaze/scripts");
-require Spamikaze;
+use Spamikaze;
 
 our @DONTEXPIRE = ('127.0.0.2');
 
@@ -67,16 +67,16 @@ sub main
         my $sthexpire = $dbh->prepare( $expiresql );
         $ip = "$octa.$octb.$octc.$octd";
         if ($total == 1 && mxdontexpire($ip) < 1) {
-            $bonustime = $spamtime + $Spamikaze::{firsttime};
+            $bonustime = $spamtime + $Spamikaze::firsttime;
             if ($bonustime <= time()){
                 print $total, "\t";
                 $sthexpire->execute($octa, $octb, $octc, $octd);
                 print "$octa.$octb.$octc.$octd\n";
             }
         }
-        elsif (($total < $Spamikaze::{maxspamsperip}) && (mxdontexpire($ip) < 1))
+        elsif (($total < $Spamikaze::maxspamperip) && (mxdontexpire($ip) < 1))
         {
-            $bonustime = $spamtime + ($Spamikaze::{extratime} * $total);
+            $bonustime = $spamtime + ($Spamikaze::extratime * $total);
             if ($bonustime <= time()){
                 print $total, "\t";
                 $sthexpire->execute($octa, $octb, $octc, $octd);
