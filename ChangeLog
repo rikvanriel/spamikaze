@@ -1,3 +1,138 @@
+2004-05-08   Hans Spaans  <army@humbolt>
+
+	* spamikaze/scripts/postfix.pl: Added Spamikaze.pm support
+	Added Postgresql support
+	Clean the code somewhat
+	Temp-file are now being used while doing the generation
+
+2004-05-05   Hans Spaans  <army@humbolt>
+
+	* TODO: Updated.
+
+2004-05-01   Hans Spaans  <army@humbolt>
+
+	* TODO: Added two items need for the next release
+
+2004-04-27   Hans Spaans  <army@humbolt>
+
+	* TODO:
+	Removed a wishlist item because it is in Spamikaze.pm and the rest of the
+	scripts will get it because they need Spamikaze.pm ;-)
+
+	* spamikaze/scripts/Spamikaze.pm, spamikaze/scripts/named.pl:
+	- Added GetDBType() to Spamikaze.pm
+	- named.pl is now working with Spamikaze.pm
+	- named.pl doesn't call rndc anymore!!!
+	- named.pl and Spamikaze.pm have been processed by perltidy -t
+	- Fixed sql-calls with old parameter $ticks
+	- Removed all legacy variables to config.pl
+
+	* spamikaze/scripts/passivetrap.pl, spamikaze/spamikaze-pg.sql, spamikaze/spamikaze-sf.sql:
+	The new database layout wasn't applied to all files and because we try to
+	get everything working in cvs we needed to change somethings.
+
+	So please read the changes or things WILL stop working. Sorry for this.
+
+	* doc/example-config:
+	Added config-items for named.pl. The idea is to do BIND first and if we
+	need to support more nameserver we make a seperate configfile for this.
+
+	* spamikaze/scripts/named2.pl:
+	Named2.pl has been removed because it was merged into 1.2 of named.pl.
+
+	* spamikaze/scripts/named.pl:
+	Named2.pl has been merged into named.pl. If you have problemen, please
+	check out an older version from cvs.
+
+2004-04-26   Hans Spaans  <army@humbolt>
+
+	* spamikaze/scripts/Spamikaze.pm:
+	- Spamikaze.pm is now able to get its config by ini-file. Please see example-config.
+	- Spamikaze.pm default ignore 127/8 addresses
+	- Spamikaze.pm can ignore BOGON IP-addresses using Net::DNS
+	- Spamikaze.pm can ignore RFC1918 IP-addresses if you don't want to use
+	  the BOGON way of checking.
+
+	* doc/example-config:
+	Added an example for the spamikaze config in ~/.spamikaze/config and/or
+	/etc/spamikaze/config.
+
+	* spamikaze/scripts/passivetrap.pl:
+	- Passivetrap is now capable to find Spamikaze.pm again;
+	- The function mxbackup has been moved to Spamikaze::MXBackup;
+	- Passivetrap now stops subscribing 127.0.0.1 as spammer.
+
+	* spamikaze/scripts/Spamikaze.pm:
+	- Spamikaze.pm now has MXBackup to check if it is MX of our own.
+	- Added a 1 to be on the safeside.
+
+	* spamikaze/spamikaze-pg.sql:
+	The database-layout for pgsql is now compliant with mysql.
+
+2004-04-25  Hans Wolters  <h-wolters@humbolt>
+
+	* spamikaze/scripts/named2.pl:
+	Fetches the data from the new table. Should be renamed to named.pl after
+	we finished the rest of the scripts.
+
+	TODO:
+
+	expire.pl
+	passivetrap.pl
+
+2004-04-22  Hans Wolters  <h-wolters@humbolt>
+
+	* TODO-database:
+	s/timestamp/int
+
+	keys will follow
+
+2004-04-22  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/update.pl: statement needs IGNORE for newer mysql
+
+2004-04-22  Hans Wolters  <h-wolters@humbolt>
+
+	* spamikaze/scripts/update.pl:
+
+	update script, see the TODO-database
+
+2004-04-18  Hans Wolters  <h-wolters@humbolt>
+
+	* TODO-database:
+	Altered the main table a bit, forgot that yesterday. Added the state of
+	the update.pl (not submitted yet).
+
+2004-04-17  Rik van Riel  <riel@humbolt>
+
+	* TODO-database: first part of conversion
+
+2004-03-20  Rik van Riel  <riel@humbolt>
+
+	* doc/Spamikaze-HOWTO.sgml, html/download.php, html/index.php, html/logo/spamikaze-small.jpg, html/logo/spamikaze.jpg, html/logo/spamikaze.png, html/menu.inc.php, html/remove.html, html/template.html:
+	New file.
+
+	* doc/Spamikaze-HOWTO.sgml, html/download.php, html/index.php, html/logo/spamikaze-small.jpg, html/logo/spamikaze.jpg, html/logo/spamikaze.png, html/menu.inc.php, html/remove.html, html/template.html:
+	reimport spamikaze
+
+	* doc/p2pweb-design.sgml, spamikaze/cgi-bin/listing.cgi, spamikaze/cgi-bin/remove.cgi, spamikaze/config/config.ini.example, spamikaze/config/config.php, spamikaze/config/config.pl, spamikaze/fqdn.sql, spamikaze/latest.sql, spamikaze/php/remove.php, spamikaze/php/spamlisting.php, spamikaze/scripts/Spamikaze.pm, spamikaze/scripts/expire.pl, spamikaze/scripts/getcountries.pl, spamikaze/scripts/gethostname.pl, spamikaze/scripts/named.pl, spamikaze/scripts/passivetrap.pl, spamikaze/scripts/popchecker.pl, spamikaze/scripts/postfix.pl, spamikaze/scripts/sendmail.pl, spamikaze/scripts/sethostn.pl:
+	New file.
+
+	* doc/p2pweb-design.sgml, spamikaze/cgi-bin/listing.cgi, spamikaze/cgi-bin/remove.cgi, spamikaze/config/config.ini.example, spamikaze/config/config.php, spamikaze/config/config.pl, spamikaze/fqdn.sql, spamikaze/latest.sql, spamikaze/php/remove.php, spamikaze/php/spamlisting.php, spamikaze/scripts/Spamikaze.pm, spamikaze/scripts/expire.pl, spamikaze/scripts/getcountries.pl, spamikaze/scripts/gethostname.pl, spamikaze/scripts/named.pl, spamikaze/scripts/passivetrap.pl, spamikaze/scripts/popchecker.pl, spamikaze/scripts/postfix.pl, spamikaze/scripts/sendmail.pl, spamikaze/scripts/sethostn.pl:
+	reimport spamikaze
+
+	* spamikaze/country.sql, spamikaze/spamikaze-pg.sql, spamikaze/spamikaze-sf.sql:
+	New file.
+
+	* spamikaze/country.sql, spamikaze/spamikaze-pg.sql, spamikaze/spamikaze-sf.sql:
+	reimport spamikaze
+
+	* API, COPYING, CREDITS, ChangeLog, ChangeLog-pre-version-0.1, INSTALL, README, TODO, TODO-database, p2p-design:
+	New file.
+
+	* API, COPYING, CREDITS, ChangeLog, ChangeLog-pre-version-0.1, INSTALL, README, TODO, TODO-database, p2p-design:
+	reimport spamikaze
+
 2004-02-08  army  <army@cleopatra>
 
 	* /home/CVS/spamikaze/spamikaze/config/config.ini.example:
@@ -12,7 +147,7 @@
 2004-02-01  riel  <riel@cleopatra>
 
 	* /home/CVS/spamikaze/TODO-database: 		Database reorganisation
-			$Id: ChangeLog,v 1.1 2004/03/20 19:46:11 riel Exp $
+			$Id: ChangeLog,v 1.2 2004/05/15 02:46:31 cor Exp $
 
 
 	In order to facilitate more flexible blocklisting, expiry, removal and
