@@ -67,8 +67,8 @@ sub main
                             "Database connection not made: $DBI::errstr";
                             
 	if ( $dbtype eq 'mysql' ) {
-        $sql = "SELECT DISTINCT CONCAT_WS('.',  octa, octb, octc, octd) AS ip
-                FROM spammers WHERE visible = 1 ORDER BY ip";
+        $sql = "SELECT CONCAT_WS('.', octa, octb, octc, octd) AS ip
+                FROM ipnumbers WHERE visible = 1 ORDER BY ip";
     	$sth = $dbh->prepare( $sql );
     	$sth->execute($ticks);
     	$sth->bind_columns( undef, \$ip);
@@ -87,7 +87,7 @@ sub main
     	}
     } elsif ( $dbtype eq 'Pg' ) {
         $sql = "SELECT DISTINCT octa, octb, octc, octd
-                FROM spammers WHERE visible = true
+                FROM ipnumbers WHERE visible = true
                 ORDER BY octa, octb, octc, octd";
     	$sth = $dbh->prepare( $sql );
     	$sth->execute($ticks);
