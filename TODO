@@ -7,6 +7,8 @@ Before next release:
   * add expire.pl to the tree if we all agree and alter 
     sendmail.pl and named.pl to only select on visible is true/1.
   * Fix the $_, this doesn't handle 0.x.x.x ipnumbers.
+  * Add whitelist mailserver table
+  * Add evidence table
 
 For later versions:
   * spamikaze website
