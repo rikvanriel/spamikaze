@@ -6,3 +6,7 @@ Name=
 Username=
 Password=
 
+[Mail]
+IgnoreRFC1918=1
+IgnoreBOGON=0
+BackupMX=
