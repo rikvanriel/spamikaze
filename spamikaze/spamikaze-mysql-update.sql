@@ -32,8 +32,8 @@ CREATE TABLE ipnumbers (
   octd smallint(6) NOT NULL default '0',
   visible tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (id),
-  UNIQUE KEY idx_ip (octa,octb,octc,octd),
-  UNIQUE KEY idx_ipuniq (octa,octb,octc,octd)
+  UNIQUE KEY idx_ipuniq (octa,octb,octc,octd),
+  KEY idx_visible(visible)
 ) TYPE=MyISAM;
 
 --
