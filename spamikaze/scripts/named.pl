@@ -20,6 +20,10 @@ unshift (@INC, "/home/webapps/spamikaze/spamikaze/spamikaze/scripts");
 unshift (@INC, "/opt/spamikaze/scripts");
 require Spamikaze;
 
+#
+# All configuration is done through the config file, /etc/spamikaze/config
+# or ~/.spamikaze/config
+#
 my $dnsbl_location = $Spamikaze::dnsbl_zone_file;
 my $dnsbl_url_base = $Spamikaze::dnsbl_url_base;
 my $ttl = $Spamikaze::dnsbl_ttl;
