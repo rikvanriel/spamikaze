@@ -11,10 +11,10 @@
 #     http://spamikaze.nl.linux.org/
 use strict;
 use warnings;
-
-unshift (@INC, "/home/webapps/spamikaze/spamikaze/spamikaze/scripts");
-unshift (@INC, "/opt/spamikaze/scripts");
-require Spamikaze;
+use FindBin;
+use lib "$FindBin::Bin";
+ 
+use Spamikaze;
 
 our @DONTEXPIRE = ('127.0.0.2');
 
