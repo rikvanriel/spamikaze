@@ -59,10 +59,10 @@ CREATE TABLE ipentries (
 
 CREATE TABLE ipnumbers (
   id int(11) NOT NULL auto_increment,
-  octa smallint(6) NOT NULL default '0',
-  octb smallint(6) NOT NULL default '0',
-  octc smallint(6) NOT NULL default '0',
-  octd smallint(6) NOT NULL default '0',
+  octa tinyint(3) unsigned NOT NULL default '0',
+  octb tinyint(3) unsigned NOT NULL default '0',
+  octc tinyint(3) unsigned NOT NULL default '0',
+  octd tinyint(3) unsigned NOT NULL default '0',
   visible tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (id),
   UNIQUE KEY idx_ipuniq (octa,octb,octc,octd),
