@@ -16,12 +16,6 @@ use CGI::Carp;
 
 unshift (@INC, "/opt/spamikaze/scripts");
 require Spamikaze;
-our $dbuser;
-our $dbpwd;
-our $dbbase;
-our $dbhost;
-our $dbport;
-our $dbtype;
 
 # the IP address broken down into octets
 my $octa;
@@ -30,6 +24,11 @@ my $octc;
 my $octd;
 
 my $q = new CGI;
+
+my $listname = 'Spamikaze example';
+if (defined $Spamikaze::web_listname) {
+	$listname = $Spamikaze::web_listname;
+}
 
 sub invalid
 {
@@ -58,35 +57,64 @@ sub invalid
 	return 1;
 }
 
-sub invalid_page
+sub write_page
 {
-	my ( $ip ) = @_;
-	print $q->header("text/html"),
-		$q->start_html("Invalid IP address specified"),
-		$q->h1("Invalid IP address specified"),
-		$q->p("Please <a href=\"/\">specify</a> a valid
-			 IP address, $ip does not work for me."),
-		$q->end_html;
+	my ( $ip, $body ) = @_;
+
+	print $q->header("text/html");
+	print $q->start_html("$listname listing info for $ip");
+
+	# print the page header, if defined
+	if (defined $Spamikaze::web_header and
+			 open HEADER, "<$Spamikaze::web_header") {
+		my $header = '';
+		while (<HEADER>) {
+			$header .= $_;
+		}
+		print $q->p($header);
+		close HEADER;
+	} else {
+		print $q->h1("$listname listing info");
+	}
+
+	print $q->p($body);
+
+	# print the footer, if defined
+	if (defined $Spamikaze::web_footer and
+			 open FOOTER, "<$Spamikaze::web_footer") {
+		my $footer = '';
+		while (<FOOTER>) {
+			$footer .= $_;
+		}
+		print $q->p($footer);
+		close FOOTER;
+	}
+
+	print $q->end_html;
 }
 
-sub example_page
+sub invalid_page_body
 {
 	my ( $ip ) = @_;
-	print $q->header("text/html"),
-		$q->start_html("Example IP address specified"),
-		$q->h1("Example IP address specified"),
-		$q->p("That's one of the example IP addresses. Please
-			<a href=\"/\">specify</a> the IP address
-			of your mail server.");
-		$q->end_html;
+	my $body = "Please <a href=\"/\">specify</a> a valid
+			 IP address, $ip does not work for me.";
+	return $body;
 }
 
-sub listing_page
+sub example_page_body
+{
+	my ( $ip ) = @_;
+	my $body = "That's one of the example IP addresses. Please
+		<a href=\"/\">specify</a> the IP address of your mail server.";
+	return $body;
+}
+
+sub listing_page_body
 {
 	my ( $ip, $foundinfo ) = @_;
 	my $body;
 	if ($foundinfo eq ' ') {
-		$body = "The host $ip has never been listed in PSBL";
+		$body = "The host $ip has never been listed in $listname";
 	} else {
 		$body = "Spam and removal history for $ip (times in UTC):\n" .
 			"<p><table border=\"1\">\n" . "$foundinfo" .
@@ -95,7 +123,7 @@ sub listing_page
 			"<a href=\"http://openrbl.org/lookup?i=$ip\">Openrbl" .
 			"</a> and " .
 			"<a href=\"http://groups.google.com/groups?scoring=d&q=$ip+group:*abuse*\">Google groups</a>.\n" .
-			"<FORM ACTION=\"/cgi-bin/remove.cgi\" METHOD=GET>\n" .
+			"<FORM ACTION=\"$Spamikaze::web_removalurl\" METHOD=GET>\n" .
 			"<INPUT TYPE=\"text\" NAME=\"ip\" VALUE=\"$ip\" " .
 			"SIZE=\"20\">\n" . "<INPUT TYPE=\"submit\" " .
 			"NAME=\"action\" VALUE=\"Remove IP\">\n" .
@@ -103,12 +131,7 @@ sub listing_page
 			"next time your mail server spams it will get\n" .
 			"listed again, so please do not spam.";
 	}
-	print $q->header("text/html"),
-		$q->start_html("Listing info for $ip"),
-		$q->h1("PSBL listing info"),
-		$q->p("$body"),
-		$q->p("Back to the <a href=\"/\">main page</a>."),
-		$q->end_html;
+	return $body;
 }
 
 sub grabinfo
@@ -170,6 +193,7 @@ sub grabinfo
 sub main
 {
 	my $time;
+	my $page_body;
 
 	$CGI::DISABLE_UPLOADS = 1;
 	$CGI::POST_MAX = 300;
@@ -178,12 +202,14 @@ sub main
 
 	# check if the IP address is valid
 	if ($ip eq '' || &invalid($ip)) {
-		&invalid_page($ip);
+		$page_body = &invalid_page_body($ip);
+		&write_page ($ip, $page_body);
 		exit;
 	}
 
 	if ($ip =~ /^127/) {
-		&example_page;
+		$page_body = &example_page_body;
+		&write_page ($ip, $page_body);
 		exit;
 	}
 
@@ -197,7 +223,8 @@ sub main
 				"<td>$iplog{$time}</td></tr>\n";
 	}
 
-	&listing_page($ip, $foundinfo);
+	$page_body = &listing_page_body($ip, $foundinfo);
+	&write_page ($ip, $page_body);
 }
 
 &main;

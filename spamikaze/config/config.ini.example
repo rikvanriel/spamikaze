@@ -36,3 +36,10 @@ UrlBase = http://spamikaze.example.com/listing?ip=
 TTL = 300
 PrimaryNS = ns.example.com
 SecondaryNSes = ns2.example.com ns.example.net
+
+[Web]
+Header = /var/www/htdocs/spamikaze/header.php
+Footer = /var/www/htdocs/spamikaze/footer.php
+ListName = Spamikaze-example
+ListingURL = /cgi-bin/listing.cgi
+RemovalURL = /cgi-bin/remove.cgi
