@@ -48,7 +48,7 @@ BEGIN {
 
 	my $cfg = new Config::IniFiles( -file => $configfile );
 
-	$dbhost = $cfg->val( 'Database', 'Node' );
+	$dbhost = $cfg->val( 'Database', 'Host' );
 	$dbport = $cfg->val( 'Database', 'Port' );
 	$dbtype = $cfg->val( 'Database', 'Type' );
 	$dbuser = $cfg->val( 'Database', 'Username' );
