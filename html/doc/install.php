@@ -20,7 +20,7 @@ the scripts, or somewhere else in perl's search path.
 <h2>Perl modules</h2>
 
 The basic Spamikaze configuration needs the following 3rd party perl
-modules: DBI, DBI:mysql (or DBI:pgsql if you use PostgreSQL), Config::IniFiles
+modules: DBI, DBD::mysql (or DBD::pgsql if you use PostgreSQL), Config::IniFiles
 and Net::DNS.  If your OS does not have these perl modules available as
 ready packages, they can be installed using the CPAN shell. As root,
 run the following command to enter the CPAN shell:
