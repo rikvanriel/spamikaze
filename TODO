@@ -24,5 +24,3 @@ For later versions:
 	* stop using system()
   * ...
 
-Wishlist:
-  * configuration in an ini-file in /etc/spamikaze/ or in ~/.spamikaze/
