@@ -49,7 +49,7 @@ sub main
     my $dbh = Spamikaze::DBConnect();
 
     my $sql = "SELECT
-                    COUNT(ipentries.id) AS total,
+                    COUNT(*) AS total,
                     octa, octb, octc, octd,
                     MAX(date_logged) AS spamtime
                FROM
@@ -58,7 +58,7 @@ sub main
                     ipnumbers.id = ipentries.id_ip AND
                     visible = 1
                GROUP BY octa, octb, octc, octd
-               ORDER BY date_logged ASC";
+               ORDER BY spamtime ASC";
 
     my $sth = $dbh->prepare( $sql );
     $sth->execute();
