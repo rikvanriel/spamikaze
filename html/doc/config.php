@@ -117,6 +117,7 @@ much longer TTL.
 allows people whose email bounced to visit the web page of the DNSBL.
 This way people can see why their mail servers got listed, and they
 have the ability to remove their mail server from the blocklist.
+For the IP address 192.0.2.3 the query results would look as this:
 
 <pre>
 $ host -t any 3.2.0.192.spamikaze.example.com
