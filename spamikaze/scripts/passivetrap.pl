@@ -178,17 +178,15 @@ sub process_mail
 sub process_dir
 {
 	my ( $dir ) = @_;
-	my $indir = "$dir/incoming";
 	my $count = 0;
 	my $file;
 
-	opendir INCOMING, "$indir" || die "$ARGV[-1] : can't opendir $indir\n";
+	opendir INCOMING, "$dir" || die "$ARGV[-1] : can't opendir $dir\n";
 	my @files = readdir INCOMING;
 	closedir INCOMING;
 	
 	foreach $file (@files) {
-		my $mailfile = "$indir/$file";
-		my $archived = "$dir/archive/$file";
+		my $mailfile = "$dir/$file";
 		my $email;
 
 		# skip directories and other non-files
@@ -205,8 +203,8 @@ sub process_dir
 		read MAIL, $email, 10000;
 		close MAIL;
 
-		if (!rename $mailfile, $archived) {
-			die "can't move $mailfile to $archived: $!\n";
+		if (!unlink $mailfile) {
+			die "cannot unlink $mailfile: $!\n";
 		}
 
 		&process_mail($email);
@@ -218,7 +216,6 @@ sub process_dir
 sub maildir_daemon
 {
 	my ( $dir ) = @_;
-	my $indir = "$dir/incoming";
 
 	chdir $dir || die "$ARGV[-1] : couldn't chdir to $dir\n";
 
