@@ -140,6 +140,7 @@ TTL = 300
 UrlBase = http://spamikaze.example.com/cgi-bin/listing?ip=
 PrimaryNS = ns.example.com
 SecondaryNSes = ns2.example.com ns.example.net
+</pre>
 
 <?php
   require("docmenu.inc.php");
