@@ -81,7 +81,8 @@ sub main
         }
         elsif (($total < $Spamikaze::maxspamperip) && (mxdontexpire($ip) < 1))
         {
-            $bonustime = $spamtime + ($Spamikaze::extratime * $total);
+            $bonustime = $spamtime + ($Spamikaze::extratime * $total) +
+			$Spamikaze::firsttime;
             if ($bonustime <= time()){
                 # print $total, "\t";
                 $sthexpire->execute($octa, $octb, $octc, $octd);
