@@ -11,7 +11,7 @@ CREATE TABLE "ipremove" (
   "octb"               smallint NOT NULL default '0',
   "octc"               smallint NOT NULL default '0',
   "octd"               smallint NOT NULL default '0',
-	primary key ("id")
+  primary key ("id")
 );
 
 CREATE INDEX idx_remove ON ipremove ( octa, octb, octc, octd );
@@ -25,16 +25,16 @@ CREATE TABLE "spammers" (
   "octc"               smallint NOT NULL default '0',
   "octd"               smallint NOT NULL default '0',
   "spamtime"           integer NOT NULL default '0',
-  "visible"            boolean NOT NULL default 'true',
-	primary key ("id")
+  "visible"            integer NOT NULL default '1',
+  primary key ("id")
 );
 
 CREATE INDEX idx_ip ON spammers ( octa, octb, octc, octd );
 
 CREATE TABLE "whitelist" (
   "id"                 bigserial,
-	"email"              varchar(100) NOT NULL default'',
-	primary key ("id")
+  "email"              varchar(100) NOT NULL default'',
+  primary key ("id")
 );
 
 CREATE UNIQUE INDEX idx_email ON whitelist ( email );
