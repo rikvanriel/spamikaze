@@ -17,6 +17,11 @@ a set of scripts that will not only block spam but will allow
 persons that get blocked to delist. This process is completely
 autmated and could be done by running their own RBL or mailserver.
 
+You can find more information on the Spamikaze web site:
+
+http://spamikaze.nl.linux.org/
+
+
 Software Requirements
 =====================
 Any *nix based box with the following software should be able to
