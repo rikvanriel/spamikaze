@@ -138,7 +138,7 @@ sub MXBackup {
 	# BOGON IP-address. The BOGON test includes RFC1918 test so
 	# we can ignore RFC1918 if we test for BOGON.
 	#
-	if ( $ignoreBOGON eq 'true' ) {
+	if ( $ignoreBOGON eq 'true' or $ignoreBOGON == 1) {
 
 		my $reversed_ip = $ip;
 		$reversed_ip =~ s/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/$4.$3.$2.$1/;
@@ -166,7 +166,7 @@ sub MXBackup {
 		}
 
 	}
-	elsif ( $ignoreRFC1918 eq 'true' ) {
+	elsif ( $ignoreRFC1918 eq 'true' or $ignoreRFC1918 == 1 ) {
 
 		foreach my $ipaddress (@RFC1918Addresses) {
 
