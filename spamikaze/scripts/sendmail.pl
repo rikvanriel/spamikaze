@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 
 # sendmail.pl
 #
@@ -9,12 +9,12 @@
 #
 # This file is part of the spamikaze project:
 #     http://spamikaze.nl.linux.org/
-
 use strict;
-unshift (@INC, "/path/spamikaze/");
-unshift (@INC, "/opt/spamikaze/scripts");
-
-require Spamikaze;
+use warnings;
+use FindBin;
+use lib "$FindBin::Bin";
+ 
+use Spamikaze;
 
 # $mta_bl_location  // Path and file of your blocklist.
 # $mta_bl_template  // Template string for the blocklist.

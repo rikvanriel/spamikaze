@@ -15,10 +15,10 @@
 # generates a plain text file with IP addresses from the spamikaze database
 use strict;
 use warnings;
-
-unshift (@INC, "/home/webapps/spamikaze/spamikaze/spamikaze/scripts");
-unshift (@INC, "/opt/spamikaze/scripts");
-require Spamikaze;
+use FindBin;
+use lib "$FindBin::Bin";
+ 
+use Spamikaze;
 
 sub usage {
 	print "text.pl <file>\n";

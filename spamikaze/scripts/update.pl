@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 
 # update.pl
 # Read the TODO-database before your run this.
@@ -10,12 +10,11 @@
 #
 # This file is part of the spamikaze project:
 #     http://spamikaze.nl.linux.org/
-
 use strict;
-
-unshift (@INC, "/home/sys_scripts/");
-unshift (@INC, "/opt/spamikaze/scripts");
-
+use warnings;
+use FindBin;
+use lib "$FindBin::Bin";
+ 
 use Spamikaze;
 my $dbh = Spamikaze::DBConnect;
 
