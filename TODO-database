@@ -1,6 +1,4 @@
 		Database reorganisation
-		$Id: TODO-database,v 1.2 2004/04/17 01:34:53 riel Exp $
-
 
 In order to facilitate more flexible blocklisting, expiry, removal and
 whitelisting policies, a database redesign is necessary.  Before we can
@@ -26,6 +24,7 @@ CREATE TABLE ipnumbers (
   octb smallint(6) NOT NULL default '0',
   octc smallint(6) NOT NULL default '0',
   octd smallint(6) NOT NULL default '0',
+  visible tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (id),
   UNIQUE KEY idx_ip (octa,octb,octc,octd)
 );
@@ -38,10 +37,12 @@ CREATE TABLE subjects (
 );
 
 
-To take the IP addresses from the (old) spammers table and put them
-into the ipnumbers table, use the following command (MySQL); the
-IGNORE is needed in some versions of mysql because otherwise it will
-return an error on the first duplicate encountered, instead of
-discarding the duplicates like we want.
+I (Hans W) am working on the update script that will populate the
+new tables mentioned above. Currently it will collect all the unique
+ip numbers from the old spammers table and store them in ipnumbers.
 
-INSERT IGNORE INTO ipnumbers (octa, octb, octc, octd) select octa, octb, octc, octd FROM spammers;
+There is a small problem with this script since it will not add all
+the timestamp entries to the ipentries table. Once it will I will add 
+it to the cvs.
+
+
