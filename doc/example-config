@@ -11,3 +11,13 @@ BackupMX 	= 82.92.92.64 212.204.245.220
 IgnoreBOGON	= true
 IgnoreRFC1918	= true
 
+[BIND]
+Domain          = rbl.spamikaze.localdomain
+Zonefile        = /etc/bind/db.rbl.spamikaze.localdomain
+MasterNS        = ns0.localdomain
+SlaveNS         = ns1.localdomain ns2.localdomain
+ContactEmail    = spamikaze.localdomain
+ContactTXT      = http://spamikaze.yourdomain.tld/listing.php
+Response        = 127.0.0.2
+TTL             = 300
+
