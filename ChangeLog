@@ -1,3 +1,48 @@
+2005-02-06  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/smtperror-exim:
+	Recognise all of these formats of error message, instead of just the
+	first one:
+
+	2005-02-06 11:12:00 SMTP protocol violation: synchronization error (input sent without waiting for greeting): rejected connection from H=[80.51.119.253]
+
+	2005-02-06 11:11:38 SMTP protocol violation: synchronization error (next input sent too soon): rejected "Mail From: <reichbloom@yahoo.com>" H=(localhost) [217.153.19.27] next input="Rcpt To: <dmitri_3@SPAMTRAPDOMAIN>\r\n"
+
+	2005-02-06 11:12:00 SMTP protocol violation: synchronization error (next input sent too soon): rejected "HELO localhost" H=[217.238.99.186] next input="Mail From: <jackson@yahoo.com>\r\n"
+
+	* spamikaze/scripts/rbldnsd.pl, spamikaze/scripts/smtperror-exim:
+	script that checks for SMTP protocol violations and blocklists those hosts
+
+2005-01-28  Cor Gest  <cor@humbolt.nl.linux.org>
+
+	* ChangeLog: ChangeLog Updated
+
+2004-12-11  Rik van Riel  <riel@humbolt>
+
+	* TODO: diff -u -d -u -r1.16 TODO
+	--- TODO	11 Jul 2004 21:00:03 -0000	1.16
+	+++ TODO	11 Dec 2004 21:20:08 -0000
+	@@ -2,16 +2,11 @@
+
+
+	 Before next release:
+	-  * review the documentation for completeness and skip some of the older
+	-    parts where users need to include the correct path.
+	-  * test the current cvs tree on different machines.
+	-  * make sure database handlers are closed to make sure it will not
+	-    barf out rollbacks (older perl versions).
+	+  * integrate the postgres code by devdas
+	+  * add similar mysql code modularisation
+	+  * integrate query statistics
+
+	 For later versions:
+	-  * Add whitelist mailserver table
+	-  * Add whitelist zone file so more then one mailservers can use it
+	-    within a company/org.
+	   * Add evidence table
+	   * the perl scripts in cgi-bin should be able to do the same as there
+	     php ones.
+
 2004-12-11  Rik van Riel  <riel@humbolt>
 
 	* TODO: diff -u -d -u -r1.16 TODO
