@@ -1,0 +1,16 @@
+	Release Notes for Spamikaze 0.2 beta
+
+- Most scripts can be configured using the configuration file,
+  /etc/spamikaze/config
+- There is some documentation, available on the spamikaze web site:
+  http://spamikaze.nl.linux.org/doc/
+- Expiry policy is more flexible now.
+- New database layout, with better performance and better future
+  extensibility.
+- Source code cleanups left and right.
+- Postgresql support is BROKEN in version 0.2, mysql works though...
+
+	Release Notes for Spamikaze 0.1
+
+- Proof of concept implementation.
+- All scripts need to be configured by hand.
