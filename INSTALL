@@ -1,6 +1,20 @@
 MySQL
 -----
 
+Important. If you are updating from the previous version of Spamikaze
+the please read the following. If not then move on to the install part 
+of this document.
+
+Update Spamikaze
+----------------
+
+
+
+
+
+Install Spamikaze
+-----------------
+
 We are assuming you already have mysql installed and running. If not
 then please get a version for your OS and install it with the guide-
 lines of that package.
@@ -36,7 +50,7 @@ mysql> FLUSH PRIVILEGES;
 The last thing to do with mysql is read the spamikaze-sf.sql into the newly
 created database.
 
-    mysql -u root -p spamikaze < /path/spamikaze-sf.sql
+    mysql -u root -p spamikaze < /path/spamikaze-mysql.sql
 
 Again you will be prompted for a password, enter it.
 
