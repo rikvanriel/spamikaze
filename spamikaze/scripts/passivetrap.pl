@@ -26,16 +26,16 @@ sub from_daemon
 		return 0;
 	}
 
-	if ($mail =~ /^From:?\s+\<\>/mg) {
+	if ($mail =~ /^From:?\s+\<\>/m) {
 		return 1;
 	}
-	if ($mail =~ /^Return-Path:?\s+\<\>/mg) {
+	if ($mail =~ /^Return-Path:?\s+\<\>/mi) {
 		return 1;
 	}
-	if ($mail =~ /^From:?\s+\<?MAILER.DAEMON/mgi) {
+	if ($mail =~ /^From:?\s+\<?MAILER.DAEMON/mi) {
 		return 1;
 	}
-	if ($mail =~ /^From:\s+\<?postmaster/mgi) {
+	if ($mail =~ /^From:\s+\<?postmaster/mi) {
 		return 1;
 	}
 
