@@ -1,4 +1,4 @@
-#!/usr/bin/perl -wT
+#!/usr/bin/perl
 
 # passivetrap.pl
 #
@@ -12,10 +12,11 @@
 # This file is part of the spamikaze project:
 #     http://spamikaze.nl.linux.org/
 use strict;
+use warnings;
+use FindBin;
+use lib "$FindBin::Bin";
 
-unshift (@INC,"/home/webapps/spamikaze/spamikaze/spamikaze/scripts");
-unshift (@INC, "/opt/spamikaze/scripts");
-require Spamikaze;
+use Spamikaze;
 
 sub from_daemon
 {
@@ -147,6 +148,3 @@ sub main
 }
 
 &main;
-
-# get rid of stupid compiler warning
-my $nowarn = $Spamikaze::ignorebounces;
