@@ -17,27 +17,11 @@ use strict;
 # unshift the path where passivetrap.pl and
 # config.pl is located on the @INC.
 
-unshift (@INC,"/path/spamikaze/");
+unshift (@INC,"/path/to/modules");
 
 # Use the new pm, this will load the config.pl and
 # set the variables for the db.
-use Spamikaze;
-
-our @MXBACKUP;
-
-sub mxbackup
-{
-	my ( $ip ) = @_;
-	my $mxhosts;
-
-	foreach $mxhosts (@MXBACKUP) {
-		if ($ip =~ /^$mxhosts/) {
-			# print "mx backup: $ip\n";
-			return 1;
-		}
-	}
-	return 0;
-}
+require Spamikaze;
 
 sub from_daemon
 {
@@ -80,7 +64,7 @@ sub storeip
                         
     # Set the dbh from the new pm.
 
-    my $dbh         = Spamikaze::DBConnect;
+    my $dbh         = Spamikaze::DBConnect();
 
     unless ($#iplist == 3) {
 	$error = 1;
@@ -117,7 +101,7 @@ sub main
 
 	while ($mail =~ /Received:(.*?)(?=\n\w)/sg) {
 		my $ip = parsereceived($1);
-		if ($ip && !mxbackup($ip)) {
+		if ($ip && !Spamikaze::MXBackup($ip) ) {
 			storeip($ip);
 			print "$ip\n";
 			exit 0;
