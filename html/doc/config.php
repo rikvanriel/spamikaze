@@ -65,6 +65,8 @@ addresses of all your incoming mail servers (including servers that forward
 mail to you), otherwise there is a chance of Spamikaze blocklisting your
 own mail servers. Make sure this list is complete!
 
+<p>Example:
+
 <pre>
 [Mail]
 IgnoreRFC1918 = 1
@@ -84,6 +86,8 @@ for 3 times ExtraTime, measured from the last spam that arrived.
 the spam traps, it will not be expired from the list automatically;
 in order to remove the IP address from the list, somebody will have
 to request removal using the web interface.
+
+<p>Example:
 
 <pre>
 [Expire]
@@ -125,6 +129,8 @@ $
 variables are used to specify the name servers for your Spamikaze zone.
 The <tt>PrimaryNS</tt> keyword is also used in the construction of
 the zone's SOA record.
+
+<p>Example:
 
 <pre>
 [DNSBL]
