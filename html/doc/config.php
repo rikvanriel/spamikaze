@@ -101,7 +101,7 @@ to request removal using the web interface.
 <pre>
 [Expire]
 FirstTime = 168
-ExtraTime = 336
+ExtraTime = 24
 MaxSpamPerIp = 100
 </pre>
 
