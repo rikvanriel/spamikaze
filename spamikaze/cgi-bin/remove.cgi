@@ -124,7 +124,7 @@ sub remove_from_db
                          $dbuser, $dbpwd, { RaiseError => 1 }) || die
                          "Database connection not made\n";
                          
-	my $sql = "UPDATE spammers SET visible = 0 WHERE
+	my $sql = "UPDATE ipnumbers SET visible = 0 WHERE
 			octa = ? AND
 			octb = ? AND
 			octc = ? AND
