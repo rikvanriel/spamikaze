@@ -72,7 +72,7 @@ sub insertnew(){
     $a =  $_[0];
     $b =  $_[1];
 
-    my $sql = "INSERT INTO ipentries
+    my $sql = "INSERT IGNORE INTO ipentries
                (date_logged, id_ip) VALUES
                ( ?, ? )";
 
