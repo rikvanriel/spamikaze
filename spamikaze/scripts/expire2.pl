@@ -11,7 +11,7 @@ unshift (@INC, "/home/webapps/spamikaze/spamikaze/spamikaze/scripts");
 unshift (@INC, "/opt/spamikaze/scripts");
 require Spamikaze;
 
-our @DONTEXPIRE;
+our @DONTEXPIRE = ('127.0.0.2');
 
 my $bonustime;
 
