@@ -125,7 +125,7 @@ sub storeip
 
 }
 
-sub main
+sub stdin_mail
 {
 	my $mail;
 
@@ -145,6 +145,32 @@ sub main
 		}
 	}
 
+}
+
+sub maildir_daemon
+{
+	print "passivetrap maildir daemon mode not implemented yet\n";
+	print "wait for the next commit...\n";
+	exit 1;
+}
+
+sub main
+{
+	# Take email from standard input if no arguments specified;
+	# this way passivetrap stays compatible with the last version.
+	if ($#ARGV == -1) {
+		&stdin_mail();
+	}
+
+	# If we're called with the -d argument, process data from a
+	# maildir, which is basically our spool directory.
+	if ($ARGV[0] eq '-d') {
+		&maildir_daemon();
+	}
+
+	print "usage: /path/to/passivetrap.pl [ -d ]\n";
+	print "see also http://spamikaze.nl.linux.org/doc/\n";
+	exit 1;
 }
 
 &main;
