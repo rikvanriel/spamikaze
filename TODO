@@ -24,5 +24,7 @@ For later versions:
 	* getcountries.pl
 	* statscountry.pl
 	* stop using system()
-  * ...
+
+Wishlist:
+* Templating for the webinterface
 
