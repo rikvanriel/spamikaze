@@ -20,6 +20,25 @@ require Spamikaze;
 sub from_daemon
 {
 	my ( $mail ) = @_;
+	my $ignorebounces = $Spamikaze::ignorebounces;
+
+	unless ($ignorebounces eq 'true' or $ignorebounces == 1) {
+		return 0;
+	}
+
+	if ($mail =~ /^From:?\s+\<\>/mg) {
+		return 1;
+	}
+	if ($mail =~ /^Return-Path:?\s+\<\>/mg) {
+		return 1;
+	}
+	if ($mail =~ /^From:\s+\<?MAILER.DAEMON/mgi) {
+		return 1;
+	}
+	if ($mail =~ /^From:\s+\<?postmaster/mgi) {
+		return 1;
+	}
+
 	return 0;
 }
 
@@ -128,3 +147,6 @@ sub main
 }
 
 &main;
+
+# get rid of stupid compiler warning
+my $nowarn = $Spamikaze::ignorebounces;
