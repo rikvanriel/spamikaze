@@ -8,15 +8,14 @@ Before next release:
     sendmail.pl and named.pl to only select on visible is true/1.
   * Fix the $_, this doesn't handle 0.x.x.x ipnumbers.
   * Add whitelist mailserver table
-  * Add evidence table
   * make sure cgi apps can run on various sites without modification
     (include header & footer, specified by config file)
   * optionally, make spamikaze ignore (RFC compliant) bounce messages
 
 For later versions:
-  * spamikaze website
   * the perl scripts in cgi-bin should be able to do the same as there 
     php ones.
+  * Add evidence table
   * sharing IP addresses with multiple spamikaze lists
   * recognise mailing list and mailer daemon messages, do not
     lists hosts sending those
