@@ -2,8 +2,11 @@
 
 
 Before next release:
-  * review the documentation for completeness
+  * review the documentation for completeness and skip some of the older
+    parts where users need to include the correct path.
   * test the current cvs tree on different machines.
+  * make sure database handlers are closed to make sure it will not 
+    barf out rollbacks (older perl versions).
 
 For later versions:
   * Add whitelist mailserver table
