@@ -62,7 +62,7 @@ Once this is done you only need to flush the privileges:
 
 mysql> FLUSH PRIVILEGES;
 
-The last thing to do with mysql is read the spamikaze-sf.sql into the newly
+The last thing to do with mysql is read the spamikaze.sql into the newly
 created database.
 
     mysql -u root -p spamikaze < /path/spamikaze-mysql.sql
