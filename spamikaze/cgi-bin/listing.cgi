@@ -115,7 +115,11 @@ sub listing_page_body
 	my ( $ip, $foundinfo ) = @_;
 	my $body;
 	if ($foundinfo eq ' ') {
-		$body = "The host $ip has never been listed in $listname";
+		$body = "The host $ip has never been listed in $listname. " .
+			"Maybe you are looking at the wrong blocklist? " .
+			"You may want to visit " .
+			"<a href=\"http://openrbl.org/lookup?i=$ip\">Openrbl" .
+			"</a> to check the other blocklists.";
 	} else {
 		$body = "Spam and removal history for $ip (times in UTC):\n" .
 			"<p><table border=\"1\">\n" . "$foundinfo" .
