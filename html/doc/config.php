@@ -57,6 +57,12 @@ rogue ISPs announce addresses from these network ranges, for the purpose
 of sending out spam. Whether or not you want to ignore these addresses
 depends on taste.
 
+<p>If <tt>IgnoreBounces</tt> is set, Spamikaze will ignore messages that
+look like bounces. This should help reduce the false positives on a general
+purpose Spamikaze DNSBL.  However, since spam bounces can be very abusive
+if received in big quantities, some people may want to switch this option
+off and block hosts sending out bounces...
+
 <p>By far the most important option in this section of the Spamikaze
 configuration file is <tt>BackupMX</tt>, which indicates exactly which
 IP addresses are your MX servers.  Spamikaze will never blocklist any
@@ -71,6 +77,7 @@ own mail servers. Make sure this list is complete!
 [Mail]
 IgnoreRFC1918 = 1
 IgnoreBOGON = 0
+IgnoreBounces = 1
 BackupMX = 192\.0\.2\.1 192\.0\.2\.13
 </pre>
 
