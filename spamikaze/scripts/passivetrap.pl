@@ -97,7 +97,7 @@ sub main
 
 	if (&from_daemon($mail)) {
 		print "from daemon\n";
-		exit 1;
+		exit 0;
 	}
 
 	while ($mail =~ /Received:(.*?)(?=\n\w)/sg) {
