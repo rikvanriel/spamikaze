@@ -89,9 +89,7 @@ sub main {
 
 	$sth->finish();
 
-	if ( !rename "$outfile.new", "$outfile" ) {
-		warn "rename $outfile.new to $outfile failed: $!\n";
-	}
+	rename("$outfile.new", "$outfile" );
 
 }
 
