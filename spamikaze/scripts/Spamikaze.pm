@@ -27,7 +27,6 @@ my $dbport;
 my $dbtype;
 my $dbhost;
 my @MXBACKUP;
-my $ignoreBOGON;
 my $ignoreRFC1918;
 our $ignorebounces;
 our @whitelist_zones;
@@ -91,7 +90,6 @@ BEGIN {
 	@MXBACKUP = split ( ' ', $cfg->val( 'Mail', 'BackupMX' ) );
 	@whitelist_zones = split ( ' ', $cfg->val ( 'Mail', 'WhitelistZones' ) );
 	$ignoreRFC1918 = $cfg->val( 'Mail', 'IgnoreRFC1918' );
-	$ignoreBOGON   = $cfg->val( 'Mail', 'IgnoreBOGON' );
 	$ignorebounces = $cfg->val( 'Mail', 'IgnoreBounces' );
 
 	$firsttime = $cfg->val ( 'Expire', 'FirstTime' );
@@ -152,40 +150,7 @@ sub MXBackup {
 
 	}
 
-	#
-	# Check if the spammer doesn't somehow managed to send from a
-	# BOGON IP-address. The BOGON test includes RFC1918 test so
-	# we can ignore RFC1918 if we test for BOGON.
-	#
-	if ( $ignoreBOGON eq 'true' or $ignoreBOGON == 1) {
-
-		my $reversed_ip = $ip;
-		$reversed_ip =~ s/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/$4.$3.$2.$1/;
-		my $resolver = Net::DNS::Resolver->new;
-		my $query    = $resolver->search("$reversed_ip.bogons.cymru.com.");
-
-		if ($query) {
-
-			foreach my $rr ( $query->answer ) {
-
-				next unless $rr->type eq "A";
-				return 1;
-
-			}
-
-		}
-		else {
-
-			if ( !$resolver->errorstring =~ /NXDOMAIN/ ) {
-
-				warn "query failed: ", $resolver->errorstring, "\n";
-
-			}
-
-		}
-
-	}
-	elsif ( $ignoreRFC1918 eq 'true' or $ignoreRFC1918 == 1 ) {
+	if ( $ignoreRFC1918 eq 'true' or $ignoreRFC1918 == 1 ) {
 
 		foreach my $ipaddress (@RFC1918Addresses) {
 
