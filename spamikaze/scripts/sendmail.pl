@@ -14,7 +14,8 @@ use strict;
 unshift (@INC, "/path/spamikaze/");
 unshift (@INC, "/opt/spamikaze/scripts");
 
-# $ticks            // Unix timestamp ticks.
+require Spamikaze;
+
 # $mta_bl_location  // Path and file of your blocklist.
 # $mta_bl_template  // Template string for the blocklist.
 
@@ -27,14 +28,14 @@ sub main
     my $ip;
     my $email;
 
-    my $dbh = Spamikaze::DBConnect;
+    my $dbh = Spamikaze::DBConnect();
 
     my $sql = "SELECT DISTINCT CONCAT_WS('.',  octa, octb, octc, octd) AS ip
                FROM spammers WHERE visible = 1 ORDER BY octa, octb, octc, octd";
 
     my $sth = $dbh->prepare( $sql );
 
-    $sth->execute($ticks);
+    $sth->execute();
     $sth->bind_columns( undef, \$ip);
 
     open(fileOUT, ">$mta_bl_location")
