@@ -18,6 +18,35 @@ but it really doesn't matter where they are.  The perl module
 path, or in /opt/spamikaze/scripts.  Currently there is no installation
 script that does this automatically.
 
+<h2>Perl modules</h2>
+
+The basic Spamikaze configuration needs the following 3rd party perl
+modules: DBI, DBI:mysql (or DBI:pgsql if you use PostgreSQL), Config::IniFiles
+and Net::DNS.  If your OS does not have these perl modules available as
+ready packages, they can be installed using the CPAN shell. As root,
+run the following command to enter the CPAN shell:
+
+<p><tt>
+# perl -MCPAN -e 'shell'
+</tt>
+
+<p>If this is the first time you are using CPAN, you will need to answer
+a number of questions in order to configure the software.  If you need
+help, you can find documentation on
+<a href="http://www.cpan.org/">http://www.cpan.org/</a>. Once CPAN is
+configured, you can install the needed perl modules with the following
+commands:
+
+<p><tt>
+cpan&gt; install DBI;
+cpan&gt; install DBI::mysql;
+cpan&gt; install Config::IniFiles;
+cpan&gt; install Net::DNS;
+</tt>
+
+If these modules need other modules to work, and CPAN asks you whether
+or not to install the dependencies, answer yes.
+
 <h2>Database</h2>
 
 This document assumes that you are using the MySQL database. PostgreSQL
