@@ -16,10 +16,10 @@
 # from a cronjob every few minutes so removals from the list are fast
 use strict;
 use warnings;
+use FindBin;
+use lib "$FindBin::Bin";
 
-unshift (@INC, "/home/webapps/spamikaze/spamikaze/spamikaze/scripts");
-unshift (@INC, "/opt/spamikaze/scripts");
-require Spamikaze;
+use Spamikaze;
 
 #
 # All configuration is done through the config file, /etc/spamikaze/config
@@ -138,11 +138,3 @@ sub main {
 }
 
 &main;
-
-# get rid of stupid "used only once" warnings
-my $nowarn = $Spamikaze::dnsbl_ttl;
-$nowarn = $Spamikaze::dnsbl_secondary_nses;
-$nowarn = $Spamikaze::dnsbl_url_base;
-$nowarn = $Spamikaze::dnsbl_domain;
-$nowarn = $Spamikaze::dnsbl_primary_ns;
-$nowarn = $Spamikaze::dnsbl_zone_file;
