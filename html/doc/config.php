@@ -50,13 +50,6 @@ skip over local network addresses when searching the Received: headers for
 the IP address to blocklist; leave this option on unless you know what
 you are doing. 
 
-<p>The <tt>IgnoreBOGON</tt> option does the same for network
-addresses in unassigned (bogus) ranges.  These network ranges should not
-be on the internet, so these IP addresses are often forged; however sometimes
-rogue ISPs announce addresses from these network ranges, for the purpose
-of sending out spam. Whether or not you want to ignore these addresses
-depends on taste.
-
 <p>If <tt>IgnoreBounces</tt> is set, Spamikaze will ignore messages that
 look like bounces. This should help reduce the false positives on a general
 purpose Spamikaze DNSBL.  However, since spam bounces can be very abusive
@@ -71,14 +64,22 @@ addresses of all your incoming mail servers (including servers that forward
 mail to you), otherwise there is a chance of Spamikaze blocklisting your
 own mail servers. Make sure this list is complete!
 
+<p>In order to prevent Spamikaze from listing other high volume mail servers,
+which would lead to too many false positives, you can configure Spamikaze
+to use a number of whitelists, using the <tt>WhitelistZones</tt> config
+option.  At spam parsing time, passivetrap will query the configured
+whitelists and skip the listing of any IP addresses encountered in such
+whitelists, in exactly the same way it skips IP addresses specified in
+the <tt>BackupMX</tt> config option.
+
 <p>Example:
 
 <pre>
 [Mail]
 IgnoreRFC1918 = 1
-IgnoreBOGON = 0
 IgnoreBounces = 1
 BackupMX = 192\.0\.2\.1 192\.0\.2\.13
+WhitelistZones = whitelist.example.tld whitelist.somewhere.else
 </pre>
 
 <h2>[Expire]</h2>
