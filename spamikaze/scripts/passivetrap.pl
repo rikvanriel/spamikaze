@@ -130,7 +130,6 @@ sub process_mail
 	my ( $mail ) = @_;
 
 	if (&from_daemon($mail)) {
-		print "from daemon\n";
 		return 0;
 	}
 
@@ -138,7 +137,6 @@ sub process_mail
 		my $ip = parsereceived($1);
 		if ($ip && !Spamikaze::MXBackup($ip) ) {
 			storeip($ip);
-			print "$ip\n";
 			return 1;
 		}
 	}
@@ -146,12 +144,52 @@ sub process_mail
 	return 0;
 }
 
+sub process_dir
+{
+	my ( $dir ) = @_;
+	my $indir = "$dir/incoming";
+	my $count = 0;
+	my $file;
+
+	opendir INCOMING, "$indir" || die "$ARGV[-1] : can't opendir $indir\n";
+	my @files = readdir INCOMING;
+	closedir INCOMING;
+	
+	foreach $file (@files) {
+		my $mailfile = "$indir/$file";
+		my $archived = "$dir/archive/$file";
+		my $email;
+
+		# skip directories and other non-files
+		unless (-f $mailfile) {
+			next;
+		}
+
+		open MAIL, "<$mailfile";
+		read MAIL, $email, 10000;
+		close MAIL;
+
+		if (!rename $mailfile, $archived) {
+			die "can't move $mailfile to $archived: $!\n";
+		}
+
+		&process_mail($email);
+		$count++;
+	}
+	return $count;
+}
+
 sub maildir_daemon
 {
 	my ( $dir ) = @_;
-	chdir $dir || die "$ARGV[-1] : couldn't chdir to $dir...\n";
+	my $indir = "$dir/incoming";
 
-	print "maildir mode still not implemented...\n";
+	chdir $dir || die "$ARGV[-1] : couldn't chdir to $dir\n";
+
+	while (1) {
+		my $count = &process_dir($dir);
+		sleep 3;
+	}
 	exit 1;
 }
 
