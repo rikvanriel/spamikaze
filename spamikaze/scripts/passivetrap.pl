@@ -165,6 +165,11 @@ sub process_dir
 			next;
 		}
 
+		# skip temporary files the MTA isn't ready with yet
+		if ($mailfile =~ /^te?mp/ or $mailfile =~ /^\./) {
+			next;
+		}
+
 		open MAIL, "<$mailfile";
 		read MAIL, $email, 10000;
 		close MAIL;
