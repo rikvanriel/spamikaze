@@ -51,8 +51,8 @@ sub received_to_ip_zmailer
 		return $1;
 	} elsif ($rcvd =~ /\[IPv6:((3ffe|2001|2002)(:[\da-f]{0,4}){3,7})/ig) {
 		return $1;
-    } elsif ($rcvd =~ /(\d{1,3}(\.\d{1,3}){3})/g) {
-        return $1;
+	} elsif ($rcvd =~ /(\d{1,3}(\.\d{1,3}){3})/g) {
+		return $1;
 	} else {
 		return '';
 	}
@@ -172,7 +172,7 @@ sub process_dir
 			next;
 		}
 
-		open MAIL, "<$mailfile";
+		open MAIL, "<$mailfile" or next;
 		read MAIL, $email, 10000;
 		close MAIL;
 
