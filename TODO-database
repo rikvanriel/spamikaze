@@ -1,5 +1,5 @@
 		Database reorganisation
-		$Id: TODO-database,v 1.1 2004/03/20 19:46:11 riel Exp $
+		$Id: TODO-database,v 1.2 2004/04/17 01:34:53 riel Exp $
 
 
 In order to facilitate more flexible blocklisting, expiry, removal and
@@ -7,30 +7,41 @@ whitelisting policies, a database redesign is necessary.  Before we can
 come up with such a new design, however, we should think about exactly
 what we want to store in the database.
 
-If you have ideas for other things that need to be stored, please email
-spamikaze@nl.linux.org or commit your idea to the list below.
+The new database layout will look something like this:
 
-Data to store:
-- IP address of spam sending host
-- time each spam arrived
-- time of each IP address removal
-- number of spams received from each IP address
-- number of spams received from each IP address since last removal
-- time the IP address will automatically expire from the database,
-  calculated by the listing&expiry policy at the time the spam is
-  received
-- first characters of the subject of the spam (small enough to avoid
-  most unique tokens, 30 chars?)
-- storing headers from active ip's that are being blacklisted
-- email addresses to whitelist
-- ip addresses to whitelist
-- number of IP addresses listed, per /24 (updated at listing and
-  unlisting time, used for easy block escalation)
-- same for /16 and /8 blocks, but for statistics only
-- maybe also support for cidr networkranges
-- the country each IP address is in, for statistics
-- the host name (from reverse DNS) for each IP address, for statistics
-  and per-domain queries
+CREATE TABLE ipentries (
+  id int(11) NOT NULL auto_increment,
+  date_received timestamp(14) NOT NULL,
+  date_logged timestamp(14) NOT NULL,
+  date_mail timestamp(14) NOT NULL,
+  id_subject int(11) NOT NULL default '0',
+  id_ip int(11) NOT NULL default '0',
+  PRIMARY KEY  (id),
+  UNIQUE KEY idx_spamentry (date_received,date_logged,date_mail)
+);
+ 
+CREATE TABLE ipnumbers (
+  id int(11) NOT NULL auto_increment,
+  octa smallint(6) NOT NULL default '0',
+  octb smallint(6) NOT NULL default '0',
+  octc smallint(6) NOT NULL default '0',
+  octd smallint(6) NOT NULL default '0',
+  PRIMARY KEY  (id),
+  UNIQUE KEY idx_ip (octa,octb,octc,octd)
+);
+ 
+CREATE TABLE subjects (
+  id int(11) NOT NULL auto_increment,
+  subject varchar(150) NOT NULL default '',
+  PRIMARY KEY  (id),
+  UNIQUE KEY idx_subject (subject)
+);
 
-The design of the database tables should be done once we have the
-requirements, or maybe earlier if the new design is flexible enough ;)
+
+To take the IP addresses from the (old) spammers table and put them
+into the ipnumbers table, use the following command (MySQL); the
+IGNORE is needed in some versions of mysql because otherwise it will
+return an error on the first duplicate encountered, instead of
+discarding the duplicates like we want.
+
+INSERT IGNORE INTO ipnumbers (octa, octb, octc, octd) select octa, octb, octc, octd FROM spammers;
