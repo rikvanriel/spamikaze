@@ -1,5 +1,5 @@
-#!/usr/bin/perl -T
-#
+#!/usr/bin/perl 
+
 # named.pl
 #
 # Copyright (C) 2003 Hans Wolters <h-wolters@nl.linux.org>
@@ -10,15 +10,16 @@
 # NO WARRANTY, see the file COPYING for details.
 #
 # This file is part of the spamikaze project:
-#        http://spamikaze.surriel.com/
+#        http://spamikaze.nl.linux.org/
 #
 # generates named zone files from the spamikaze database, run this
 # from a cronjob every few minutes so removals from the list are fast
 use strict;
+use warnings;
 
 unshift (@INC, "/home/webapps/spamikaze/spamikaze/spamikaze/scripts");
 unshift (@INC, "/opt/spamikaze/scripts");
-require Spamikaze;
+use Spamikaze;
 
 #
 # All configuration is done through the config file, /etc/spamikaze/config

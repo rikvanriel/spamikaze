@@ -1,7 +1,16 @@
-#   Spamikaze.pm
-#   copyright 2003 Hans Wolters (h-wolters@nl.linux.org)
-#   copyright 2004 Hans Spaans  (cj.spaans@nexit.nl)
-#   <insert GPL 2 or later in here>
+# Spamikaze.pm
+#
+# Copyright (C) 2003 Hans Wolters <h-wolters@nl.linux.org>
+# Copyright (C) 2004 Hans Spaans  <cj.spaans@nexit.nl>
+# Copyright (C) 2004 Rik van Riel <riel@surriel.com>
+#
+# Released under the GNU GPL
+#
+# NO WARRANTY, see the file COPYING for details.
+#
+# This file is part of the spamikaze project:
+#     http://spamikaze.nl.linux.org/
+
 
 package Spamikaze;
 use strict;

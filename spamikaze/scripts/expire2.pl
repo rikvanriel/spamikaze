@@ -1,9 +1,14 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 
-#   expire.pl
-#   copyright 2003 Hans Wolters (h-wolters@nl.linux.org)
-#   <insert GPL 2 or later in here>
-
+# expire.pl
+#
+# Copyright (C) 2003 Hans Wolters <h-wolters@nl.linux.org>
+# Released under the GNU GPL
+#
+# NO WARRANTY, see the file COPYING for details.
+#
+# This file is part of the spamikaze project:
+#     http://spamikaze.nl.linux.org/
 use strict;
 use warnings;
 

@@ -1,8 +1,15 @@
 #!/usr/bin/perl -w
-#   update.pl
-#   Read the TODO-database before your run this.
-#   copyright 2003 Hans Wolters (h-wolters@nl.linux.org)
-#   <insert GPL 2 or later in here>
+
+# update.pl
+# Read the TODO-database before your run this.
+#
+# Copyright (C) 2003 Hans Wolters <h-wolters@nl.linux.org>
+# Released under the GNU GPL
+#
+# NO WARRANTY, see the file COPYING for details.
+#
+# This file is part of the spamikaze project:
+#     http://spamikaze.nl.linux.org/
 
 use strict;
 

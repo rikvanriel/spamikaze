@@ -1,9 +1,14 @@
 #!/usr/bin/perl -wT
 #
 # getblocks.pl
-# Copyright 2003 Hans Wolters (h-wolters@nl.linux.org)
-# Copyright 2004 Hans Spaans  <cj.spaans@nexit.nl>
-#   <insert GPL 2 or later in here>
+# Copyright (C) 2003 Hans Wolters <h-wolters@nl.linux.org>
+# Copyright (C) 2004 Hans Spaans  <cj.spaans@nexit.nl>
+# Released under the GNU GPL
+#
+# NO WARRANTY, see the file COPYING for details.
+#
+# This file is part of the spamikaze project:
+#     http://spamikaze.nl.linux.org/
 
 use strict;
 use warnings;

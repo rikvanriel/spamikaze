@@ -8,7 +8,7 @@
 # NO WARRANTY, see the file COPYING for details.
 #
 # This file is part of the spamikaze project:
-#     http://spamikaze.surriel.com/
+#     http://spamikaze.nl.linux.org/
 
 use DBI;
 use Socket;
