@@ -11,17 +11,10 @@
 #
 # This file is part of the spamikaze project:
 #     http://spamikaze.nl.linux.org/
-
 use strict;
-
-# unshift the path where passivetrap.pl and
-# config.pl is located on the @INC.
 
 unshift (@INC,"/home/webapps/spamikaze/spamikaze/spamikaze/scripts");
 unshift (@INC, "/opt/spamikaze/scripts");
-
-# Use the new pm, this will load the config.pl and
-# set the variables for the db.
 require Spamikaze;
 
 sub from_daemon
