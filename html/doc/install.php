@@ -14,9 +14,8 @@
 The spamikaze scripts should be installed on disk somewhere; in this
 manual we'll assume the scripts are installed in /opt/spamikaze/scripts,
 but it really doesn't matter where they are.  The perl module
-(Spamikaze.pm) should be installed somewhere in perl's module search
-path, or in /opt/spamikaze/scripts.  Currently there is no installation
-script that does this automatically.
+(Spamikaze.pm) should either be installed in the same directory as
+the scripts, or somewhere else in perl's search path.
 
 <h2>Perl modules</h2>
 
