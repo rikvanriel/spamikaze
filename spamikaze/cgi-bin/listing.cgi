@@ -124,7 +124,7 @@ sub grabinfo
 	$dbh = Spamikaze::DBConnect();
                          
 	#
-	# first, get the times where we received spam
+	# first, get the times where we received spamtrap mail
 	#
 	my $sql = "SELECT 
                     date_logged AS time FROM ipentries, ipnumbers
@@ -140,7 +140,7 @@ sub grabinfo
 	$sth->bind_columns(undef, \$time);
 	while ($sth->fetch()) {
 		$found++;
-		$iplog{$time} = 'received spam';
+		$iplog{$time} = 'spamtrap hit';
 	}
 	$sth->finish();
 
