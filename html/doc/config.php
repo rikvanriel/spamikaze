@@ -80,7 +80,9 @@ In this section you configure how many hours a host is blocked after the
 first spam (<tt>FirstTime</tt>) and how many hours a host is blocked for
 every subsequent spam (<tt>ExtraTime</tt>).  Note that the ExtraTime
 parameter is cumulative; if a host sends 3 spams, it will be blocked
-for 3 times ExtraTime, measured from the last spam that arrived.
+for FirstTime plus 3 times ExtraTime, measured from the last spam that
+arrived.   The cumulative extra listing time can be switched off by
+setting ExtraTime to 0.
 
 <p>If a host has sent more than <tt>MaxSpamPerIp</tt> messages into
 the spam traps, it will not be expired from the list automatically;
