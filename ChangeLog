@@ -1,3 +1,23 @@
+2004-08-22  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/expire.pl: simplify the Big Query(tm) a bit
+
+	* spamikaze/spamikaze-mysql.sql: octa/b/c/d are tinyint(3) unsigned
+
+2004-08-16  Rik van Riel  <riel@humbolt>
+
+	* html/index.php:
+	please use the cvs snapshot, we fixed bugs since spamikaze 0.2 beta
+
+2004-08-13  Cor Gest  <cor@humbolt.nl.linux.org>
+
+	* ChangeLog: ChangeLog Updated
+
+2004-08-04  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/cgi-bin/listing.cgi:
+	if an IP address isn't found, give a link to Openrbl so people can easily check other lists
+
 2004-08-04  Rik van Riel  <riel@humbolt>
 
 	* spamikaze/cgi-bin/listing.cgi:
@@ -1108,7 +1128,7 @@
 2004-02-01  riel  <riel@cleopatra>
 
 	* /home/CVS/spamikaze/TODO-database: 		Database reorganisation
-			$Id: ChangeLog,v 1.9 2004/08/13 03:34:24 cor Exp $
+			$Id: ChangeLog,v 1.10 2004/08/27 21:51:49 cor Exp $
 
 
 	In order to facilitate more flexible blocklisting, expiry, removal and
