@@ -1,12 +1,17 @@
 [Database]
+# the database type you're connecting to
 Type=Pg/MySQL
 Host=localhost
 Port=5432
+# database name, as well as username and password
 Name=
 Username=
 Password=
 
 [Mail]
+# ignore RFC1918 (private) IP addresses, don't touch this
 IgnoreRFC1918=1
+# ignore unassigned IP addresses, often forged, but sometimes used by spammers
 IgnoreBOGON=0
-BackupMX=
+# IP addresses that should not be listed, like your own mail servers
+BackupMX=1.2.3.4 2.3.4.5
