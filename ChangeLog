@@ -1,3 +1,212 @@
+2004-06-29  Rik van Riel  <riel@humbolt>
+
+	* html/doc/config.php: smaller extratime in example
+
+	* html/maillist.php: add page title
+
+	* html/menu.inc.php: fix typo
+
+	* html/maillist.php, html/menu.inc.php:
+	mailing list page, with an explanation on how to subscribe
+
+	* html/index.php: almost ready, want testers
+
+	* TODO: remove duplicate item
+
+	* TODO:
+	Remove already done items and move some less urgent things to the
+	TODO list for future versions.  This leaves only these two items
+	on the TODO list for version 0.2:
+
+	Before next release:
+	  * review the documentation for completeness
+	  * test the current cvs tree on different machines.
+
+	If there is something that really needs to be done for 0.2, in
+	addition to these two items, now is the time to put them back
+	onto the list ;)
+
+	* TODO: IgnoreBounces support works now, so take it off the TODO list
+
+	* html/doc/config.php: Index: config.php
+
+	* spamikaze/scripts/passivetrap.pl:
+	Very simple support for detection of RFC compliant bounce messages, and
+	a few more.  Setting IgnoreBounces = 1 in the config file should help
+	reduce false positives...
+
+	+++ passivetrap.pl	29 Jun 2004 11:47:43 -0000
+	@@ -20,6 +20,25 @@
+	 sub from_daemon
+	 {
+	 	my ( $mail ) = @_;
+	+	my $ignorebounces = $Spamikaze::ignorebounces;
+	+
+	+	unless ($ignorebounces eq 'true' or $ignorebounces == 1) {
+	+		return 0;
+	+	}
+	+
+	+	if ($mail =~ /^From:?\s+\<\>/mg) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /^Return-Path:?\s+\<\>/mg) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /^From:\s+\<?MAILER.DAEMON/mgi) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /^From:\s+\<?postmaster/mgi) {
+	+		return 1;
+	+	}
+	+
+	 	return 0;
+	 }
+
+	* spamikaze/config/config.ini.example: Index: config/config.ini.example
+
+	* spamikaze/scripts/Spamikaze.pm: Index: Spamikaze.pm
+
+	* html/doc/docmenu.inc.php, html/doc/install.php, html/doc/operations.php:
+	Spamikaze operations, except sendmail.pl
+
+	* html/doc/config.php, html/doc/docmenu.inc.php, html/doc/web.php:
+	basic web script documentation
+
+	* TODO: finished CGI programs for 0.2
+
+	* spamikaze/cgi-bin/remove.cgi:
+	Teach removal.cgi about includes and all the new spamikaze things,
+	now it can be used on psbl.surriel.com (and presumably other DNSBLs,
+	too) without any editing.  Apart from documentation, this was probably
+	the last major TODO item for Spamikaze version 0.2
+
+	* spamikaze/cgi-bin/remove.cgi: small cleanup
+
+2004-06-28  Rik van Riel  <riel@humbolt>
+
+	* html/menu.inc.php: no web stats
+
+	* html/download.php:
+	snapshots available from ftp://ftp.nl.linux.org/pub/spamikaze/snapshots/
+
+	* spamikaze/scripts/text.pl:
+	plaintext output of the currently listed IP addresses
+
+	* TODO: Index: TODO
+
+	* spamikaze/config/config.ini.example: add Address config option
+
+	* spamikaze/scripts/Spamikaze.pm, spamikaze/scripts/named.pl:
+	Uh oh, forgot to add an A record to the zone, so nobody could look
+	up the site http://psbl.surriel.com/ ...
+
+	This fixes it, adding the optional DNSBL / Address configuration
+	option.  Will add to the documentation ASAP.
+
+	Index: Spamikaze.pm
+
+	* spamikaze/scripts/named.pl:
+	Fix named.pl to work fine with multiple secondary NS servers.
+
+	+++ Spamikaze.pm	28 Jun 2004 02:54:30 -0000
+	@@ -41,7 +41,7 @@
+	...
+	-our @dnsbl_secondary_nses;
+	+our $dnsbl_secondary_nses;
+	...
+	@@ -101,7 +101,7 @@
+	...
+	-	@dnsbl_secondary_nses = $cfg->val ('DNSBL', 'SecondaryNSes' );
+	+	$dnsbl_secondary_nses = $cfg->val ('DNSBL', 'SecondaryNSes' );
+	...
+	+++ named.pl	28 Jun 2004 02:54:30 -0000
+	@@ -39,7 +39,7 @@
+	...
+	-	my @secondary_nses = @Spamikaze::dnsbl_secondary_nses;
+	+	my @secondary_nses = split /\s+/, $Spamikaze::dnsbl_secondary_nses;
+	...
+
+	* html/doc/config.php:
+	Update configuration to understand the new meaning of ExtraTime:
+
+	@@ -80,7 +80,9 @@
+	 first spam (<tt>FirstTime</tt>) and how many hours a host is blocked for
+	 every subsequent spam (<tt>ExtraTime</tt>).  Note that the ExtraTime
+	 parameter is cumulative; if a host sends 3 spams, it will be blocked
+	-for 3 times ExtraTime, measured from the last spam that arrived.
+	+for FirstTime plus 3 times ExtraTime, measured from the last spam that
+	+arrived.   The cumulative extra listing time can be switched off by
+	+setting ExtraTime to 0.
+
+	* spamikaze/scripts/expire.pl:
+	Add $Spamikaze::firsttime to the bonus time calculation for multiple
+	spam entries, so it is possible to set the ExtraTime variable in the
+	configuration to 0 for a flat expiry time, without accidentally
+	expiring everything at once...
+
+	* spamikaze/scripts/expire.pl: uh oh, that was buggy
+
+	* spamikaze/scripts/expire.pl, spamikaze/scripts/named.pl:
+	get rid of more warnings
+
+2004-06-26  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/expire.pl: get rid of perl warnings
+
+	* spamikaze/cgi-bin/listing.cgi:
+	some extra text, cleanup and warnings workaround
+
+	* spamikaze/scripts/expire.pl, spamikaze/scripts/expire2.pl:
+	move to new version of expire script
+
+2004-06-21  Rik van Riel  <riel@humbolt>
+
+	* TODO:
+	most documentation is there, the main thing missing is the web interface
+
+2004-06-21  Hans Wolters  <h-wolters@humbolt>
+
+	* TODO:
+
+	Added the whitelist zone idea
+
+2004-06-21  Rik van Riel  <riel@humbolt>
+
+	* TODO: implement evidence table only for later versions, not for 0.2
+
+	* spamikaze/scripts/named.pl:
+	Spamikaze.pm parses the config options needed by the cgi scripts
+
+	* spamikaze/cgi-bin/example-footer.php, spamikaze/cgi-bin/example-header.php, spamikaze/cgi-bin/example-index.php, spamikaze/cgi-bin/listing.cgi, spamikaze/config/config.ini.example:
+	teach listing.cgi to use footer and header, it can now be used without editing
+
+	* TODO:
+	  * optionally, make spamikaze ignore (RFC compliant) bounce messages
+
+2004-06-21  Cor Gest  <cor@nl.linux.org>
+
+	* ChangeLog: ChangeLog Updated
+
+2004-06-21  Rik van Riel  <riel@humbolt>
+
+	* TODO: -  * make sure web scripts work with new database layout
+	+  * make sure cgi apps can run on various sites without modification
+	+    (include header & footer, specified by config file)
+
+	* spamikaze/cgi-bin/remove.cgi:
+	remove.cgi now uses Spamikaze module too
+
+	* spamikaze/scripts/named.pl:
+	don't spit out an error message if {HOME} isn't defined
+
+	* spamikaze/cgi-bin/listing.cgi: s/received spam/spamtrap hit/
+
+	* spamikaze/cgi-bin/listing.cgi: make listing script use config file
+
+2004-06-20  Rik van Riel  <riel@humbolt>
+
+	* html/doc/intro.php: fix typo
+
 2004-06-21  Rik van Riel  <riel@humbolt>
 
 	* TODO: -  * make sure web scripts work with new database layout
@@ -579,7 +788,7 @@
 2004-02-01  riel  <riel@cleopatra>
 
 	* /home/CVS/spamikaze/TODO-database: 		Database reorganisation
-			$Id: ChangeLog,v 1.5 2004/06/21 02:33:22 cor Exp $
+			$Id: ChangeLog,v 1.6 2004/06/29 20:28:26 cor Exp $
 
 
 	In order to facilitate more flexible blocklisting, expiry, removal and
