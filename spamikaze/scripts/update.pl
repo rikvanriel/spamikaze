@@ -80,7 +80,7 @@ sub insertnew(){
     my $sth = $dbh->prepare($sql);
     $sth->execute( $a, $b);
 
-    print $a," - ", $b, "\n";
+  #  print $a," - ", $b, "\n";
 }
 
 main();
