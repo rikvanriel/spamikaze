@@ -110,7 +110,7 @@ email address in sendmail, postfix, zmailer or exim, simply add lines
 like the following to the email aliases file (usually in /etc/aliases).
 
 <p><tt>
-spamtrap:     "|/opt/spamikaze/scripts/passivetrap.pl"
+spamtrap:     "|/opt/spamikaze/scripts/passivetrap.pl"<br>
 ionlygetspam: "|/opt/spamikaze/scripts/passivetrap.pl"
 </tt>
 
