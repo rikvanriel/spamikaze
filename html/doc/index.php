@@ -18,12 +18,9 @@ coming into a system's spamtrap addresses.
 
 <p>Note: this documentation is still a work in progress. (Rik, 5/21/2004)
 
-<ul>
-<li><a href="intro.php">Introduction</a>
-<li><a href="install.php">Installation</a>
-<li><a href="config.php">Configuration</a>
-</ul>
-
+<?php
+  require("docmenu.inc.php");
+?>
 
 </body>
 </html>

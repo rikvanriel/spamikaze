@@ -9,15 +9,12 @@
 ?>
 <img src="/logo/spamikaze.jpg" alt="Spamikaze">
 
-<h1>Spamikaze Documentation</h1>
+<h1>Spamikaze Installation</h1>
 
-<ul>
-<li><a href="/doc">Index</a>
-<li><a href="intro.php">Introduction</a>
-<li><a href="install.php">Installation</a>
-<li><a href="config.php">Configuration</a>
-</ul>
 
+<?php
+  require("docmenu.inc.php");
+?>
 
 </body>
 </html>

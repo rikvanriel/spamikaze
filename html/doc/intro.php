@@ -56,13 +56,15 @@ on the sites where the authors are running Spamikaze:
     is extended, or the IP address is listed again.
 </ol>
 
-<ul>
-<li><a href="/doc">Index</a>
-<li><a href="intro.php">Introduction</a>
-<li><a href="install.php">Installation</a>
-<li><a href="config.php">Configuration</a>
-</ul>
+The end effect should be that IP addresses that only send you
+spam stay on the list for long times (blocking all spam), while
+IP addresses from which legitimate mail comes only get blocked
+for short periods (so spam is blocked, but you don't miss out
+on the legitimate email).
 
+<?php
+  require("docmenu.inc.php");
+?>
 
 </body>
 </html>
