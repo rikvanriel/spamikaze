@@ -1,3 +1,131 @@
+2004-07-03   Hans Spaans  <army@humbolt>
+
+	* spamikaze/scripts/Spamikaze.pm:
+	Fixed a little performance issue in the BOGON section. The resolver is now
+	being forced to ignore searchdomains instead of trying all domains.
+
+2004-07-02  Rik van Riel  <riel@humbolt>
+
+	* README: link to site
+
+	* html/download.php, html/index.php: link to spamikaze 0.2 beta
+
+	* NEWS: 	Release Notes for Spamikaze 0.2 beta
+
+	- Most scripts can be configured using the configuration file,
+	  /etc/spamikaze/config
+	- There is some documentation, available on the spamikaze web site:
+	  http://spamikaze.nl.linux.org/doc/
+	- Expiry policy is more flexible now.
+	- New database layout, with better performance and better future
+	  extensibility.
+	- Source code cleanups left and right.
+	- Postgresql support is BROKEN in version 0.2, mysql works though...
+
+		Release Notes for Spamikaze 0.1
+
+	- Proof of concept implementation.
+	- All scripts need to be configured by hand.
+
+2004-07-02  Hans Wolters  <h-wolters@humbolt>
+
+	* INSTALL:
+
+	Pointing to the correct dump for new users.
+
+2004-07-02  Rik van Riel  <riel@humbolt>
+
+	* INSTALL: refer people to online documentation
+
+2004-06-29  Cor Gest  <cor@nl.linux.org>
+
+	* ChangeLog: ChangeLog Updated
+
+2004-06-29  Rik van Riel  <riel@humbolt>
+
+	* html/doc/config.php: smaller extratime in example
+
+	* html/maillist.php: add page title
+
+	* html/menu.inc.php: fix typo
+
+	* html/maillist.php, html/menu.inc.php:
+	mailing list page, with an explanation on how to subscribe
+
+	* html/index.php: almost ready, want testers
+
+	* TODO: remove duplicate item
+
+	* TODO:
+	Remove already done items and move some less urgent things to the
+	TODO list for future versions.  This leaves only these two items
+	on the TODO list for version 0.2:
+
+	Before next release:
+	  * review the documentation for completeness
+	  * test the current cvs tree on different machines.
+
+	If there is something that really needs to be done for 0.2, in
+	addition to these two items, now is the time to put them back
+	onto the list ;)
+
+	* TODO: IgnoreBounces support works now, so take it off the TODO list
+
+	* html/doc/config.php: Index: config.php
+
+	* spamikaze/scripts/passivetrap.pl:
+	Very simple support for detection of RFC compliant bounce messages, and
+	a few more.  Setting IgnoreBounces = 1 in the config file should help
+	reduce false positives...
+
+	+++ passivetrap.pl	29 Jun 2004 11:47:43 -0000
+	@@ -20,6 +20,25 @@
+	 sub from_daemon
+	 {
+	 	my ( $mail ) = @_;
+	+	my $ignorebounces = $Spamikaze::ignorebounces;
+	+
+	+	unless ($ignorebounces eq 'true' or $ignorebounces == 1) {
+	+		return 0;
+	+	}
+	+
+	+	if ($mail =~ /^From:?\s+\<\>/mg) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /^Return-Path:?\s+\<\>/mg) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /^From:\s+\<?MAILER.DAEMON/mgi) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /^From:\s+\<?postmaster/mgi) {
+	+		return 1;
+	+	}
+	+
+	 	return 0;
+	 }
+
+	* spamikaze/config/config.ini.example: Index: config/config.ini.example
+
+	* spamikaze/scripts/Spamikaze.pm: Index: Spamikaze.pm
+
+	* html/doc/docmenu.inc.php, html/doc/install.php, html/doc/operations.php:
+	Spamikaze operations, except sendmail.pl
+
+	* html/doc/config.php, html/doc/docmenu.inc.php, html/doc/web.php:
+	basic web script documentation
+
+	* TODO: finished CGI programs for 0.2
+
+	* spamikaze/cgi-bin/remove.cgi:
+	Teach removal.cgi about includes and all the new spamikaze things,
+	now it can be used on psbl.surriel.com (and presumably other DNSBLs,
+	too) without any editing.  Apart from documentation, this was probably
+	the last major TODO item for Spamikaze version 0.2
+
+	* spamikaze/cgi-bin/remove.cgi: small cleanup
+
+
 2004-06-29  Rik van Riel  <riel@humbolt>
 
 	* html/doc/config.php: smaller extratime in example
@@ -788,7 +916,7 @@
 2004-02-01  riel  <riel@cleopatra>
 
 	* /home/CVS/spamikaze/TODO-database: 		Database reorganisation
-			$Id: ChangeLog,v 1.6 2004/06/29 20:28:26 cor Exp $
+			$Id: ChangeLog,v 1.7 2004/07/03 21:43:41 cor Exp $
 
 
 	In order to facilitate more flexible blocklisting, expiry, removal and
