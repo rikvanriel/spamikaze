@@ -1,3 +1,354 @@
+2004-05-27  Hans Wolters  <h-wolters@humbolt>
+
+	* spamikaze/php/remove.php:
+
+	New tables
+
+	* spamikaze/php/spamlisting.php:
+
+	This should make it run on the new tables. I will test it this weekend and
+	will try to add the countries again.
+
+2004-05-25  Hans Wolters  <h-wolters@humbolt>
+
+	* spamikaze/cgi-bin/remove.cgi:
+
+	New tables...
+
+	* spamikaze/cgi-bin/listing.cgi:
+
+	New tables....
+
+	* spamikaze/spamikaze-mysql-update.sql, spamikaze/spamikaze-mysql.sql:
+
+	Added an index to make sure the queries run a bit faster
+
+2004-05-25  Rik van Riel  <riel@humbolt>
+
+	* TODO: web scripts need fixing
+
+	* spamikaze/scripts/passivetrap.pl: some more typography
+
+	* spamikaze/scripts/Spamikaze.pm, spamikaze/scripts/expire2.pl, spamikaze/scripts/getcountries.pl, spamikaze/scripts/gethostname.pl, spamikaze/scripts/named.pl, spamikaze/scripts/passivetrap.pl, spamikaze/scripts/popchecker.pl, spamikaze/scripts/postfix.pl, spamikaze/scripts/sendmail.pl, spamikaze/scripts/sethostn.pl, spamikaze/scripts/update.pl:
+	make warranty disclaimer, copyright symbol and typography the same across files
+
+	* spamikaze/scripts/expire2.pl:
+	comment out the debugging prints, they slow the script down way too much
+
+	* spamikaze/scripts/named.pl: pointer to config file
+
+	* doc/example-config:
+	the complete example configuration is in scripts/config
+
+	* spamikaze/scripts/named.pl:
+	named.pl now uses the configuration framework
+
+	* spamikaze/config/config.ini.example: add dnsbl configuration
+
+	* spamikaze/scripts/Spamikaze.pm: add parsing of dnsbl configuration
+
+2004-05-24  Rik van Riel  <riel@humbolt>
+
+	* html/doc/install.php: add another linebreak
+
+	* html/doc/install.php: typography
+
+	* html/doc/install.php: CPAN modules install
+
+	* html/doc/install.php: passivetrap basics
+
+2004-05-23  Rik van Riel  <riel@humbolt>
+
+	* html/doc/install.php: typography
+
+	* html/doc/install.php:
+	cut'n'paste Hans's INSTALL document on database setup
+
+2004-05-23  Hans Wolters  <h-wolters@humbolt>
+
+	* TODO-database:
+
+	Not needed anymore.
+
+	* INSTALL:
+
+	Added a section on updating the database tables to the new system.
+
+	* spamikaze/spamikaze-mysql-update.sql:
+
+	Added the dump to update the mysql database.
+
+	* INSTALL, spamikaze/spamikaze-mysql.sql, spamikaze/spamikaze-sf.sql:
+	removed the old sql file and added the new one
+
+2004-05-23  Rik van Riel  <riel@humbolt>
+
+	* html/doc/config.php, html/doc/docmenu.inc.php, html/doc/index.php, html/doc/install.php, html/doc/intro.php:
+	move menu to include file
+
+2004-05-22  Rik van Riel  <riel@humbolt>
+
+	* html/doc/intro.php: a few more lines, sleep time now
+
+	* html/doc/index.php: add warning that it's really incomplete
+
+	* html/doc/config.php, html/doc/index.php, html/doc/install.php, html/doc/intro.php:
+	very incomplete documentation
+
+2004-05-21  Rik van Riel  <riel@humbolt>
+
+	* html/doc/index.php: require ../menu.inc.php instead
+
+	* html/doc/index.php, html/index.php, html/menu.inc.php:
+	spamikaze documentation, empty
+
+	* spamikaze/scripts/Spamikaze.pm:
+	fix @RFC1918Addresses escape sequences
+
+	* spamikaze/scripts/expire2.pl: fix warnings
+
+	* spamikaze/scripts/Spamikaze.pm:
+	s/my/our/ for the variables that need to be visible from scripts
+
+2004-05-20  Hans Wolters  <h-wolters@humbolt>
+
+	* spamikaze/scripts/sendmail.pl:
+
+	This enables sendmail.pl to use the new tables too
+
+	* spamikaze/scripts/passivetrap.pl:
+
+	passivetrap works on the new tables set.
+
+2004-05-20  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/expire2.pl:
+	add 127.0.0.2 to DONTEXPIRE as an example
+
+	* spamikaze/scripts/update.pl: comment out too verbose printk
+
+2004-05-19  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/passivetrap.pl:
+	exit 0 if mail was from a daemon, don't want MTA to bounce
+
+	* spamikaze/scripts/expire.pl, spamikaze/scripts/expire2.pl:
+	get the config variables from Spamikaze.pm
+
+	* spamikaze/scripts/Spamikaze.pm: my works fine, expire2.pl was wrong
+
+	* spamikaze/scripts/Spamikaze.pm: s/my/our
+
+	* spamikaze/scripts/expire2.pl:
+	expire2.pl now uses Spamikaze.pm for its configuration
+
+	* spamikaze/scripts/Spamikaze.pm:
+	oops, forgot to declare the new variables
+
+	* spamikaze/scripts/Spamikaze.pm, spamikaze/config/config.ini.example:
+	add expiration config items
+
+	* spamikaze/scripts/expire2.pl:
+	ok, expire2.pl now uses Spamikaze.pm for some configuration values
+
+2004-05-19  Hans Wolters  <h-wolters@humbolt>
+
+	* spamikaze/scripts/expire2.pl: expire2.pl
+
+2004-05-17  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/sendmail.pl: now sendmail.pl runs again
+
+	* spamikaze/config/config.ini.example:
+	add some documentation and example values
+
+	* spamikaze/config/config.ini.example:
+	add the other configuration items Spamikaze.pm expects
+
+	* spamikaze/scripts/Spamikaze.pm:
+	s/Node/Host/ to match config.ini.example
+
+	* spamikaze/scripts/named.pl, spamikaze/scripts/passivetrap.pl, spamikaze/scripts/postfix.pl, spamikaze/scripts/sendmail.pl, spamikaze/scripts/update.pl:
+	add /opt/spamikaze/scripts to @INC
+
+2004-05-15  Rik van Riel  <riel@humbolt>
+
+	* p2p-design: 	Simple spamikaze data exchange design
+		May 14, 2004
+
+		Rik van Riel
+		riel@surriel.com
+
+
+
+		Overview
+
+	Every spamikaze installation receives a limited amount of spam
+	to its spamtraps.  This is a good thing since it limits the amount
+	of resources (ab)used, but it increases the possibility of a
+	spamikaze installation not learning of an ongoing spam run until
+	that spam run hits its own spamtraps.  At that time the human
+	users, who the spamikaze is supposed to shield, may have already
+	received the spam in question.
+
+	To improve the chances of spamikaze blocking spam sent to the
+	users, it would be useful if there was a low overhead way for
+	spamikaze installations to learn of spamtrap events at other
+	spamikaze setups. This way mail from spam sources could be
+	blocked before its own spam traps (and users) are spammed.
+
+	This proposal contains ideas on how to implement such a
+	mechanism, addressing these areas:
+	- Data Exchange Model
+	- High Level Protocol
+	- Protocol Details and Extensibility
+	- Trust Model
+	- Database and Security Considerations
+
+	If you have any comments on this proposal, please email the
+	spamikaze mailing list, <spamikaze@nl.linux.org>.
+
+
+		Data Exchange Model
+
+	The basic model is client/server, with the twist that any
+	participant can be both client and server, though this is in
+	no way necessary.  There will be two simple programs, one for
+	the client (getting information from another spamikaze system)
+	and one for the server (giving information to clients).
+
+	The server will listen on a predetermined network port.  The client
+	will connect to the server.  For simplicity (and security concerns)
+	the first implementation will probably follow a one process per
+	connection model, possibly using (x)inetd for access control.
+
+
+		High Level Protocol
+
+	There are basically three distinct phases of the data exchange:
+	initial handshake, synchronisation and live feed.
+
+	Initial handshake:  during this phase the server informs the
+	client of a number of its identity, giving details like the
+	name of the spamikaze list, the base URL for listing data,
+	the email of the list maintainer, etc...
+
+	Synchronisation:  the client asks the server for all spamtrap
+	events that happened on the server since a certain timestamp,
+	usually the timestamp of the last spamtrap event received from
+	this particular server.  The server then proceeds to send the
+	requested information to the client, potentially limiting the
+	number of events sent to a certain number to prevent resource
+	waste.
+
+	Live feed:  after the synchronisation is done, the server will
+	automatically send new spamtrap events to the client as they
+	happen.  This could either be a live feed from the spamtrap
+	software, or a periodic polling of the database.  The client
+	does not need to send any requests, since the server is still
+	"sending all spamtrap events since a certain timestamp", like
+	the client requested in the synchronisation phase.
+
+	Using this model we can synchronise both live events and the
+	events that happened during the time where client and server
+	were not connected to each other, using the same connection
+	and protocol.
+
+
+		Protocol Details and Extensibility
+
+	In order to ease debuggability, extensibility, ease of programming
+	and - through the former - security, spamikaze will use an RFC 822
+	style plain text format for serving data to the client.
+
+	RFC 822 style messages have the advantages of being easy to parse
+	and of the client being able to ignore messages of unknown types,
+	or message content of an unknown type.  This means that the protocol
+	can be extended without the need for every spamikaze installation
+	to upgrade to the new protocol simultaneously.
+
+	The following are two examples of what a version 1 spamikaze
+	message could look like, with all messages separated by an
+	empty line:
+
+	Type: Server-ID
+	Spamikaze-name: PSBL
+	Base-URL: "http://psbl.surriel.com/listing?ip=@IP@"
+
+	Type: spamtrap
+	IP: 1.2.3.4
+	Time: 1084588813
+
+	In this case, the message type can easily be identified by the
+	"Type:" header; the rest of the message can be parsed by a
+	routine that knows how to deal with this type of message, parsing
+	the headers it knows about and ignoring the rest.  If the minimum
+	data needed to process an event isn't present, the client can
+	either ignore the message or trigger an error handling event like
+	reinitialising the connection to the server.
+
+
+		Trust Model
+
+	Trust considerations are different for the client and the server
+	side.  A server could decide to let anybody have information on
+	which IP addresses are hitting its spamtraps, in effect giving
+	the whole world read-only access to its database.  The main
+	reasons for access control on the server side would be resource
+	use and the possibility that a client could learn the identity
+	of the server's spamtraps.
+
+	A client, on the other hand, would only want to import data into
+	its own spamikaze database from sources it trusts.  After all,
+	the data being imported has influence on which email will be
+	blocked.
+
+	In this model it is important that each server only exports the
+	data from its own spamtraps.  It is easy for a client to trust
+	the spamtraps of one server, but a much bigger leap of faith to
+	trust the data of whoever it is the server pulls data from.
+	Additionally, passing through the data received from others
+	creates the possibility of spamikaze installations passing the
+	same messages around in an infinite loop, quickly exhausting
+	resources everywhere.
+
+
+		Database and Security Considerations
+
+	The server side of the spamikaze network communications software
+	only needs SELECT rights, to inform the client of spamtrap events.
+	Assuming other standard precautions are followed, the potential
+	for security problems with the server side should be minimal.
+
+	Even though the client should only connect to trusted servers,
+	the security risk on this side is bigger.  This is mostly due
+	to the fact that the client software needs to have the ability
+	to INSERT records with spamtrap event data into the database.
+
+	Security risk and recoverability can be limited by not allowing
+	the client to UPDATE records in the spamtrap events table, as
+	well as by clearly identifying the source of every spamtrap
+	event.  When a client decides to no longer trust a particular
+	server, it will be easy to purge the database of all spamtrap
+	events from that particular server.
+
+	The database table with spamtrap events would contain the fields
+	ID, IP address, timestamp and spamikaze_id, the last being an ID
+	denoting from which server the data was obtained.  There would be
+	a smaller table containing information about the spamikaze lists
+	from which information is being obtained (the servers).
+
+2004-05-15  Cor Gest  <cor@nl.linux.org>
+
+	* ChangeLog: ChangeLog updated (at last)
+
+2004-05-08   Hans Spaans  <army@humbolt>
+
+	* spamikaze/scripts/postfix.pl: Added Spamikaze.pm support
+	Added Postgresql support
+	Clean the code somewhat
+	Temp-file are now being used while doing the generation
+
 2004-05-08   Hans Spaans  <army@humbolt>
 
 	* spamikaze/scripts/postfix.pl: Added Spamikaze.pm support
@@ -147,7 +498,7 @@
 2004-02-01  riel  <riel@cleopatra>
 
 	* /home/CVS/spamikaze/TODO-database: 		Database reorganisation
-			$Id: ChangeLog,v 1.2 2004/05/15 02:46:31 cor Exp $
+			$Id: ChangeLog,v 1.3 2004/05/28 00:30:43 cor Exp $
 
 
 	In order to facilitate more flexible blocklisting, expiry, removal and
