@@ -160,7 +160,7 @@ sub MXBackup {
 		my $reversed_ip = $ip;
 		$reversed_ip =~ s/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/$4.$3.$2.$1/;
 		my $resolver = Net::DNS::Resolver->new;
-		my $query    = $resolver->search("$reversed_ip.bogons.cymru.com");
+		my $query    = $resolver->search("$reversed_ip.bogons.cymru.com.");
 
 		if ($query) {
 
