@@ -58,8 +58,12 @@ sub storeip
     my $error   = 0;
     my @iplist  = split /\./, $ip;
     my $ts      = time();
-    my $sql     = "INSERT INTO ipnumbers (octa, octb, octc, octd, spamtime)
-                    VALUES (?, ?, ? , ?, ?)";
+
+
+    my $sql     = "INSERT INTO ipentries (id_ip, date_logged) SELECT 
+                    ipnumbers.id, UNIX_TIMESTAMP() FROM ipnumbers WHERE 
+                    octa = ? and octb = ? and octc = ? and octd = ?";
+
     my $visip   = "UPDATE ipnumbers SET visible = 1 WHERE
                         octa = ? AND octb = ? AND octc = ? AND octd = ?";
                         
@@ -68,7 +72,7 @@ sub storeip
     my $dbh         = Spamikaze::DBConnect();
 
     unless ($#iplist == 3) {
-	$error = 1;
+    	$error = 1;
     }
 
     foreach my $num (@iplist) {
@@ -77,8 +81,27 @@ sub storeip
 
     if ($error < 1) {
         my $sth = $dbh->prepare( $sql );
-        $sth->execute($iplist[0], $iplist[1], $iplist[2], $iplist[3], $ts);
+        $sth->execute($iplist[0], $iplist[1], $iplist[2], $iplist[3]);
         $sth->finish();
+
+        my $rv = $sth->rows;
+
+        if ($rv < 1){
+
+            # the ipnumber isn't known, store it and get the id to
+            # store it into the ipentries table.
+
+            my $sqlipnumber = "INSERT INTO ipnumbers (octa, octb, octc, octd)
+                               VALUES ( ?, ?, ?, ?)";
+                               
+            my $sthipnumber = $dbh->prepare( $sqlipnumber );
+            $sthipnumber->execute($iplist[0], $iplist[1], $iplist[2], $iplist[3]);
+            $sthipnumber->finish();
+
+            $sth = $dbh->prepare( $sql );
+            $sth->execute($iplist[0], $iplist[1], $iplist[2], $iplist[3]);
+            $sth->finish();
+        }
 
         # needed to set all earlier entries for this ipnumber to visible.
         my $sthupdate = $dbh->prepare( $visip );
