@@ -55,7 +55,7 @@ our $web_removalurl;
 my @RFC1918Addresses =
   ( '10\.', '172\.1[6-9]\.', '172\.2[0-9]\.', '172\.3[0-2]\.', '192\.168\.' );
 
-my $VERSION = "Spamikaze.pm Version .1\n";
+my $VERSION = "Spamikaze.pm Version .2\n";
 
 BEGIN {
 
