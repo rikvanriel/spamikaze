@@ -3,6 +3,7 @@
 
 Before next release:
   * basic documentation and postgres documentation.
+    - missing: documentation of the web interface
   * test the current cvs tree on different machines.
   * add expire.pl to the tree if we all agree and alter 
     sendmail.pl and named.pl to only select on visible is true/1.
