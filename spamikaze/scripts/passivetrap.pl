@@ -193,7 +193,7 @@ sub maildir_daemon
 
 	while (1) {
 		my $count = &process_dir($dir);
-		print "processed $count messages\n";
+		# print "processed $count messages\n";
 		sleep 3;
 	}
 	exit 1;
