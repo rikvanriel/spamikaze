@@ -23,6 +23,9 @@ lists the IP addresses that have sent spam and allows anybody to remove
 IP addresses from the list.
 
 <ul>
+<li><b>August 29, 2004</b> Spamikaze 0.2 has been released, you can
+<a href="ftp://ftp.nl.linux.org/pub/spamikaze/spamikaze-0.2.tar.gz">get it</a>
+from ftp.
 <li><b>August 16, 2004</b> Several bugs in the Spamikaze 0.2 beta have
 been fixed, please use the latest
 <a href="ftp://ftp.nl.linux.org/pub/spamikaze/">CVS snapshot</a> instead.
