@@ -53,6 +53,12 @@ nonexisting accounts at your domain. Using the busiest nonexisting
 accounts as spam trap addresses is very effective, because the
 spammers are already trying to send mail to them!
 
+<p>Note: if you want to feed an entire mailbox into passivetrap,
+you'll have to use formail, like this:
+
+<pre>
+$ formail -s /path/passivetrap.pl &lt; /path/spam.mbox
+</pre>
 
 <h2>Database Expiry</h2>
 
