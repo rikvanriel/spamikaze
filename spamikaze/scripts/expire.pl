@@ -1,17 +1,23 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 
-#   expire.pl
-#   copyright 2003 Hans Wolters (h-wolters@nl.linux.org)
-#   <insert GPL 2 or later in here>
-
+# expire.pl
+#
+# Copyright (C) 2003 Hans Wolters <h-wolters@nl.linux.org>
+# Released under the GNU GPL
+#
+# NO WARRANTY, see the file COPYING for details.
+#
+# This file is part of the spamikaze project:
+#     http://spamikaze.nl.linux.org/
 use strict;
-use DBI;
+use warnings;
 
 unshift (@INC, "/home/webapps/spamikaze/spamikaze/spamikaze/scripts");
 unshift (@INC, "/opt/spamikaze/scripts");
-require Spamikaze;
+use Spamikaze;
 
-our @DONTEXPIRE;
+our @DONTEXPIRE = ('127.0.0.2');
+
 my $bonustime;
 
 sub mxdontexpire
@@ -42,24 +48,23 @@ sub main
 
     my $dbh = Spamikaze::DBConnect();
 
-    my $sql = "SELECT 
-                    COUNT(spammers.id) as total,
+    my $sql = "SELECT
+                    COUNT(ipentries.id) AS total,
                     octa, octb, octc, octd,
-                    spamtime, fqdn.hostname
-               FROM 
-                    spammers, fqdn
-               WHERE 
-                    fqdn_id = fqdn.id AND
-                    visible = 1 AND 
-                    fqdn.hostname != \"\" 
-               GROUP BY octa, octb, octc, octd 
-               ORDER BY octa, octb, octc, octd";
+                    MAX(date_logged) AS spamtime
+               FROM
+                    ipentries,  ipnumbers
+               WHERE
+                    ipnumbers.id = ipentries.id_ip AND
+                    visible = 1
+               GROUP BY octa, octb, octc, octd
+               ORDER BY date_logged ASC";
 
     my $sth = $dbh->prepare( $sql );
     $sth->execute();
-    $sth->bind_columns( undef, \$total, \$octa, \$octb, \$octc, \$octd, \$spamtime, \$hostname);
+    $sth->bind_columns( undef, \$total, \$octa, \$octb, \$octc, \$octd, \$spamtime);
 
-    my $expiresql = "UPDATE spammers SET visible = 0 WHERE 
+    my $expiresql = "UPDATE ipnumbers SET visible = 0 WHERE 
                         octa = ? AND octb = ? AND octc = ? AND octd = ?";
 
     while( $sth->fetch() )
@@ -67,20 +72,20 @@ sub main
         my $sthexpire = $dbh->prepare( $expiresql );
         $ip = "$octa.$octb.$octc.$octd";
         if ($total == 1 && mxdontexpire($ip) < 1) {
-            $bonustime = $spamtime + $Spamikaze::{firsttime};
+            $bonustime = $spamtime + $Spamikaze::firsttime;
             if ($bonustime <= time()){
-                print $total, "\t";
+                # print $total, "\t";
                 $sthexpire->execute($octa, $octb, $octc, $octd);
-                print "$octa.$octb.$octc.$octd\n";
+                # print "$octa.$octb.$octc.$octd\n";
             }
         }
-        elsif (($total < $Spamikaze::{maxspamsperip}) && (mxdontexpire($ip) < 1))
+        elsif (($total < $Spamikaze::maxspamperip) && (mxdontexpire($ip) < 1))
         {
-            $bonustime = $spamtime + ($Spamikaze::{extratime} * $total);
+            $bonustime = $spamtime + ($Spamikaze::extratime * $total);
             if ($bonustime <= time()){
-                print $total, "\t";
+                # print $total, "\t";
                 $sthexpire->execute($octa, $octb, $octc, $octd);
-                print "$octa.$octb.$octc.$octd\n";
+                # print "$octa.$octb.$octc.$octd\n";
             }
         }
         $sthexpire->finish();
