@@ -5,7 +5,7 @@
 <body bgcolor="white">
 
 <?php
-  require("menu.inc.php");
+  require("../menu.inc.php");
 ?>
 <img src="/logo/spamikaze.jpg" alt="Spamikaze">
 
