@@ -28,3 +28,11 @@ FirstTime = 360
 ExtraTime = 360
 # after this many spams, don't expire a host from the database automatically
 MaxSpamPerIp = 10
+
+[DNSBL]
+Domain = spamikaze.example.com
+ZoneFile = /tmp/spamikaze-dnsbl.zone
+UrlBase = http://spamikaze.example.com/listing?ip=
+TTL = 300
+PrimaryNS = ns.example.com
+SecondaryNSes = ns2.example.com ns.example.net
