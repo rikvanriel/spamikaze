@@ -29,6 +29,7 @@ my $dbhost;
 my @MXBACKUP;
 my $ignoreBOGON;
 my $ignoreRFC1918;
+our $ignorebounces;
 
 # expire.pl
 our $firsttime;
@@ -89,6 +90,7 @@ BEGIN {
 	@MXBACKUP = split ( ' ', $cfg->val( 'Mail', 'BackupMX' ) );
 	$ignoreRFC1918 = $cfg->val( 'Mail', 'IgnoreRFC1918' );
 	$ignoreBOGON   = $cfg->val( 'Mail', 'IgnoreBOGON' );
+	$ignorebounces = $cfg->val( 'Mail', 'IgnoreBounces' );
 
 	$firsttime = $cfg->val ( 'Expire', 'FirstTime' );
 	$extratime = $cfg->val ( 'Expire', 'ExtraTime' );
