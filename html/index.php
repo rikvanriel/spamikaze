@@ -23,6 +23,9 @@ lists the IP addresses that have sent spam and allows anybody to remove
 IP addresses from the list.
 
 <ul>
+<li><b>May 21, 2004</b> The Spamikaze team is working hard to get
+version 0.2 ready for general use. This version will feature a new
+database layout, a configuration framework and some actual documentation.
 <li><b>Jun 21, 2003</b> The
 <a href="http://infosec.uninet.edu/infosec2003/talk/riel-20030620.html">logs</a>
 from yesterday's presentation are online.  Useful if you want to know
