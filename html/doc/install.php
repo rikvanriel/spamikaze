@@ -31,7 +31,7 @@ lines of that package.
 At the prompt you can mysqladmin to create a new database.
 
 <p><tt>
-mysqladmin -u root -p create spamikaze
+$ mysqladmin -u root -p create spamikaze
 </tt>
 
 <p>You will be prompted for the mysql root password, enter it. If no
@@ -39,10 +39,10 @@ errors are shown you need to login as mysql root to the database
 server in order to grant privileges to the new spamikaze directory:
 
 <p><tt>
-mysql -u root -p mysql
+$ mysql -u root -p mysql
 </tt>
 
-Again you will be prompted for a password, enter it.
+<p>Again you will be prompted for a password, enter it.
  
 Once you are in you should grant privileges with to a user at either
 localhost or a webserver able to access this mysql server. It is not
@@ -66,7 +66,7 @@ mysql> FLUSH PRIVILEGES;
 created database.
                                                                                 
 <p><tt>
-    mysql -u root -p spamikaze < /path/spamikaze-mysql.sql
+$ mysql -u root -p spamikaze < /path/spamikaze-mysql.sql
 </tt>
 
 
