@@ -5,8 +5,6 @@ Before next release:
   * basic documentation and postgres documentation.
     - missing: documentation of the web interface
   * test the current cvs tree on different machines.
-  * add expire.pl to the tree if we all agree and alter 
-    sendmail.pl and named.pl to only select on visible is true/1.
   * Fix the $_, this doesn't handle 0.x.x.x ipnumbers.
   * Add whitelist mailserver table
   * Add whitelist zone file so more then one mailservers can use it
