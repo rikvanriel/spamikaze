@@ -39,6 +39,7 @@ our $maxspamperip;
 our $dnsbl_domain;
 our $dnsbl_zone_file;
 our $dnsbl_url_base;
+our $dnsbl_address;
 our $dnsbl_ttl;
 our $dnsbl_primary_ns;
 our $dnsbl_secondary_nses;
@@ -99,6 +100,7 @@ BEGIN {
 	$dnsbl_domain = $cfg->val ('DNSBL', 'Domain' );
 	$dnsbl_zone_file = $cfg->val ('DNSBL', 'ZoneFile' );
 	$dnsbl_url_base = $cfg->val ('DNSBL', 'UrlBase' );
+	$dnsbl_address = $cfg->val ('DNSBL', 'Address' );
 	$dnsbl_ttl = $cfg->val ('DNSBL', 'TTL' );
 	$dnsbl_primary_ns = $cfg->val ('DNSBL', 'PrimaryNS' );
 	$dnsbl_secondary_nses = $cfg->val ('DNSBL', 'SecondaryNSes' );

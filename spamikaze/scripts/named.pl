@@ -58,6 +58,10 @@ sub build_zone_header
 		$zone_header .= "\tIN\tNS\t$secondary_ns\n";
 	}
 
+	if (defined $Spamikaze::dnsbl_address) {
+		$zone_header .= "\tIN\tA\t$Spamikaze::dnsbl_address\n";
+	}
+
 	$zone_header .= "\$ORIGIN\t$dnsbl_domain\n";
 	$zone_header .= "; standard dnsbl test entry\n";
 	$zone_header .= "2.0.0.127\tIN\tA\t127.0.0.2\n";
