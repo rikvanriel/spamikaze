@@ -15,7 +15,7 @@ Spamikaze is based on the following premises, which appear to be true
 on the sites where the authors are running Spamikaze:
 
 <ul>
-<li>Almost all spam received at spamtrap addresses is spam
+<li>Almost all mail received at spamtrap addresses is spam
 <li>Almost all spam is sent from IP addresses that are not mail servers,
     so no legitimate email is lost by blocking those
 <li>Open relays and easy to detect open proxies are being abandoned by
