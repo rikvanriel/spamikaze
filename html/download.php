@@ -16,7 +16,8 @@ This is the first alpha release of Spamikaze. The software works and
 is in production on our own systems, but there are some rough edges
 left, as well as many TODO items.
 
-<p>Get it via <a href="/pub/spamikaze-0.1.tar.gz">http</a> or
+<p>Get it via
+<!-- <a href="/pub/spamikaze-0.1.tar.gz">http</a> or -->
 <a href="ftp://ftp.nl.linux.org/pub/spamikaze/spamikaze-0.1.tar.gz">ftp</a>.
 
 <h2>Anonymous CVS</h2>
