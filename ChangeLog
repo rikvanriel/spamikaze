@@ -1,3 +1,172 @@
+2004-07-16  Hans Wolters  <h-wolters@humbolt>
+
+	* spamikaze/scripts/passivetrap.pl:
+	I'm sure that anyone of you can think of a better regex but this one also
+	catches qmail stuff (no brackets in those headers)
+
+2004-07-16  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/passivetrap.pl: thinko
+
+2004-07-15  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/passivetrap.pl: comment out print
+
+	* spamikaze/scripts/named.pl, spamikaze/scripts/passivetrap.pl:
+	add some essential dots, eeek
+
+	* spamikaze/scripts/passivetrap.pl:
+	skip temporary files the MTA isn't ready with yet
+
+	* spamikaze/scripts/passivetrap.pl:
+	Add maildir processing to passivetrap.pl, to avoid the startup
+	overhead of a perl script for every single message entering the
+	system.  This seems to increase throughput here by more than a
+	factor of 10, while reducing CPU use by a similar amount.
+
+	It can be used like this:
+	$ passivetrap -d /path/to/email
+
+	The MTA needs to deliver the spam to /path/to/email/incoming and
+	processed mail is stored in /path/to/email/archive ...
+
+2004-07-14  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/passivetrap.pl:
+	make things a little bit more modular
+
+	* spamikaze/scripts/passivetrap.pl:
+	prepare spamikaze for operating from a maildir spool directory
+	this commit doesn't change the functionality, but is just there
+	to make sure the original functionality stays working correctly
+
+2004-07-11  Rik van Riel  <riel@humbolt>
+
+	* README: speelchek
+
+	* INSTALL:
+	refer people to the online documentation for the mail and database scripts
+
+	* html/doc/install.php:
+	perl module should be installed in same directory as scripts - or in search path
+
+	* html/doc/operations.php: formail if you want to parse a mailbox
+
+2004-07-11  Hans Wolters  <h-wolters@humbolt>
+
+	* TODO:
+	closing database handlers and rewrite more of the documentation.
+
+2004-07-11  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/expire.pl: remove unused code (warnings workaround)
+
+2004-07-11  Hans Wolters  <h-wolters@humbolt>
+
+	* INSTALL:
+	Note on reading mboxes without using formail
+
+2004-07-11  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/postfix.pl, spamikaze/scripts/sendmail.pl, spamikaze/scripts/text.pl, spamikaze/scripts/update.pl:
+	convert more scripts to FindBin / lib
+
+	* spamikaze/scripts/expire.pl:
+	switch to FindBin & lib, instead of unshift
+
+	* spamikaze/scripts/passivetrap.pl:
+	Replace the ugly and inflexible unshift lines with FindBin
+	and lib support.  Now spamikaze can find Spamikaze.pm no
+	matter where the binaries are installed, as long as the
+	library is in the same directory...
+
+	--- passivetrap.pl	11 Jul 2004 20:10:54 -0000	1.11
+	+++ passivetrap.pl	11 Jul 2004 20:49:46 -0000
+
+	+use FindBin;
+	+use lib "$FindBin::Bin";
+
+	-unshift (@INC,"/home/webapps/spamikaze/spamikaze/spamikaze/scripts");
+	-unshift (@INC, "/opt/spamikaze/scripts");
+	-require Spamikaze;
+	+use Spamikaze;
+
+	* spamikaze/scripts/named.pl:
+	automatically find Spamikaze.pm in path where the binary resides, also gets rid of compile warnings
+
+	* spamikaze/scripts/passivetrap.pl: regexps don't need /g
+
+2004-07-11  Hans Wolters  <h-wolters@humbolt>
+
+	* spamikaze/scripts/named.pl:
+	Closing of the database handler, gave some warnings and a rollback
+	on perl 5.6.1
+
+2004-07-10  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/passivetrap.pl:
+	also get envelope From MAILER-DAEMON
+
+	* spamikaze/scripts/named.pl:
+	Oh dear, the PSBL zone hasn't had many successful lookups lately
+	due to this typo...  The $ORIGIN really needs to come directly
+	from '.'
+
+	--- named.pl	28 Jun 2004 11:59:26 -0000	1.10
+	+++ named.pl	10 Jul 2004 20:44:31 -0000
+	@@ -62,7 +62,7 @@
+	 		$zone_header .= "\tIN\tA\t$Spamikaze::dnsbl_address\n";
+	 	}
+
+	-	$zone_header .= "\$ORIGIN\t$dnsbl_domain\n";
+	+	$zone_header .= "\$ORIGIN\t$dnsbl_domain.\n";
+	 	$zone_header .= "; standard dnsbl test entry\n";
+	 	$zone_header .= "2.0.0.127\tIN\tA\t127.0.0.2\n";
+	 	$zone_header .= "\t\tIN\tTXT\t$dnsbl_domain test entry\n";
+
+2004-07-03  Cor Gest  <cor@humbolt.nl.linux.org>
+
+	* ChangeLog: ChangeLog Updated
+
+2004-07-03   Hans Spaans  <army@humbolt>
+
+	* spamikaze/scripts/Spamikaze.pm:
+	Fixed a little performance issue in the BOGON section. The resolver is now
+	being forced to ignore searchdomains instead of trying all domains.
+
+2004-07-02  Rik van Riel  <riel@humbolt>
+
+	* README: link to site
+
+	* html/download.php, html/index.php: link to spamikaze 0.2 beta
+
+	* NEWS: 	Release Notes for Spamikaze 0.2 beta
+
+	- Most scripts can be configured using the configuration file,
+	  /etc/spamikaze/config
+	- There is some documentation, available on the spamikaze web site:
+	  http://spamikaze.nl.linux.org/doc/
+	- Expiry policy is more flexible now.
+	- New database layout, with better performance and better future
+	  extensibility.
+	- Source code cleanups left and right.
+	- Postgresql support is BROKEN in version 0.2, mysql works though...
+
+		Release Notes for Spamikaze 0.1
+
+	- Proof of concept implementation.
+	- All scripts need to be configured by hand.
+
+2004-07-02  Hans Wolters  <h-wolters@humbolt>
+
+	* INSTALL:
+
+	Pointing to the correct dump for new users.
+
+2004-07-02  Rik van Riel  <riel@humbolt>
+
+	* INSTALL: refer people to online documentation
+
 2004-07-03   Hans Spaans  <army@humbolt>
 
 	* spamikaze/scripts/Spamikaze.pm:
@@ -916,7 +1085,7 @@
 2004-02-01  riel  <riel@cleopatra>
 
 	* /home/CVS/spamikaze/TODO-database: 		Database reorganisation
-			$Id: ChangeLog,v 1.7 2004/07/03 21:43:41 cor Exp $
+			$Id: ChangeLog,v 1.8 2004/07/20 22:23:39 cor Exp $
 
 
 	In order to facilitate more flexible blocklisting, expiry, removal and
