@@ -222,6 +222,10 @@ for I in *
                 formail -s /path/passivetrap.pl < $I
         done
 
+Be aware that importing single testentries located in mbox files without 
+using formail will trigger the mailer daemon notification and will not 
+import the ipaddress
+
 Enjoy,
 
 The Spamikaze team.
