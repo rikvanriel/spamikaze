@@ -12,10 +12,10 @@ What is Spamikaze?
 Spamikaze is a set of scripts that will help you to automate
 spamblocking.
 
-The idea behind Spamikaze is to offer people running mailserver
+The idea behind Spamikaze is to offer people running mailservers
 a set of scripts that will not only block spam but will allow 
-persons that get blocked to delist. This process is completely
-autmated and could be done by running their own RBL or mailserver.
+persons that get blocked to delist.  This process is completely
+automated and could be done by running their own DNSBL or mailserver.
 
 You can find more information on the Spamikaze web site:
 
