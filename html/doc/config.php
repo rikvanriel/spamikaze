@@ -145,6 +145,11 @@ PrimaryNS = ns.example.com
 SecondaryNSes = ns2.example.com ns.example.net
 </pre>
 
+<h2>[Web]</h2>
+
+This section is used to configure the web scripts. For details,
+please see our <a href="web.php">web scripts</a> documentation.
+
 <?php
   require("docmenu.inc.php");
 ?>

@@ -5,4 +5,5 @@
 <li><a href="intro.php">Introduction</a>
 <li><a href="install.php">Installation</a>
 <li><a href="config.php">Configuration</a>
+<li><a href="web.php">Web scripts</a>
 </ul>
