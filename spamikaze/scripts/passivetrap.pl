@@ -32,7 +32,7 @@ sub from_daemon
 	if ($mail =~ /^Return-Path:?\s+\<\>/mg) {
 		return 1;
 	}
-	if ($mail =~ /^From:\s+\<?MAILER.DAEMON/mgi) {
+	if ($mail =~ /^From:?\s+\<?MAILER.DAEMON/mgi) {
 		return 1;
 	}
 	if ($mail =~ /^From:\s+\<?postmaster/mgi) {
