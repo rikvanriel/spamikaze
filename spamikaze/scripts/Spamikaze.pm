@@ -20,9 +20,19 @@ my $dbhost;
 my @MXBACKUP;
 my $ignoreBOGON;
 my $ignoreRFC1918;
+
+# expire.pl
 our $firsttime;
 our $extratime;
 our $maxspamperip;
+
+# named.pl
+our $dnsbl_domain;
+our $dnsbl_zone_file;
+our $dnsbl_url_base;
+our $dnsbl_ttl;
+our $dnsbl_primary_ns;
+our @dnsbl_secondary_nses;
 
 my @RFC1918Addresses =
   ( '10\.', '172\.1[6-9]\.', '172\.2[0-9]\.', '172\.3[0-2]\.', '192\.168\.' );
@@ -69,6 +79,13 @@ BEGIN {
 	# convert listing times from hours to seconds
 	$firsttime *= 3600;
 	$extratime *= 3600;
+
+	$dnsbl_domain = $cfg->val ('DNSBL', 'Domain' );
+	$dnsbl_zone_file = $cfg->val ('DNSBL', 'ZoneFile' );
+	$dnsbl_url_base = $cfg->val ('DNSBL', 'UrlBase' );
+	$dnsbl_ttl = $cfg->val ('DNSBL', 'TTL' );
+	$dnsbl_primary_ns = $cfg->val ('DNSBL', 'PrimaryNS' );
+	@dnsbl_secondary_nses = $cfg->val ('DNSBL', 'SecondaryNSes' );
 
 	#
 	# We need to check values !!!
