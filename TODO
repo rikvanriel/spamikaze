@@ -12,7 +12,6 @@ For later versions:
   * Add evidence table
   * the perl scripts in cgi-bin should be able to do the same as there 
     php ones.
-  * Add evidence table
   * sharing IP addresses with multiple spamikaze lists
   * recognise mailing list and mailer daemon messages, do not
     lists hosts sending those
