@@ -50,7 +50,8 @@ CREATE TABLE ipentries (
   id_ip int(11) NOT NULL default '0',
   PRIMARY KEY  (id),
   KEY idx_idip (id_ip),
-  KEY idx_dl (date_logged)
+  KEY idx_dl (date_logged),
+  KEY idx_ip_dl (id_ip, date_logged)
 ) TYPE=MyISAM;
 
 --
