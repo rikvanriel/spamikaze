@@ -1,4 +1,4 @@
-#!/usr/bin/perl -wT
+#!/usr/bin/perl -T
 
 # removal from the DNSBL
 #
@@ -11,8 +11,8 @@
 #     http://spamikaze.surriel.com/
 
 use strict;
+use warnings;
 use CGI qw(:standard :html4 -no_xhtml);
-use CGI::Carp;
 
 unshift (@INC, "/opt/spamikaze/scripts");
 require Spamikaze;
@@ -77,6 +77,7 @@ sub write_page
 		print $q->h1("$listname listing info");
 	}
 
+	print $q->p("<h2>Query Results</h2>");
 	print $q->p($body);
 
 	# print the footer, if defined
@@ -123,6 +124,7 @@ sub listing_page_body
 			"<a href=\"http://openrbl.org/lookup?i=$ip\">Openrbl" .
 			"</a> and " .
 			"<a href=\"http://groups.google.com/groups?scoring=d&q=$ip+group:*abuse*\">Google groups</a>.\n" .
+			"<h2>Remove IP from $listname</h2>\n" .
 			"<FORM ACTION=\"$Spamikaze::web_removalurl\" METHOD=GET>\n" .
 			"<INPUT TYPE=\"text\" NAME=\"ip\" VALUE=\"$ip\" " .
 			"SIZE=\"20\">\n" . "<INPUT TYPE=\"submit\" " .
@@ -228,3 +230,7 @@ sub main
 }
 
 &main;
+
+# stupid hack to prevent perl from spamming apache's error_log with
+# 'listing.cgi: Name "Spamikaze::web_removalurl" used only once: possible typo'
+my $nowarnings = $Spamikaze::web_removalurl;
