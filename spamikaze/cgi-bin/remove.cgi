@@ -1,4 +1,4 @@
-#!/usr/bin/perl -wT
+#!/usr/bin/perl -T
 
 # removal from the DNSBL
 #
@@ -11,17 +11,11 @@
 #     http://spamikaze.surriel.com/
 
 use strict;
+use warnings;
 use CGI qw(:standard :html4 -no_xhtml);
-use CGI::Carp;
 
 unshift (@INC, "/opt/spamikaze/scripts");
 require Spamikaze;
-our $dbuser;
-our $dbpwd;
-our $dbbase;
-our $dbhost;
-our $dbport;
-our $dbtype;
 
 # the IP address broken down into octets
 my $octa;
