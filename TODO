@@ -9,7 +9,8 @@ Before next release:
   * Fix the $_, this doesn't handle 0.x.x.x ipnumbers.
   * Add whitelist mailserver table
   * Add evidence table
-  * make sure web scripts work with new database layout
+  * make sure cgi apps can run on various sites without modification
+    (include header & footer, specified by config file)
 
 For later versions:
   * spamikaze website
