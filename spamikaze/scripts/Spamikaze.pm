@@ -41,7 +41,7 @@ our $dnsbl_zone_file;
 our $dnsbl_url_base;
 our $dnsbl_ttl;
 our $dnsbl_primary_ns;
-our @dnsbl_secondary_nses;
+our $dnsbl_secondary_nses;
 
 # cgi scripts
 our $web_header;
@@ -101,7 +101,7 @@ BEGIN {
 	$dnsbl_url_base = $cfg->val ('DNSBL', 'UrlBase' );
 	$dnsbl_ttl = $cfg->val ('DNSBL', 'TTL' );
 	$dnsbl_primary_ns = $cfg->val ('DNSBL', 'PrimaryNS' );
-	@dnsbl_secondary_nses = $cfg->val ('DNSBL', 'SecondaryNSes' );
+	$dnsbl_secondary_nses = $cfg->val ('DNSBL', 'SecondaryNSes' );
 
 	$web_header = $cfg->val ('Web', 'Header' );
 	$web_footer = $cfg->val ('Web', 'Footer' );

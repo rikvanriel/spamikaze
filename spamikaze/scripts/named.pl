@@ -39,7 +39,7 @@ sub build_zone_header
 {
 	my $dnsbl_domain = $Spamikaze::dnsbl_domain;
 	my $primary_ns = $Spamikaze::dnsbl_primary_ns;
-	my @secondary_nses = @Spamikaze::dnsbl_secondary_nses;
+	my @secondary_nses = split /\s+/, $Spamikaze::dnsbl_secondary_nses;
 	my $timestamp = time();
 	my $secondary_ns;
 
