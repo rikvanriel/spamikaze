@@ -11,11 +11,11 @@
 #     http://spamikaze.surriel.com/
 
 use strict;
-use DBI;
 use CGI qw(:standard :html4 -no_xhtml);
 use CGI::Carp;
 
-require "/path/config.pl";
+unshift (@INC, "/opt/spamikaze/scripts");
+require Spamikaze;
 our $dbuser;
 our $dbpwd;
 our $dbbase;
@@ -121,9 +121,7 @@ sub grabinfo
 	# DBI connect params.
 	#
 	# DBI->connect( $data_source, $username, $password, \%attr );
-    $dbh = DBI->connect( "dbi:$dbtype:dbname=$dbbase;host=$dbhost;port=$dbport",
-                         $dbuser, $dbpwd, { RaiseError => 1 }) || die
-                         "Database connection not made\n";
+	$dbh = Spamikaze::DBConnect();
                          
 	#
 	# first, get the times where we received spam
