@@ -129,6 +129,7 @@ sub main {
 	close ZONEFILE;
 
 	$sth->finish();
+    $dbh->disconnect();
 
 	if ( !rename "$dnsbl_location.new", "$dnsbl_location" ) {
 		warn "rename $dnsbl_location.new to $dnsbl_location failed: $!\n";
