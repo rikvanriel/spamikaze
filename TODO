@@ -10,7 +10,6 @@ Before next release:
   * Add whitelist zone file so more then one mailservers can use it
     within a company/org.
   * Add evidence table
-  * optionally, make spamikaze ignore (RFC compliant) bounce messages
 
 For later versions:
   * the perl scripts in cgi-bin should be able to do the same as there 
