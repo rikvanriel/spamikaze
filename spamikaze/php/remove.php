@@ -18,7 +18,7 @@ function removeip($a, $b, $c, $d)
     global $msg;
     if (connect() == true)
     {
-        $sql = "UPDATE spammers SET visible = 0 WHERE
+        $sql = "UPDATE ipnumbers SET visible = 0 WHERE
                     octa = '" . $a . "' AND
                     octb = '" . $b . "' AND
                     octc = '" . $c . "' AND
