@@ -1,9 +1,10 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl -wT
 #
 # Passivetrap.pl
 #
 # Copyright (C) 2003 Hans Wolters <h-wolters@nl.linux.org>
 # Copyright (C) 2003 Rik van Riel <riel@surriel.com>
+# Copyright 2004 Hans Spaans      <cj.spaans@nexit.nl>
 # Released under the GNU GPL
 #
 # NO WARRANTY, see the file COPYING for details.
@@ -12,12 +13,11 @@
 #     http://spamikaze.surriel.com/
 
 use strict;
-#use DBI;
 
 # unshift the path where passivetrap.pl and
 # config.pl is located on the @INC.
 
-unshift (@INC,"/path/to/modules");
+unshift (@INC,"/home/webapps/spamikaze/spamikaze/spamikaze/scripts");
 
 # Use the new pm, this will load the config.pl and
 # set the variables for the db.
@@ -57,9 +57,9 @@ sub storeip
     my $error   = 0;
     my @iplist  = split /\./, $ip;
     my $ts      = time();
-    my $sql     = "INSERT INTO spammers (octa, octb, octc, octd, spamtime)
+    my $sql     = "INSERT INTO ipnumbers (octa, octb, octc, octd, spamtime)
                     VALUES (?, ?, ? , ?, ?)";
-    my $visip   = "UPDATE spammers SET visible = 1 WHERE
+    my $visip   = "UPDATE ipnumbers SET visible = 1 WHERE
                         octa = ? AND octb = ? AND octc = ? AND octd = ?";
                         
     # Set the dbh from the new pm.

@@ -23,7 +23,7 @@ CREATE TABLE ipremove (
 # Table structure for table 'spammers'
 #
 
-CREATE TABLE spammers (
+CREATE TABLE ipnumbers (
   id int(11) NOT NULL auto_increment,
   octa smallint(6) NOT NULL default '0',
   octb smallint(6) NOT NULL default '0',

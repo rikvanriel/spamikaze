@@ -18,7 +18,7 @@ CREATE INDEX idx_remove ON ipremove ( octa, octb, octc, octd );
 
 -- Note : oct[a-d] should be cidr
 --        spamtime should be timestamp with time zone
-CREATE TABLE "spammers" (
+CREATE TABLE "ipnumbers" (
   "id"                 bigserial,
   "octa"               smallint NOT NULL default '0',
   "octb"               smallint NOT NULL default '0',
@@ -29,7 +29,7 @@ CREATE TABLE "spammers" (
   primary key ("id")
 );
 
-CREATE INDEX idx_ip ON spammers ( octa, octb, octc, octd );
+CREATE INDEX idx_ip ON ipnumbers ( octa, octb, octc, octd );
 
 CREATE TABLE "whitelist" (
   "id"                 bigserial,
