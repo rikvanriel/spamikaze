@@ -1,3 +1,33 @@
+2004-08-29  Rik van Riel  <riel@humbolt>
+
+	* html/index.php: release spamikaze 0.2
+
+	* spamikaze/scripts/Spamikaze.pm:
+	Spamikaze 0.2 seems ready.  Time to make a release...
+
+	--- spamikaze/scripts/Spamikaze.pm	3 Jul 2004 21:32:25 -0000	1.20
+	+++ spamikaze/scripts/Spamikaze.pm	29 Aug 2004 01:22:15 -0000
+	@@ -55,7 +55,7 @@
+	 my @RFC1918Addresses =
+	   ( '10\.', '172\.1[6-9]\.', '172\.2[0-9]\.', '172\.3[0-2]\.', '192\.168\.' );
+
+	-my $VERSION = "Spamikaze.pm Version .1\n";
+	+my $VERSION = "Spamikaze.pm Version .2\n";
+
+	 BEGIN {
+
+	* spamikaze/spamikaze-mysql.sql: Index: spamikaze-mysql.sql
+
+2004-08-27  Cor Gest  <cor@humbolt.nl.linux.org>
+
+	* ChangeLog: ChangeLog Updated
+
+2004-08-22  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/expire.pl: simplify the Big Query(tm) a bit
+
+	* spamikaze/spamikaze-mysql.sql: octa/b/c/d are tinyint(3) unsigned
+
 2004-08-22  Rik van Riel  <riel@humbolt>
 
 	* spamikaze/scripts/expire.pl: simplify the Big Query(tm) a bit
@@ -1128,7 +1158,7 @@
 2004-02-01  riel  <riel@cleopatra>
 
 	* /home/CVS/spamikaze/TODO-database: 		Database reorganisation
-			$Id: ChangeLog,v 1.10 2004/08/27 21:51:49 cor Exp $
+			$Id: ChangeLog,v 1.11 2004/09/15 14:07:08 cor Exp $
 
 
 	In order to facilitate more flexible blocklisting, expiry, removal and
