@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Spamikaze Documentation</title>
+<title>Spamikaze Installation</title>
 </head>
 <body bgcolor="white">
 
