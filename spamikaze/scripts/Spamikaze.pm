@@ -5,7 +5,7 @@
 package Spamikaze;
 use DBI;
 
-require '/home/sys_scripts/config.pl';
+require '/path/config.pl';
 our $dbuser;
 our $dbpwd;
 our $dbbase;
@@ -28,3 +28,19 @@ sub DBConnect
                         "Database connection not made: $DBI::errstr";
     return $dbh;
 }
+
+sub MXBackup
+{
+	my ( $ip ) = @_;
+	my $mxhosts;
+
+	foreach $mxhosts (@MXBACKUP) {
+		if ($ip =~ /^$mxhosts/) {
+			# print "mx backup: $ip\n";
+			return 1;
+		}
+	}
+	return 0;
+}
+
+1;
