@@ -166,7 +166,7 @@ sub process_dir
 		}
 
 		# skip temporary files the MTA isn't ready with yet
-		if ($mailfile =~ /^te?mp/ or $mailfile =~ /^\./) {
+		if ($file =~ /^te?mp/ or $file =~ /^\./) {
 			next;
 		}
 
