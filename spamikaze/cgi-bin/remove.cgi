@@ -24,6 +24,7 @@ my $octc;
 my $octd;
 
 my $q = new CGI;
+my $listname = $Spamikaze::web_listname;
 
 sub invalid
 {
@@ -52,61 +53,78 @@ sub invalid
 	return 1;
 }
 
+
+sub write_page
+{
+	my ( $ip, $body ) = @_;
+
+	print $q->header("text/html");
+	print $q->start_html("$listname removal of $ip");
+
+	# print the page header, if defined
+	if (defined $Spamikaze::web_header and
+			 open HEADER, "<$Spamikaze::web_header") {
+		my $header = '';
+		while (<HEADER>) {
+			$header .= $_;
+		}
+		print $q->p($header);
+		close HEADER;
+	} else {
+		print $q->h1("$listname removal");
+	}
+
+	print $q->p("<h2>Removal Results</h2>");
+	print $q->p($body);
+
+	# print the footer, if defined
+	if (defined $Spamikaze::web_footer and
+			 open FOOTER, "<$Spamikaze::web_footer") {
+		my $footer = '';
+		while (<FOOTER>) {
+			$footer .= $_;
+		}
+		print $q->p($footer);
+		close FOOTER;
+	}
+
+	print $q->end_html;
+}
+
 sub invalid_page
 {
 	my ( $ip ) = @_;
-	print $q->header("text/html"),
-		$q->start_html("Invalid IP address specified"),
-		$q->h1("Invalid IP address specified"),
-		$q->p("Please <a href=\"/remove.html\">specify</a> a valid
-			 IP address, $ip does not work for me."),
-		$q->end_html;
-}
 
-sub example_page
-{
-	my ( $ip ) = @_;
-	print $q->header("text/html"),
-		$q->start_html("Example IP address specified"),
-		$q->h1("Example IP address specified"),
-		$q->p("That's one of the example IP addresses. Please check
-			your bounce message and
-			<a href=\"/remove.html\">specify</a> the IP address
-			of your mail server.");
-		$q->end_html;
+	my $body = "Invalid IP address specified ($ip);\n";
+	$body .= "please specify a valid IP address.\n";
+
+	return $body;
 }
 
 sub success_page
 {
 	my ( $ip ) = @_;
-	print $q->header("text/html"),
-		$q->start_html("IP address removed from database"),
-		$q->h1("IP address removed from database"),
-		$q->p("IP address $ip has been removed from the database,
-			but note that it will be added back in when the next
-			spam is received."),
-		$q->p("It should be gone from the DNSBL in a few minutes,
-			when the zone file is regenerated. If you were sending
-			an email to a site using this list, please try again
-			in a few minutes.");
-		$q->p("If you don't want to get listed again, don't send spam."),
-		$q->end_html;
+	my $body = "IP address $ip has been removed from the database. ";
+	$body .= "It should be gone from the DNSBL list $listname ";
+	$body .= "after the next zone file rebuild, in a couple of minutes.\n";
+	$body .= "<p>Note that it will be added back in the next time it ";
+	$body .= "sends email to one of our spam traps, so please minimise ";
+	$body .= "any abusive behaviour by $ip.\n";
+
+	return $body;
 }
 
 sub not_found_page
 {
 	my ( $ip ) = @_;
-	print $q->header("text/html"),
-		$q->start_html("IP address not found"),
-		$q->h1("IP address not found"),
-		$q->p("Sorry, but I could not find $ip in the database."),
-		$q->p("Maybe you made a <a href=\"/remove.html\">typo</a>, or
-			maybe it was already removed from the database but
-			the DNSBL has not been updated yet."),
-		$q->p("If you are sure that $ip is the right address, it
-			should be gone from the DNSBL in a few minutes.
-			Please try again later.");
-		$q->end_html;
+	my $body = "Sorry, but $ip does not appear to be on the DNSBL ";
+	$body .= "$listname (any more?).  <p>Maybe you made a typo, or the ";
+	$body .= "IP address was already removed from the database?\n";
+	$body .= "If you are sure that $ip is the right address, it should ";
+	$body .= "be gone from the DNSBL after the next zone file rebuild, ";
+	$body .= "which should happen in a few minutes.\n";
+	
+	return $body;
 }
 
 sub remove_from_db
@@ -153,27 +171,33 @@ sub main
 {
 	$CGI::DISABLE_UPLOADS = 1;
 	$CGI::POST_MAX = 300;
+	my $body;
 
 	my $ip = $q->param("ip") || '';
 
 	# check if the IP address is valid
-	if ($ip eq '' || &invalid($ip)) {
-		&invalid_page($ip);
+	if ($ip eq '' || &invalid($ip) || $ip =~ /^127/) {
+		$body = &invalid_page($ip);
 	} 
-
-	if ($ip =~ /^127/) {
-		&example_page;
-	}
 
 	# valid IP address, try to remove
 	elsif (&remove_from_db($ip) > 0){ 
-		&success_page($ip);
+		$body = &success_page($ip);
 	}
 
 	# ok so the removal failed
 	else {
-		&not_found_page($ip);
+		$body = &not_found_page($ip);
 	}
+
+	# 
+	# Write the web page
+	#
+	&write_page ($ip, $body);
+	exit 0;
 }
 
 main;
+
+# get rid of perl warning that would flood apache logs
+my $nowarn = $Spamikaze::web_listname;
