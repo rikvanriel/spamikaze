@@ -99,7 +99,7 @@ function iplist($fip, $sip)
                 (octc * 256) + octd )";
                 
     $sql    = "SELECT COUNT(id) as total, CONCAT_WS('.', octa, octb, octc, octd) 
-                   AS ip, spamtime, visible, country FROM spammers WHERE";
+                   AS ip, spamtime, visible FROM ipnumbers WHERE";
                 
     if ($sip > 0 && $sip > $fip)
     {
@@ -138,7 +138,6 @@ function iplist($fip, $sip)
                 <td>IP Number</td>
                 <td>Last spam time</td>
                 <td>Blocked</td>
-                <td>Country</td>
                </tr>\n";
                
     while ($row = mysql_fetch_object($result)) 
@@ -148,7 +147,6 @@ function iplist($fip, $sip)
                 <td>" . $row->ip . "</td>
                 <td>" . date("Y M dS H:i T", $row->spamtime) . "</td>
                 <td>" . $row->visible . "</td>
-                <td>" . $row->country . "</td>
               </tr>\n";
               
     }
