@@ -8,8 +8,16 @@ of this document.
 Update Spamikaze
 ----------------
 
+To update from the Spamikaze version .1 you will need three extra
+tables in the spamikaze database. This is simply done by importing
+the update dump in mysql.
 
+    mysql -u root -p spamikaze < spamikaze-mysql-update.sql
 
+Next you need to make sure you have a backup of your current database
+before you run the update script which is located in the scripts 
+directory. This update will import the current entries which are all
+stored in the spammers table into the ipnumber and ipentries tables.
 
 
 Install Spamikaze
