@@ -55,7 +55,7 @@ sub from_daemon
 	return 0;
 }
 
-sub received_to_ip_zmailer
+sub received_to_ip
 {
 	my ( $rcvd ) = @_;
 
@@ -74,7 +74,7 @@ sub parsereceived
 {
 	my ( $rcvd ) = @_;
 
-	my $ip = &received_to_ip_zmailer($rcvd);
+	my $ip = &received_to_ip($rcvd);
 
 	return $ip;
 }
