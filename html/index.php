@@ -23,6 +23,9 @@ lists the IP addresses that have sent spam and allows anybody to remove
 IP addresses from the list.
 
 <ul>
+<li><b>July 2, 2004</b> Spamikaze 0.2-beta is released.
+<a href="ftp://ftp.nl.linux.org/pub/spamikaze/spamikaze-0.2-beta.tar.gz">Get
+it</a> while it's hot...
 <li><b>June 29, 2004</b> Spamikaze 0.2 is almost ready. Currently we need
 volunteers to test the latest CVS snapshot and to check the documentation
 for errors, inconsistencies and oversights.

@@ -10,6 +10,13 @@
 
 <h1>Download Spamikaze</h1>
 
+<h2>Spamikaze 0.2-beta</h2>
+
+This is the beta release for Spamikaze 0.2.  At this point, Spamikaze
+isn't feature complete yet, but it should be stable.
+
+<p><a href="ftp://ftp.nl.linux.org/pub/spamikaze/">Get it</a> via ftp.
+
 <h2>Spamikaze 0.1</h2>
 
 This is the first alpha release of Spamikaze. The software works and
