@@ -26,7 +26,7 @@ We are assuming you already have mysql installed and running. If not
 then please get a version for your OS and install it with the guide-
 lines of that package.
 
-<h3>Creating a new database for spamikaze</h3>
+<h3>MySQL Spamikaze database creation</h3>
 
 At the prompt you can mysqladmin to create a new database.
 
@@ -70,8 +70,40 @@ $ mysql -u root -p spamikaze < /path/spamikaze-mysql.sql
 </tt>
 
 
-<h2>Spam trap</h2>
+<h2>Spamikaze's spam trap software</h2>
 
+The passivetrap.pl script analyses mail coming into spam traps and
+finds the IP address that delivered the message to your mail servers
+and adds that IP address to the database.
+
+<p>To call the passivetrap.pl script automatically from a spam trap
+email address in sendmail, postfix, zmailer or exim, simply add lines
+like the following to the email aliases file (usually in /etc/aliases).
+
+<p><tt>
+spamtrap:     "|/opt/spamikaze/scripts/passivetrap.pl"
+ionlygetspam: "|/opt/spamikaze/scripts/passivetrap.pl"
+</tt>
+
+<p>This way all email to spamtrap@yourdomain is sent into
+the passivetrap script automatically. You could even turn a whole
+subdomain into one big spamtrap, sending all addresses in that
+subdomain into passivetrap.pl.  Eg. if your domain is example.com,
+you could create the spamtrap.example.com subdomain and use that
+for spamikaze only.
+
+<p>Of course, you will need to make sure the spammers know about
+the email addresses you use as spam traps.  Some obvious methods
+are posting the address on usenet, putting the address on a web
+page or filling the address into unsubscribe forms in spam.
+A less obvious (but very effective) way is to look at your mail
+logs. Chances are spammers are already trying to send email to
+nonexisting accounts at your domain. Using the busiest nonexisting
+accounts as spam trap addresses is very effective, because the
+spammers are already trying to send mail to them!
+
+<p>Note that you will need to configure Spamikaze before the
+passivetrap script can add addresses to the database.
 
 <?php
   require("docmenu.inc.php");
