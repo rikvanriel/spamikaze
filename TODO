@@ -10,8 +10,6 @@ Before next release:
   * Add whitelist zone file so more then one mailservers can use it
     within a company/org.
   * Add evidence table
-  * make sure cgi apps can run on various sites without modification
-    (include header & footer, specified by config file)
   * optionally, make spamikaze ignore (RFC compliant) bounce messages
 
 For later versions:
