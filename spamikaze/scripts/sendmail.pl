@@ -31,7 +31,7 @@ sub main
     my $dbh = Spamikaze::DBConnect();
 
     my $sql = "SELECT DISTINCT CONCAT_WS('.',  octa, octb, octc, octd) AS ip
-               FROM spammers WHERE visible = 1 ORDER BY octa, octb, octc, octd";
+               FROM ipnumbers WHERE visible = 1 ORDER BY octa, octb, octc, octd";
 
     my $sth = $dbh->prepare( $sql );
 
