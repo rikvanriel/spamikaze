@@ -13,7 +13,7 @@ require Spamikaze;
 
 our @DONTEXPIRE;
 
-my $ticks = 15 * 24 * 60 * 60;  # 15 days ?
+my $firsttime = 15 * 24 * 60 * 60;  # 15 days ?
 my $bonustime;
 my $extratime = 30 * 24 * 60 * 60;
 my $maxspamsperip = 10;
@@ -70,7 +70,7 @@ sub main
         my $sthexpire = $dbh->prepare( $expiresql );
         $ip = "$octa.$octb.$octc.$octd";
         if ($total == 1 && mxdontexpire($ip) < 1) {
-            $bonustime = $spamtime + $ticks;
+            $bonustime = $spamtime + $firsttime;
             if ($bonustime <= time()){
                 print $total, "\t";
                 $sthexpire->execute($octa, $octb, $octc, $octd);
