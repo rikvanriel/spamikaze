@@ -121,14 +121,23 @@ sub storeip
 
             my $sqlipnumber = "INSERT INTO ipnumbers (octa, octb, octc, octd)
                                VALUES ( ?, ?, ?, ?)";
-                               
-            my $sthipnumber = $dbh->prepare( $sqlipnumber );
-            $sthipnumber->execute($iplist[0], $iplist[1], $iplist[2], $iplist[3]);
-            $sthipnumber->finish();
+           
+            eval { # catch failures
+                $dbh->{PrintError} = 0 ;
+                my $sthipnumber = $dbh->prepare( $sqlipnumber );
+                $sthipnumber->execute($iplist[0], $iplist[1], $iplist[2], $iplist[3]);
+                $sthipnumber->finish();
 
-            $sth = $dbh->prepare( $sql );
-            $sth->execute($iplist[0], $iplist[1], $iplist[2], $iplist[3]);
-            $sth->finish();
+                $sth = $dbh->prepare( $sql );
+                $sth->execute($iplist[0], $iplist[1], $iplist[2], $iplist[3]);
+                $sth->finish();
+            } ;
+
+            if ($@) { # handle errors
+                unless ($dbh->err() == 1062) { # die unless duplicate entry error
+                    die $@ ;
+                }
+            }
         }
 
         # needed to set all earlier entries for this ipnumber to visible.
