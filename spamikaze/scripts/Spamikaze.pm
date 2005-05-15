@@ -57,7 +57,7 @@ my @RFC1918Addresses =
 
 my $VERSION = "Spamikaze.pm Version .2\n";
 
-BEGIN {
+sub ConfigLoad {
 
 	my $configfile;
 
@@ -175,6 +175,13 @@ sub MXBackup {
 	}
 
 	return 0;
+}
+
+BEGIN {
+	&ConfigLoad();
+
+	# On SIGHUP we reload the configuration
+	$SIG{HUP} = \&ConfigLoad;
 }
 
 1;
