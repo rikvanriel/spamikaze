@@ -1,3 +1,43 @@
+2005-06-04  Cor Gest  <cor@humbolt.nl.linux.org>
+
+	* ChangeLog: ChangeLog Updated
+
+2005-05-15  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/Spamikaze.pm:
+	Make the configuration reloadable by sending SIGHUP to a Spamikaze
+	program.  Useful for passivetrap -d and future Spamikaze daemons.
+
+	TODO: make sure programs use the config values directly and not a
+	(possibly out of date) local copy.
+
+	diff -u -d -u -r1.23 Spamikaze.pm
+	--- Spamikaze.pm	6 Nov 2004 21:00:10 -0000	1.23
+	+++ Spamikaze.pm	15 May 2005 20:25:07 -0000
+	@@ -57,7 +57,7 @@
+
+	 my $VERSION = "Spamikaze.pm Version .2\n";
+
+	-BEGIN {
+	+sub ConfigLoad {
+
+	 	my $configfile;
+
+	@@ -175,6 +175,13 @@
+	 	}
+
+	 	return 0;
+	+}
+	+
+	+BEGIN {
+	+	&ConfigLoad();
+	+
+	+	# On SIGHUP we reload the configuration
+	+	$SIG{HUP} = \&ConfigLoad;
+	 }
+
+	 1;
+
 2005-05-15  Rik van Riel  <riel@humbolt>
 
 	* spamikaze/scripts/Spamikaze.pm:
