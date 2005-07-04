@@ -24,6 +24,9 @@ if (defined $Spamikaze::web_listname) {
 	$listname = $Spamikaze::web_listname;
 }
 
+# URL to check whether the IP is listed in other DNSBLs
+my $checkurl = "http://www.dnsstuff.com/tools/ip4r.ch?ip=";
+
 sub write_page
 {
 	my ( $ip, $body ) = @_;
@@ -87,16 +90,15 @@ sub listing_page_body
 	if ($foundinfo eq ' ') {
 		$body = "The host $ip has never been listed in $listname. " .
 			"Maybe you are looking at the wrong blocklist? " .
-			"You may want to visit " .
-			"<a href=\"http://openrbl.org/lookup?i=$ip\">Openrbl" .
-			"</a> to check the other blocklists.";
+			"<p>You may want to check the <a href=" .
+			$checkurl . $ip . ">other blocklists</a>";
 	} else {
 		$body = "Currently listed in $listname?  $listedword.\n<p>" .
 			"Spam and removal history for $ip (times in UTC):\n" .
 			"<p><table border=\"1\">\n" . "$foundinfo" .
 			"</table>\n" .
-			"<p>Check this IP address in: " .
-			"<a href=\"http://openrbl.org/lookup?i=$ip\">Openrbl" .
+			"<p>You may also want to check the <a href=" .
+			$checkurl . $ip . ">other blocklists</a>" .
 			"</a> and " .
 			"<a href=\"http://groups.google.com/groups?scoring=d&q=$ip+group:*abuse*\">Google groups</a>.\n" .
 			"<h2>Remove IP from $listname</h2>\n" .
