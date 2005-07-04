@@ -131,7 +131,8 @@ sub grabinfo
 			octa = ? AND
 			octb = ? AND
 			octc = ? AND
-			octd = ?";
+			octd = ?
+			ORDER BY ipentries.id DESC LIMIT 200";
 
 	my $sth = $dbh->prepare($sql);
 	$sth->execute($octa, $octb, $octc, $octd);
