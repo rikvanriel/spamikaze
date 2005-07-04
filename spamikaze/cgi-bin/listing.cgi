@@ -17,12 +17,6 @@ use CGI qw(:standard :html4 -no_xhtml);
 unshift (@INC, "/opt/spamikaze/scripts");
 require Spamikaze;
 
-# the IP address broken down into octets
-my $octa;
-my $octb;
-my $octc;
-my $octd;
-
 my $q = new CGI;
 
 my $listname = 'Spamikaze example';
@@ -115,6 +109,8 @@ sub listing_page_body
 
 sub grabinfo
 {
+	my ($ip) = @_;
+	my ($octa, $octb, $octc, $octd) = Spamikaze::SplitIP($ip);
 	my %iplog = ();
 	my $time;
 	my $found;
