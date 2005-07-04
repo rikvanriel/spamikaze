@@ -185,6 +185,10 @@ sub MXBackup {
 
 sub ValidIP {
 	my ( $ip ) = @_;
+	my $octa;
+	my $octb;
+	my $octc;
+	my $octd;
 
 	# decompose into octets
 	if ($ip =~ /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/) {
