@@ -116,7 +116,7 @@ sub storeip
 sub mxdontexpire
 {
     my $ip = $_[0];
-    my $dontexpire = $_[1];
+    my @dontexpire = $_[1];
     my $entry;
 
     foreach $entry (@dontexpire) 
