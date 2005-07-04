@@ -20,12 +20,17 @@ use Config::IniFiles;
 use Env qw( HOME );
 use Net::DNS;
 
+use Spamikaze::MySQL_2;
+
 my $dbuser;
 my $dbpwd;
 my $dbbase;
 my $dbport;
 my $dbtype;
 my $dbhost;
+my $dbmod;
+our $db;
+
 my @MXBACKUP;
 my $ignoreRFC1918;
 our $ignorebounces;
@@ -86,6 +91,7 @@ sub ConfigLoad {
 	$dbuser = $cfg->val( 'Database', 'Username' );
 	$dbpwd  = $cfg->val( 'Database', 'Password' );
 	$dbbase = $cfg->val( 'Database', 'Name' );
+	$dbmod  = $cfg->val( 'Database', 'Schema' );
 
 	@MXBACKUP = split ( ' ', $cfg->val( 'Mail', 'BackupMX' ) );
 	@whitelist_zones = split ( ' ', $cfg->val ( 'Mail', 'WhitelistZones' ) );
@@ -182,6 +188,9 @@ BEGIN {
 
 	# On SIGHUP we reload the configuration
 	$SIG{HUP} = \&ConfigLoad;
+
+	my $tmp = "Spamikaze::" . $dbmod;
+	$db = new $tmp;
 }
 
 1;

@@ -29,7 +29,6 @@ sub main {
 	my $ip;
 	my $sql;
 	my $sth;
-	my @row;
 
 	if ($#ARGV != 0) {
 		&usage;
@@ -42,35 +41,11 @@ sub main {
 	flock( TEXTFILE, 2 );
 	seek( TEXTFILE, 0, 2 );
 
-	my $dbh = Spamikaze::DBConnect();
-
-	if ( Spamikaze::GetDBType() eq 'mysql' ) {
-		$sql = "SELECT CONCAT_WS('.', octa, octb, octc, octd) AS ip
-                FROM ipnumbers WHERE visible = 1 ORDER BY ip";
-		$sth = $dbh->prepare($sql);
-		$sth->execute();
-		$sth->bind_columns( undef, \$ip );
-
-		while ( $sth->fetch() ) {
-			print TEXTFILE $ip, "\n";
-		}
+	foreach $ip ($Spamikaze::db->get_listed_addresses()) {
+		print TEXTFILE "$ip\n";
 	}
-	elsif ( Spamikaze::GetDBType() eq 'Pg' ) {
-		$sql = "SELECT DISTINCT octa, octb, octc, octd
-                FROM ipnumbers WHERE visible = '1'
-                ORDER BY octa, octb, octc, octd";
-		$sth = $dbh->prepare($sql);
-		$sth->execute();
 
-		while ( @row = $sth->fetchrow_array() ) {
-			$ip         = "$row[0].$row[1].$row[2].$row[3]";
-
-			print TEXTFILE $ip,   "\n";
-		}
-	}
 	close TEXTFILE;
-
-	$sth->finish();
 
 	if ( !rename "$outfile.new", "$outfile" ) {
 		warn "rename $outfile.new to $outfile failed: $!\n";

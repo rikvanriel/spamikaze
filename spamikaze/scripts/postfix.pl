@@ -27,71 +27,22 @@ my $mta_bl_template_wl = "{EMAIL}";
 
 sub main {
 	my $ip;
-	my $email;
 
 	open( fileOUT, ">$mta_bl_location.new" )
 	  || die ("Can't open $mta_bl_location for writing: $!");
 	flock( fileOUT, 2 );
 	seek( fileOUT, 0, 2 );
 
-	my $dbh = Spamikaze::DBConnect();
-
-	if ( Spamikaze::GetDBType() eq 'mysql' ) {
-
-		my $sql = "SELECT 
-                DISTINCT CONCAT_WS('.',  octa, octb, octc, octd) AS ip
-               FROM ipnumbers WHERE visible = 1 ORDER BY octa, octb, octc, octd";
-		my $sth = $dbh->prepare($sql);
-		$sth->execute();
-		$sth->bind_columns( undef, \$ip );
-
-		#    my $bldomain;
-		#    foreach $bldomain (@BLACKLISTDOMAINS) {
-		#        $_ = $mta_bl_domain;
-		#        s/\{DOMAIN\}/$bldomain/;
-		#        print fileOUT $_, "\n";
-		#    }
-
-		while ( $sth->fetch() ) {
-			$_ = $mta_bl_template;
-			s/\{IP\}/$ip/g;
-			print fileOUT $_, "\n";
-		}
-
-		$sth->finish();
-
+	foreach $ip ($Spamikaze::db->get_listed_addresses()) {
+		$_ = $mta_bl_template;
+		s/\{IP\}/$ip/g;
+		print fileOUT $_, "\n";
 	}
-	elsif ( Spamikaze::GetDBType() eq 'Pg' ) {
-
-		my $sql = "SELECT DISTINCT octa, octb, octc, octd
-                FROM ipnumbers WHERE visible = '1'
-                ORDER BY octa, octb, octc, octd";
-		my $sth = $dbh->prepare($sql);
-		$sth->execute();
-
-		while ( my @row = $sth->fetchrow_array() ) {
-
-			my $ip         = "$row[0].$row[1].$row[2].$row[3]";
-			my $txt_record = $mta_bl_template;
-			$txt_record    =~ s/\{IP\}/$ip/g;
-
-			print fileOUT $txt_record, "\n";
-
-		}
-
-		$sth->finish();
-
-	}
-
 	close(fileOUT);
-
-	$dbh->disconnect();
 
 	if ( !rename "$mta_bl_location.new", "$mta_bl_location" ) {
 		warn "rename $mta_bl_location.new to $mta_bl_location failed: $!\n";
 	}
-
-
 }
 
 &main();

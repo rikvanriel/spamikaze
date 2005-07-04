@@ -18,83 +18,9 @@ use Spamikaze;
 
 our @DONTEXPIRE = ('127.0.0.2');
 
-my $bonustime;
-
-sub mxdontexpire
-{
-        
-    my $ip = $_[0];
-    my $mxdexpire;
-
-    foreach $mxdexpire (@DONTEXPIRE) 
-    {
-        if ($ip =~ /^$mxdexpire/) {
-            return 1;
-        }
-    }
-    return 0;
-}
-
 sub main
 {
-    my $ip;
-    my $total;
-    my $spamtime;
-    my $octa;
-    my $octb;
-    my $octc;
-    my $octd;
-    my $hostname;
-
-    my $dbh = Spamikaze::DBConnect();
-
-    my $sql = "SELECT
-                    COUNT(*) AS total,
-                    octa, octb, octc, octd,
-                    MAX(date_logged) AS spamtime
-               FROM
-                    ipentries,  ipnumbers
-               WHERE
-                    ipnumbers.id = ipentries.id_ip AND
-                    visible = 1
-               GROUP BY octa, octb, octc, octd
-               ORDER BY spamtime ASC";
-
-    my $sth = $dbh->prepare( $sql );
-    $sth->execute();
-    $sth->bind_columns( undef, \$total, \$octa, \$octb, \$octc, \$octd, \$spamtime);
-
-    my $expiresql = "UPDATE ipnumbers SET visible = 0 WHERE 
-                        octa = ? AND octb = ? AND octc = ? AND octd = ?";
-
-    while( $sth->fetch() )
-    {
-        my $sthexpire = $dbh->prepare( $expiresql );
-        $ip = "$octa.$octb.$octc.$octd";
-        if ($total == 1 && mxdontexpire($ip) < 1) {
-            $bonustime = $spamtime + $Spamikaze::firsttime;
-            if ($bonustime <= time()){
-                # print $total, "\t";
-                $sthexpire->execute($octa, $octb, $octc, $octd);
-                # print "$octa.$octb.$octc.$octd\n";
-            }
-        }
-        elsif (($total < $Spamikaze::maxspamperip) && (mxdontexpire($ip) < 1))
-        {
-            $bonustime = $spamtime + ($Spamikaze::extratime * $total) +
-			$Spamikaze::firsttime;
-            if ($bonustime <= time()){
-                # print $total, "\t";
-                $sthexpire->execute($octa, $octb, $octc, $octd);
-                # print "$octa.$octb.$octc.$octd\n";
-            }
-        }
-        $sthexpire->finish();
-        #sleep(1);
-    }
-
-    $sth->finish();
-    $dbh->disconnect();
+    $Spamikaze::db->expire(@DONTEXPIRE);
 }
 
 &main;
