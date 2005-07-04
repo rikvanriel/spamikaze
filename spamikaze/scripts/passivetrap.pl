@@ -37,7 +37,7 @@ sub from_daemon
 	if ($mail =~ /^From:?\s+\<?MAILER.DAEMON/mi) {
 		return 1;
 	}
-	if ($mail =~ /^From:\s+\<?postmaster/mi) {
+	if ($mail =~ /^From:?[\s\w\+\-\'\"]+\<?postmaster/mi) {
 		return 1;
 	}
 	if ($mail =~ /^From:\s+\<?(majordomo|listar|ecartis|mailman)/mi) {
@@ -49,7 +49,76 @@ sub from_daemon
 	if ($mail =~ /^From:?\s+\<?(bounce-.*@.*(lyris|list|mail))/mi) {
 		return 1;
 	}
+	if ($mail =~ /^X-AskVersion:.*paganini.net/m) {
+		return 1;
+	}
+	if ($mail =~ /^using a program called Qurb which automatically/m) {
+		return 1;
+	}
 	if ($mail =~ /^Your (mail to|message|email).*could not be delivered/m) {
+		return 1;
+	}
+	if ($mail =~ /Message from InterScan Messaging Security Suite/m) {
+		return 1;
+	}
+	if ($mail =~ /^ScanMail for Microsoft Exchange has detected/m) {
+		return 1;
+	}
+	if ($mail =~ /^X-ChoiceMail-Registration-Request/m) {
+		return 1;
+	}
+	if ($mail =~ /^Subject:(\w\s)*automat(ic|ed) reply/mi) {
+		return 1;
+	}
+	if ($mail =~ /^List-Subscribe:.*@/mi) {
+		return 1;
+	}
+	if ($mail =~ /out of (the )?office/mi) {
+		return 1;
+	}
+	if ($mail =~ /From?\s+(eSafe|MAILsweeper|av-gateway)@/m) {
+		return 1;
+	}
+	if ($mail =~ /this is an automated (response|reply)/mi) {
+		return 1;
+	}
+	if ($mail =~ /^Precedence:\s+(bulk|junk)/mi) {
+		return 1;
+	}
+	if ($mail =~ /^Hi! This is the ezmlm program./m) {
+		return 1;
+	}
+	if ($mail =~ /^Auto-Submitted:\sauto-replied/mi) {
+		return 1;
+	}
+	if ($mail =~ /^From:?\s+Symantec_Anti-?(Spam|Virus)\@/mi) {
+		return 1;
+	}
+	if ($mail =~ /^The following addresses had permanent fatal errors/mi) {
+		return 1;
+	}
+	if ($mail =~ /VIRUS_WARNING|WORM_FOUND/m) {
+		return 1;
+	}
+	if ($mail =~ /(Automatische Antwort|Abwesenheitsnotiz:)/m) {
+		return 1;
+	}
+	if ($mail =~ /^Delivered-To:\s+Autoresponder/mi) {
+		return 1;
+	}
+	if ($mail =~ /^Error 24: This message does not conform to our/mi) {
+		return 1;
+	}
+	if ($mail =~ /Diagnostic-Code: X-Notes/mi) {
+		return 1;
+	}
+	if ($mail =~ /The mail message.*contains a virus/mi) {
+		return 1;
+	}
+	if ($mail =~ /^Your recent message to.*invalid/mi) {
+		return 1;
+	}
+	if ($mail =~ /AppleID@apple.com/mi) {
 		return 1;
 	}
 
