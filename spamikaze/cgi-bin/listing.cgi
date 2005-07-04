@@ -30,33 +30,6 @@ if (defined $Spamikaze::web_listname) {
 	$listname = $Spamikaze::web_listname;
 }
 
-sub invalid
-{
-	my ( $ip ) = @_;
-
-	# decompose into octets
-	if ($ip =~ /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/) {
-		$octa = $1;
-		$octb = $2;
-		$octc = $3;
-		$octd = $4;
-	} else {
-		# not of the form ddd.ddd.ddd.ddd
-		return 1;
-	}
-
-	# all numbers are in range
-	if ($octa >= 0 && $octa < 256 &&
-			$octb >= 0 && $octb < 256 &&
-			$octc >= 0 && $octc < 256 &&
-			$octd >= 0 && $octd < 256) {
-		return 0;
-	}
-
-	# invalid
-	return 1;
-}
-
 sub write_page
 {
 	my ( $ip, $body ) = @_;
@@ -207,7 +180,7 @@ sub main
 	my $ip = $q->param("ip") || '';
 
 	# check if the IP address is valid
-	if ($ip eq '' || &invalid($ip)) {
+	if ($ip eq '' || !Spamikaze::ValidIP($ip)) {
 		$page_body = &invalid_page_body($ip);
 		&write_page ($ip, $page_body);
 		exit;
