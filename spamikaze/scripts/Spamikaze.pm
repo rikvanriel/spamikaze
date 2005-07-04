@@ -183,20 +183,24 @@ sub MXBackup {
 	return 0;
 }
 
-sub ValidIP {
+sub SplitIP {
 	my ( $ip ) = @_;
-	my $octa;
-	my $octb;
-	my $octc;
-	my $octd;
+	my ($octa, $octb, $octc, $octd);
 
-	# decompose into octets
 	if ($ip =~ /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/) {
 		$octa = $1;
 		$octb = $2;
 		$octc = $3;
 		$octd = $4;
-	} else {
+	}
+	return ($octa, $octb, $octc, $octd);
+}
+
+sub ValidIP {
+	my ( $ip ) = @_;
+	my ($octa, $octb, $octc, $octd) = SplitIP($ip);
+
+	if (undef($octa)) {
 		# not of the form ddd.ddd.ddd.ddd
 		return 0;
 	}
