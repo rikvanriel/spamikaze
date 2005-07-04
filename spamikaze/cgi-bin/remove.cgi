@@ -102,12 +102,12 @@ sub main
 	my $ip = $q->param("ip");
 
 	# check if the IP address is valid
-	if (!defined($ip) || Spamikaze::ValidIP($ip) || $ip =~ /^127/) {
+	if (!defined($ip) || !Spamikaze::ValidIP($ip) || $ip =~ /^127/) {
 		$body = &invalid_page($ip);
 	} 
 
 	# valid IP address, try to remove
-	elsif ($Spamikaze::db->remove_from_db($ip) > 0){ 
+	elsif ($Spamikaze::db->remove_from_db($ip) > 0) { 
 		$body = &success_page($ip);
 	}
 
