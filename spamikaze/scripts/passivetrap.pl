@@ -118,7 +118,7 @@ sub from_daemon
 	if ($mail =~ /^Your recent message to.*invalid/mi) {
 		return 1;
 	}
-	if ($mail =~ /AppleID@apple.com/mi) {
+	if ($mail =~ /AppleID\@apple.com/mi) {
 		return 1;
 	}
 
