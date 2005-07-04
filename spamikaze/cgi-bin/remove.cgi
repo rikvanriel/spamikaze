@@ -14,8 +14,8 @@ use strict;
 use warnings;
 use CGI qw(:standard :html4 -no_xhtml);
 
-unshift (@INC, "/opt/spamikaze/scripts");
-require Spamikaze;
+use lib "/opt/spamikaze/scripts";
+use Spamikaze;
 
 my $q = new CGI;
 my $listname = $Spamikaze::web_listname;
@@ -93,63 +93,21 @@ sub not_found_page
 	return $body;
 }
 
-sub remove_from_db
-{
-    my ($ip) = @_;
-    my ($octa, $octb, $octc, $octd) = Spamikaze::SplitIP($ip);
-    my $dbh;
-    
-	# DBI connect params.
-	$dbh = Spamikaze::DBConnect();
-                         
-	my $sql = "UPDATE ipnumbers SET visible = 0 WHERE
-			octa = ? AND
-			octb = ? AND
-			octc = ? AND
-			octd = ? AND
-			visible = 1";
-
-	my $sth = $dbh->prepare($sql);
-
-    my $rows_affected = 0;
-
-	# store octs in placeholders, a little more secure.
-	$rows_affected = $sth->execute($octa, $octb, $octc, $octd);
-	$sth->finish();
-    
-    
-    if ($rows_affected > 0)
-    {
-        my $sqlipr = "INSERT INTO ipremove 
-                      (removetime, octa, octb, octc, octd) 
-                      VALUES ( ?, ?, ?, ?, ?)";
-        my $epoch = time();
-        my $sthi = $dbh->prepare($sqlipr);
-        $sthi->execute($epoch, $octa, $octb, $octc, $octd);
-        $dbh->disconnect();
-    }
-    else
-    {
-        $dbh->disconnect();
-    }
-    return $rows_affected;    
-}
-
 sub main
 {
 	$CGI::DISABLE_UPLOADS = 1;
 	$CGI::POST_MAX = 300;
 	my $body;
 
-	my $ip = $q->param("ip") || '';
+	my $ip = $q->param("ip");
 
 	# check if the IP address is valid
-	if ($ip eq '' || Spamikaze::ValidIP($ip) || $ip =~ /^127/) {
+	if (!defined($ip) || Spamikaze::ValidIP($ip) || $ip =~ /^127/) {
 		$body = &invalid_page($ip);
 	} 
 
 	# valid IP address, try to remove
-	elsif (&remove_from_db($ip) > 0){ 
+	elsif ($Spamikaze::db->remove_from_db($ip) > 0){ 
 		$body = &success_page($ip);
 	}
 
