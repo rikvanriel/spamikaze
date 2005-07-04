@@ -14,8 +14,8 @@ use strict;
 use warnings;
 use CGI qw(:standard :html4 -no_xhtml);
 
-unshift (@INC, "/opt/spamikaze/scripts");
-require Spamikaze;
+use lib "/opt/spamikaze/scripts";
+use Spamikaze;
 
 my $q = new CGI;
 
@@ -79,8 +79,11 @@ sub example_page_body
 
 sub listing_page_body
 {
-	my ( $ip, $foundinfo ) = @_;
+	my ( $ip, $foundinfo, $listed ) = @_;
 	my $body;
+	my $listedword = 'No';
+	$listedword = 'Yes' if $listed;
+
 	if ($foundinfo eq ' ') {
 		$body = "The host $ip has never been listed in $listname. " .
 			"Maybe you are looking at the wrong blocklist? " .
@@ -88,7 +91,8 @@ sub listing_page_body
 			"<a href=\"http://openrbl.org/lookup?i=$ip\">Openrbl" .
 			"</a> to check the other blocklists.";
 	} else {
-		$body = "Spam and removal history for $ip (times in UTC):\n" .
+		$body = "Currently listed in $listname?  $listedword.\n<p>" .
+			"Spam and removal history for $ip (times in UTC):\n" .
 			"<p><table border=\"1\">\n" . "$foundinfo" .
 			"</table>\n" .
 			"<p>Check this IP address in: " .
@@ -100,70 +104,12 @@ sub listing_page_body
 			"<INPUT TYPE=\"text\" NAME=\"ip\" VALUE=\"$ip\" " .
 			"SIZE=\"20\">\n" . "<INPUT TYPE=\"submit\" " .
 			"NAME=\"action\" VALUE=\"Remove IP\">\n" .
+			"</FORM>\n" .
 			"<p>Remember that\n" .
 			"next time your mail server spams it will get\n" .
 			"listed again, so please do not spam.";
 	}
 	return $body;
-}
-
-sub grabinfo
-{
-	my ($ip) = @_;
-	my ($octa, $octb, $octc, $octd) = Spamikaze::SplitIP($ip);
-	my %iplog = ();
-	my $time;
-	my $found;
-	my $dbh;
-    
-	# DBI connect params.
-	#
-	# DBI->connect( $data_source, $username, $password, \%attr );
-	$dbh = Spamikaze::DBConnect();
-                         
-	#
-	# first, get the times where we received spamtrap mail
-	#
-	my $sql = "SELECT 
-                    date_logged AS time FROM ipentries, ipnumbers
-               WHERE
-            id_ip = ipnumbers.id AND
-			octa = ? AND
-			octb = ? AND
-			octc = ? AND
-			octd = ?
-			ORDER BY ipentries.id DESC LIMIT 200";
-
-	my $sth = $dbh->prepare($sql);
-	$sth->execute($octa, $octb, $octc, $octd);
-	$sth->bind_columns(undef, \$time);
-	while ($sth->fetch()) {
-		$found++;
-		$iplog{$time} = 'spamtrap hit';
-	}
-	$sth->finish();
-
-	#
-	# then, get the removal times
-	#
-	$sql = "SELECT removetime AS time FROM ipremove WHERE
-			octa = ? AND
-			octb = ? AND
-			octc = ? AND
-			octd = ?";
-
-	$sth = $dbh->prepare($sql);
-	$sth->execute($octa, $octb, $octc, $octd);
-	$sth->bind_columns(undef, \$time);
-	while ($sth->fetch()) {
-		$found++;
-		$iplog{$time} = 'removed from list';
-	}
-	$sth->finish();
-
-	$dbh->disconnect();
-
-	return %iplog;
 }
 
 sub main
@@ -190,7 +136,7 @@ sub main
 	}
 
 	# valid IP address, get info from database
-	my %iplog = &grabinfo($ip);
+	my ($listed, %iplog) = $Spamikaze::db->get_listing_info($ip);
 
 	my $foundinfo = ' ';
 	foreach $time (sort keys %iplog) {
@@ -199,7 +145,7 @@ sub main
 				"<td>$iplog{$time}</td></tr>\n";
 	}
 
-	$page_body = &listing_page_body($ip, $foundinfo);
+	$page_body = &listing_page_body($ip, $foundinfo, $listed);
 	&write_page ($ip, $page_body);
 }
 
