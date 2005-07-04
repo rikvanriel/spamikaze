@@ -46,7 +46,7 @@ sub get_listed_addresses {
 
 sub storeip
 {
-    my ( $ip )  = @_;
+    my ( $self, $ip )  = @_;
     my $error   = 0;
     my @iplist  = split /\./, $ip;
     my $ts      = time();
@@ -115,8 +115,7 @@ sub storeip
 
 sub mxdontexpire
 {
-    my $ip = $_[0];
-    my @dontexpire = $_[1];
+    my ($self, $ip, @dontexpire) = @_;
     my $entry;
 
     foreach $entry (@dontexpire) 
@@ -130,7 +129,7 @@ sub mxdontexpire
 
 sub expire
 {
-    my @dontexpire = @_;
+    my ($self, @dontexpire) = @_;
     my $ip;
     my $total;
     my $spamtime;
@@ -191,6 +190,44 @@ sub expire
 
     $sth->finish();
     $dbh->disconnect();
+}
+
+sub remove_from_db($)
+{
+	my ($self, $ip) = @_;
+	my ($octa, $octb, $octc, $octd) = split /\./, $ip;
+	my $rows_affected;
+	my $dbh;
+
+	# DBI connect params.
+	$dbh = Spamikaze::DBConnect();
+                         
+	my $sql = "UPDATE ipnumbers SET visible = 0 WHERE
+			octa = ? AND
+			octb = ? AND
+			octc = ? AND
+			octd = ? AND
+			visible = 1";
+
+	my $sth = $dbh->prepare($sql);
+
+	# store octs in placeholders, a little more secure.
+	$rows_affected = $sth->execute($octa, $octb, $octc, $octd);
+	$sth->finish();
+
+	if ($rows_affected > 0)
+	{
+		my $sqlipr = "INSERT INTO ipremove 
+                      (removetime, octa, octb, octc, octd) 
+                      VALUES ( ?, ?, ?, ?, ?)";
+		my $epoch = time();
+		my $sthi = $dbh->prepare($sqlipr);
+		$sthi->execute($epoch, $octa, $octb, $octc, $octd);
+	}
+
+	$dbh->disconnect();
+
+	return $rows_affected;    
 }
 
 sub new {
