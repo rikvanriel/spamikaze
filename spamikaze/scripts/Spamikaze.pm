@@ -200,7 +200,7 @@ sub ValidIP {
 	my ( $ip ) = @_;
 	my ($octa, $octb, $octc, $octd) = SplitIP($ip);
 
-	if (undef($octa)) {
+	if (!defined($octa)) {
 		# not of the form ddd.ddd.ddd.ddd
 		return 0;
 	}
