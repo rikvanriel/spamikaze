@@ -128,7 +128,7 @@ sub mxdontexpire
     return 0;
 }
 
-sub main
+sub expire
 {
     my @dontexpire = @_;
     my $ip;
