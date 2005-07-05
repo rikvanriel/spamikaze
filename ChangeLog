@@ -1,3 +1,193 @@
+2005-07-05  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/Spamikaze/MySQL_2.pm, spamikaze/scripts/passivetrap.pl, spamikaze/scripts/smtperror-exim:
+	pass a reason for storing the IP address to db->storeip()
+
+2005-07-04  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/cgi-bin/remove.cgi: whitespace and logic inversion
+
+	* spamikaze/cgi-bin/listing.cgi:
+	Openrbl.org is dead.  Use dnsstuff.com by default.
+
+	diff -u -d -u -r1.11 listing.cgi
+	--- listing.cgi	4 Jul 2005 19:54:55 -0000	1.11
+	+++ listing.cgi	4 Jul 2005 20:05:23 -0000
+	@@ -24,6 +24,9 @@
+	 	$listname = $Spamikaze::web_listname;
+	 }
+
+	+# URL to check whether the IP is listed in other DNSBLs
+	+my $checkurl = "http://www.dnsstuff.com/tools/ip4r.ch?ip=";
+	+
+	 sub write_page
+	 {
+	 	my ( $ip, $body ) = @_;
+	@@ -87,16 +90,15 @@
+	 	if ($foundinfo eq ' ') {
+	 		$body = "The host $ip has never been listed in $listname. " .
+	 			"Maybe you are looking at the wrong blocklist? " .
+	-			"You may want to visit " .
+	-			"<a href=\"http://openrbl.org/lookup?i=$ip\">Openrbl" .
+	-			"</a> to check the other blocklists.";
+	+			"<p>You may want to check the <a href=" .
+	+			$checkurl . $ip . ">other blocklists</a>";
+	 	} else {
+	 		$body = "Currently listed in $listname?  $listedword.\n<p>" .
+	 			"Spam and removal history for $ip (times in UTC):\n" .
+	 			"<p><table border=\"1\">\n" . "$foundinfo" .
+	 			"</table>\n" .
+	-			"<p>Check this IP address in: " .
+	-			"<a href=\"http://openrbl.org/lookup?i=$ip\">Openrbl" .
+	+			"<p>You may also want to check the <a href=" .
+	+			$checkurl . $ip . ">other blocklists</a>" .
+	 			"</a> and " .
+	 			"<a href=\"http://groups.google.com/groups?scoring=d&q=$ip+group:*abuse*\">Google groups</a>.\n" .
+	 			"<h2>Remove IP from $listname</h2>\n" .
+
+	* spamikaze/cgi-bin/listing.cgi, spamikaze/scripts/Spamikaze/MySQL_2.pm:
+	- Move listing.cgi database functions to the database module
+	- Show whether the IP address is currently on the DNSBL
+	- Various small fixes to listing.cgi
+
+	 cgi-bin/listing.cgi          |   76 ++++++------------------------------------- scripts/Spamikaze/MySQL_2.pm |   75 ++++++++++++++++++++++++++++++++++++++++++
+	 2 files changed, 86 insertions(+), 65 deletions(-)
+
+	Index: cgi-bin/listing.cgi
+
+	* spamikaze/cgi-bin/remove.cgi:
+	use remove_from_db function from database module - this script is now database agnostic
+
+	* spamikaze/scripts/Spamikaze/MySQL_2.pm:
+	add remove_from_db function, fix up argument calling (first argument passed is , doh)
+
+	* spamikaze/scripts/Spamikaze.pm:
+	oops - undef makes the variable undefined, instead of testing like \!defined...
+
+	* spamikaze/scripts/passivetrap.pl: escape @ in regexp
+
+	* spamikaze/scripts/passivetrap.pl:
+	More regular expressions for the from_daemon function.
+	I should move these into a config file some day...
+
+	diff -u -d -u -r1.28 passivetrap.pl
+	--- passivetrap.pl	4 Jul 2005 14:57:48 -0000	1.28
+	+++ passivetrap.pl	4 Jul 2005 17:13:09 -0000
+	@@ -37,7 +37,7 @@
+	 	if ($mail =~ /^From:?\s+\<?MAILER.DAEMON/mi) {
+	 		return 1;
+	 	}
+	-	if ($mail =~ /^From:\s+\<?postmaster/mi) {
+	+	if ($mail =~ /^From:?[\s\w\+\-\'\"]+\<?postmaster/mi) {
+	 		return 1;
+	 	}
+	 	if ($mail =~ /^From:\s+\<?(majordomo|listar|ecartis|mailman)/mi) {
+	@@ -49,7 +49,76 @@
+	 	if ($mail =~ /^From:?\s+\<?(bounce-.*@.*(lyris|list|mail))/mi) {
+	 		return 1;
+	 	}
+	+	if ($mail =~ /^X-AskVersion:.*paganini.net/m) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /^using a program called Qurb which automatically/m) {
+	+		return 1;
+	+	}
+	 	if ($mail =~ /^Your (mail to|message|email).*could not be delivered/m) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /Message from InterScan Messaging Security Suite/m) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /^ScanMail for Microsoft Exchange has detected/m) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /^X-ChoiceMail-Registration-Request/m) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /^Subject:(\w\s)*automat(ic|ed) reply/mi) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /^List-Subscribe:.*@/mi) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /out of (the )?office/mi) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /From?\s+(eSafe|MAILsweeper|av-gateway)@/m) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /this is an automated (response|reply)/mi) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /^Precedence:\s+(bulk|junk)/mi) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /^Hi! This is the ezmlm program./m) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /^Auto-Submitted:\sauto-replied/mi) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /^From:?\s+Symantec_Anti-?(Spam|Virus)\@/mi) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /^The following addresses had permanent fatal errors/mi) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /VIRUS_WARNING|WORM_FOUND/m) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /(Automatische Antwort|Abwesenheitsnotiz:)/m) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /^Delivered-To:\s+Autoresponder/mi) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /^Error 24: This message does not conform to our/mi) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /Diagnostic-Code: X-Notes/mi) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /The mail message.*contains a virus/mi) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /^Your recent message to.*invalid/mi) {
+	+		return 1;
+	+	}
+	+	if ($mail =~ /AppleID@apple.com/mi) {
+	 		return 1;
+	 	}
+
+	* spamikaze/scripts/Spamikaze/MySQL_2.pm:
+	add ORDER BY ipentries.id DESC LIMIT 200 to query, to limit results to a sane number
+
+	* spamikaze/cgi-bin/remove.cgi, spamikaze/scripts/Spamikaze/MySQL_2.pm:
+	global variables are evil
+
+	* spamikaze/scripts/Spamikaze.pm:
+	SplitIP further reduces code duplication with the cgi scripts
+
+	* spamikaze/scripts/Spamikaze.pm: strict caught an error
+
+	* spamikaze/cgi-bin/remove.cgi, spamikaze/scripts/Spamikaze.pm, spamikaze/scripts/Spamikaze/MySQL_2.pm:
+	reduce code duplication some more
+
+	* spamikaze/scripts/Spamikaze/MySQL_2.pm: typo
+
+	* spamikaze/scripts/Spamikaze/MySQL_2.pm: oops - forgot a spot
+
+	* spamikaze/scripts/Spamikaze/MySQL_2.pm, spamikaze/scripts/expire.pl, spamikaze/scripts/named.pl, spamikaze/scripts/passivetrap.pl, spamikaze/scripts/postfix.pl, spamikaze/scripts/rbldnsd.pl, spamikaze/scripts/smtperror-exim, spamikaze/scripts/text.pl, spamikaze/scripts/Spamikaze.pm:
+	abstract database stuff into a module - code verified by Cor
+
+2005-07-03  Cor Gest  <cor@humbolt.nl.linux.org>
+
+	* ChangeLog: ChangeLog Updated
+
+2005-06-04  Cor Gest  <cor@humbolt.nl.linux.org>
+
+	* ChangeLog: ChangeLog Updated
+
 2005-06-04  Cor Gest  <cor@humbolt.nl.linux.org>
 
 	* ChangeLog: ChangeLog Updated
