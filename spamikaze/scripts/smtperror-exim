@@ -42,7 +42,7 @@ sub main
 	while (defined($line=$file->read)) {
 		my $ip = parselog($line);
 		if (defined($ip) and $ip ne '') {
-			$Spamikaze::ip->storeip($ip);
+			$Spamikaze::ip->storeip($ip, 'major smtp violation');
 		}
 	}
 }

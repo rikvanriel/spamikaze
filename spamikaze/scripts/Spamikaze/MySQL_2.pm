@@ -46,7 +46,7 @@ sub get_listed_addresses {
 
 sub storeip
 {
-    my ( $self, $ip )  = @_;
+    my ( $self, $ip, $type )  = @_;
     my $error   = 0;
     my @iplist  = split /\./, $ip;
     my $ts      = time();

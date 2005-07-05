@@ -176,7 +176,7 @@ sub process_mail
 	while ($mail =~ /Received:(.*?)(?=\n\w)/sg) {
 		my $ip = parsereceived($1);
 		if ($ip && !Spamikaze::MXBackup($ip) && !whitelisted($ip)) {
-			$Spamikaze::db->storeip($ip);
+			$Spamikaze::db->storeip($ip, 'received spamtrap mail');
 			return 1;
 		}
 	}
