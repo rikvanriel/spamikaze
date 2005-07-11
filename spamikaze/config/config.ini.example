@@ -6,6 +6,7 @@
 [Database]
 # the database type you're connecting to
 Type=Pg/MySQL
+Schema=MySQL_2
 Host=localhost
 Port=5432
 # database name, as well as username and password
