@@ -1,3 +1,19 @@
+2005-07-11  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/config/config.ini.example:
+	add Schema=MySQL_2 to the example config file
+
+2005-07-05  Cor Gest  <cor@humbolt.nl.linux.org>
+
+	* ChangeLog: ChangeLog Updated
+
+	Due to new Database-abstaction layer.
+
+2005-07-05  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/Spamikaze/MySQL_2.pm, spamikaze/scripts/passivetrap.pl, spamikaze/scripts/smtperror-exim:
+	pass a reason for storing the IP address to db->storeip()
+
 2005-07-05  Rik van Riel  <riel@humbolt>
 
 	* spamikaze/scripts/Spamikaze/MySQL_2.pm, spamikaze/scripts/passivetrap.pl, spamikaze/scripts/smtperror-exim:
