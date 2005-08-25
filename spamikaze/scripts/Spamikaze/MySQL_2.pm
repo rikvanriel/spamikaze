@@ -109,6 +109,7 @@ sub storeip
         $sthupdate->execute($iplist[0], $iplist[1], $iplist[2], $iplist[3]);
         $sthupdate->finish();
     }        
+    $dbh->commit();
     $dbh->disconnect();
 
 }
@@ -189,6 +190,7 @@ sub expire
     }
 
     $sth->finish();
+    $dbh->commit();
     $dbh->disconnect();
 }
 
@@ -225,6 +227,7 @@ sub remove_from_db($)
 		$sthi->execute($epoch, $octa, $octb, $octc, $octd);
 	}
 
+	$dbh->commit();
 	$dbh->disconnect();
 
 	return $rows_affected;    
