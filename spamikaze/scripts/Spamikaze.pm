@@ -219,7 +219,7 @@ sub ValidIP {
 
 sub whitelisted
 {
-	my ( $self, $revip ) = @_;
+	my ( $revip ) = @_;
 	$revip =~ s/(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/$4.$3.$2.$1/;
 	my $res = new Net::DNS::Resolver;
 	my $zone;
