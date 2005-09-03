@@ -41,7 +41,8 @@ sub main
 
 	while (defined($line=$file->read)) {
 		my $ip = parselog($line);
-		if (defined($ip) and $ip ne '') {
+		if (defined($ip) and $ip ne '' and
+					 !Spamikaze::whitelisted($ip)) {
 			$Spamikaze::db->storeip($ip, 'major smtp violation');
 		}
 	}
