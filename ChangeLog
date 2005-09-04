@@ -1,3 +1,32 @@
+2005-09-03  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/smtperror-exim:
+	make smtperror-exim also query the whitelists
+
+	* spamikaze/scripts/passivetrap.pl:
+	convert passivetrap to using the whitelist function in Spamikaze.pm
+
+	* spamikaze/scripts/Spamikaze.pm: oops, Spamikaze.pm is not an object
+
+	* spamikaze/scripts/Spamikaze.pm:
+	add whitelisted function to Spamikaze.pm
+
+2005-08-25  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/Spamikaze.pm, spamikaze/scripts/Spamikaze/MySQL_2.pm:
+	do not use autocommit
+
+	* spamikaze/scripts/smtperror-exim: fix typo
+
+2005-08-01  Cor Gest  <cor@humbolt.nl.linux.org>
+
+	* ChangeLog: ChangeLog Updated
+
+2005-07-11  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/config/config.ini.example:
+	add Schema=MySQL_2 to the example config file
+
 2005-07-11  Rik van Riel  <riel@humbolt>
 
 	* spamikaze/config/config.ini.example:
