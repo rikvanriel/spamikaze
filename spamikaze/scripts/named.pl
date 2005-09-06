@@ -73,7 +73,7 @@ sub main {
 	my $ip;
 
 	open( ZONEFILE, ">$dnsbl_location.new" )
-	  or dienice("Can't open $dnsbl_location for writing: $!");
+	  or die("Can't open $dnsbl_location for writing: $!");
 	flock( ZONEFILE, 2 );
 	seek( ZONEFILE, 0, 2 );
 
