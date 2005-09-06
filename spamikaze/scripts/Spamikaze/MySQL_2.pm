@@ -264,6 +264,7 @@ sub get_listing_info
 	$sth->bind_columns(undef, \$time);
 	while ($sth->fetch()) {
 		$found++;
+		$time = gmtime($time);
 		$iplog{$time} = 'spamtrap hit';
 	}
 	$sth->finish();
@@ -282,6 +283,7 @@ sub get_listing_info
 	$sth->bind_columns(undef, \$time);
 	while ($sth->fetch()) {
 		$found++;
+		$time = gmtime($time);
 		$iplog{$time} = 'removed from list';
 	}
 	$sth->finish();

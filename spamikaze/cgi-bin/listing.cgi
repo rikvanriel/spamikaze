@@ -142,8 +142,7 @@ sub main
 
 	my $foundinfo = ' ';
 	foreach $time (sort keys %iplog) {
-		my $printtime = gmtime($time);
-		$foundinfo .= "<tr><td>$printtime</td>" .
+		$foundinfo .= "<tr><td>$time</td>" .
 				"<td>$iplog{$time}</td></tr>\n";
 	}
 
