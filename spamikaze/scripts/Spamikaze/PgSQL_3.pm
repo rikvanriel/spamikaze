@@ -106,7 +106,7 @@ sub remove_from_db($)
 
 	# DBI connect params.
 	$dbh = Spamikaze::DBConnect();
-        $rows_affected = $dbh->do("DELETE FROM blocklist WHERE ip = $ip");
+        $rows_affected = $dbh->do("DELETE FROM blocklist WHERE ip = \'$ip\'");
 	if ($rows_affected > 0) {
 		$self->store_ipevent($dbh, $ip, "removed through website");
 	}
