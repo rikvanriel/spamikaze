@@ -48,9 +48,10 @@ sub get_listed_addresses {
 sub store_ipevent
 {
     my ( $self, $dbh, $ip, $type )  = @_;
-    my $sql = "INSERT INTO ipevents (?, CURRENT_TIMESTAMP, eventid) SELECT
-			 eventid FROM eventtypes WHERE eventtext = '?'";
+    my $sql = "INSERT INTO ipevents VALUES (?, CURRENT_TIMESTAMP, (SELECT
+				id FROM eventtypes WHERE eventtext = ?))";
 
+    # print "$sql\n";
     my $sth = $dbh->prepare($sql);
     $sth->execute($ip, $type);
     $sth->finish;
@@ -59,12 +60,26 @@ sub store_ipevent
 sub storeip
 {
     my ( $self, $ip, $type )  = @_;
-    my $expires = time() + $Spamikaze::firsttime;
-    my $rv;
+    my $expires = "$Spamikaze::firsttime seconds";
+    my $dbh;
+    my $sth;
+    my $sql;
 
-    my $dbh = Spamikaze::DBConnect();
-    unless ($dbh->do("INSERT INTO blocklist ($ip, $expires)")) {
-        $dbh->do("UPDATE blocklist SET expires = $expires WHERE ip = $ip");
+    $dbh = Spamikaze::DBConnect();
+
+    eval { # catch failures
+        $sql = "INSERT INTO blocklist VALUES (?, CURRENT_TIMESTAMP + ?::interval)";
+        # print "$sql\n";
+        $sth = $dbh->prepare($sql);
+        $sth->execute($ip, $expires);
+    };
+    
+    if ($@) { # the INSERT failed because the IP is already in blocklist
+	$dbh->commit(); # the INSERT failing aborts the whole transaction
+	$sql = "UPDATE blocklist SET expires = CURRENT_TIMESTAMP + ?::interval WHERE ip = ?";
+	# print "$sql\n";
+	$sth = $dbh->prepare($sql);
+	$sth->execute($expires, $ip);
     }
     $self->store_ipevent($dbh, $ip, $type);
     $dbh->commit();
@@ -89,7 +104,7 @@ sub remove_from_db($)
 
 	# DBI connect params.
 	$dbh = Spamikaze::DBConnect();
-        $rows_affected = $dbh->do("DELETE FROM blocklist WHERE ip = $ip");
+        $rows_affected = $dbh->do("DELETE FROM blocklist WHERE ip = '$ip'");
 	if ($rows_affected > 0) {
 		$self->store_ipevent($dbh, $ip, "removed through website");
 	}
@@ -105,6 +120,7 @@ sub get_listing_info
 	my %iplog = ();
 	my $eventtext;
 	my $listed = 0;
+	my $found = 0;
         my $time;
 	my $dbh;
 	my $sth;
@@ -132,10 +148,10 @@ sub get_listing_info
 	#
 	$sql = "SELECT expires FROM blocklist WHERE ip = ?";
 	$sth = $dbh->prepare($sql);
-	$visible = $sth->execute($ip);
+	$sth->execute($ip);
 	$sth->bind_columns(\$time);
 	while ($sth->fetch()) {
-		listed = 1;
+		$listed = 1;
 	}
 	$sth->finish();
 

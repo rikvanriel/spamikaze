@@ -21,6 +21,7 @@ use Env qw( HOME );
 use Net::DNS;
 
 use Spamikaze::MySQL_2;
+use Spamikaze::PgSQL_3;
 
 my $dbuser;
 my $dbpwd;
