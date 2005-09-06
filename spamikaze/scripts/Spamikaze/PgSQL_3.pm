@@ -65,6 +65,7 @@ sub storeip
     my $dbh;
     my $sth;
     my $sql;
+    my $rv;
 
     $dbh = Spamikaze::DBConnect();
 
@@ -72,10 +73,10 @@ sub storeip
         $sql = "INSERT INTO blocklist VALUES (?, CURRENT_TIMESTAMP + ?::interval)";
         # print "$sql\n";
         $sth = $dbh->prepare($sql);
-        $sth->execute($ip, $expires);
+        $rv = $sth->execute($ip, $expires);
     };
     
-    if ($@) { # the INSERT failed because the IP is already in blocklist
+    if (!$rv) { # the INSERT failed because the IP is already in blocklist
 	$dbh->commit(); # the INSERT failing aborts the whole transaction
 	$sql = "UPDATE blocklist SET expires = CURRENT_TIMESTAMP + ?::interval WHERE ip = ?";
 	# print "$sql\n";
