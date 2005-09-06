@@ -11,6 +11,7 @@
 
 #
 # Database abstractions for the 3rd Postgres schema for Spamikaze
+# The database layout can be found in: schemas/spamikaze-pgsql-3.sql
 #
 
 package Spamikaze::PgSQL_3;
