@@ -128,15 +128,6 @@ CREATE TABLE eventtypes (
 
 
 --
--- TOC entry 14 (OID 361494746)
--- Name: eventtypes; Type: ACL; Schema: public; Owner: postgres
---
-
-REVOKE ALL ON TABLE eventtypes FROM PUBLIC;
-GRANT SELECT ON TABLE eventtypes TO psbl;
-
-
---
 -- Data for TOC entry 6 (OID 361494746)
 -- Name: eventtypes; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -148,9 +139,16 @@ COPY eventtypes (id, eventtext) FROM stdin;
 4	major smtp violation
 \.
 
+--
+-- TOC entry 14 (OID 361494746)
+-- Name: eventtypes; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON TABLE eventtypes FROM PUBLIC;
+GRANT SELECT ON TABLE eventtypes TO psbl;
+
 
 SET SESSION AUTHORIZATION 'postgres';
-
 
 --
 -- TOC entry 15 (OID 361499222)
@@ -164,7 +162,18 @@ CREATE TABLE blocklist (
 
 
 --
--- TOC entry 16 (OID 361499226)
+-- TOC entry 16 (OID 361499222)
+-- Name: blocklist; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON TABLE blocklist FROM PUBLIC;
+GRANT INSERT,SELECT,UPDATE,DELETE ON TABLE blocklist TO psbl;
+
+
+SET SESSION AUTHORIZATION 'postgres';
+
+--
+-- TOC entry 17 (OID 361499226)
 -- Name: ipevents; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -176,7 +185,18 @@ CREATE TABLE ipevents (
 
 
 --
--- TOC entry 19 (OID 359618684)
+-- TOC entry 18 (OID 361499226)
+-- Name: ipevents; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON TABLE ipevents FROM PUBLIC;
+GRANT INSERT,SELECT,UPDATE,DELETE ON TABLE ipevents TO psbl;
+
+
+SET SESSION AUTHORIZATION 'postgres';
+
+--
+-- TOC entry 21 (OID 359618684)
 -- Name: qs_monthly_ip_key; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -184,7 +204,7 @@ CREATE INDEX qs_monthly_ip_key ON qs_monthly USING btree (ip);
 
 
 --
--- TOC entry 20 (OID 359618685)
+-- TOC entry 22 (OID 359618685)
 -- Name: qs_monthly_time_ip_key; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -192,7 +212,7 @@ CREATE INDEX qs_monthly_time_ip_key ON qs_monthly USING btree (querytime, ip);
 
 
 --
--- TOC entry 17 (OID 359618686)
+-- TOC entry 19 (OID 359618686)
 -- Name: qs_hourly_ip_key; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -200,7 +220,7 @@ CREATE INDEX qs_hourly_ip_key ON qs_hourly USING btree (ip);
 
 
 --
--- TOC entry 18 (OID 359618687)
+-- TOC entry 20 (OID 359618687)
 -- Name: qs_hourly_time_ip_key; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -208,7 +228,7 @@ CREATE INDEX qs_hourly_time_ip_key ON qs_hourly USING btree (querytime, ip);
 
 
 --
--- TOC entry 21 (OID 359734275)
+-- TOC entry 23 (OID 359734275)
 -- Name: qs_daily_ip_key; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -216,7 +236,7 @@ CREATE INDEX qs_daily_ip_key ON qs_daily USING btree (ip);
 
 
 --
--- TOC entry 22 (OID 359734276)
+-- TOC entry 24 (OID 359734276)
 -- Name: qs_daily_time_ip_key; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -224,7 +244,7 @@ CREATE INDEX qs_daily_time_ip_key ON qs_daily USING btree (querytime, ip);
 
 
 --
--- TOC entry 24 (OID 361499224)
+-- TOC entry 26 (OID 361499224)
 -- Name: blocklist_ip_index; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -232,7 +252,7 @@ CREATE UNIQUE INDEX blocklist_ip_index ON blocklist USING btree (ip);
 
 
 --
--- TOC entry 23 (OID 361499225)
+-- TOC entry 25 (OID 361499225)
 -- Name: blocklist_expires_index; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -240,7 +260,7 @@ CREATE INDEX blocklist_expires_index ON blocklist USING btree (expires);
 
 
 --
--- TOC entry 26 (OID 361499228)
+-- TOC entry 28 (OID 361499228)
 -- Name: ipevents_ip_index; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -248,7 +268,7 @@ CREATE INDEX ipevents_ip_index ON ipevents USING btree (ip);
 
 
 --
--- TOC entry 25 (OID 361499229)
+-- TOC entry 27 (OID 361499229)
 -- Name: ipevents_eventtime_index; Type: INDEX; Schema: public; Owner: postgres
 --
 
