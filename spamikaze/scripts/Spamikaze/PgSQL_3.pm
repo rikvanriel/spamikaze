@@ -65,16 +65,15 @@ sub storeip
     my $dbh;
     my $sth;
     my $sql;
-    my $rv;
 
     $dbh = Spamikaze::DBConnect();
 
     $sql = "INSERT INTO blocklist VALUES (?, CURRENT_TIMESTAMP + ?::interval)";
     # print "$sql\n";
     $sth = $dbh->prepare($sql);
-    $rv = $sth->execute($ip, $expires);
-    
+    $sth->execute($ip, $expires);
     $self->store_ipevent($dbh, $ip, $type);
+
     $dbh->commit();
     $dbh->disconnect();
 }
