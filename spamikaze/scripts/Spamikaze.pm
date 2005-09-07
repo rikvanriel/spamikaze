@@ -133,7 +133,7 @@ sub Version {
 sub DBConnect {
 	my $dbh =
 	  DBI->connect( "dbi:$dbtype:dbname=$dbbase;host=$dbhost;port=$dbport",
-		"$dbuser", "$dbpwd", { RaiseError => 1, PrintError => 0, AutoCommit => 0 } )
+		"$dbuser", "$dbpwd", { RaiseError => 1, AutoCommit => 0 } )
 	  || die "Database connection not made: $DBI::errstr";
 	return $dbh;
 }
