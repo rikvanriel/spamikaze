@@ -152,33 +152,21 @@ sub MXBackup {
 	# We don't want localhost in our database
 	#
 	if ( $ip =~ /^127\./ ) {
-
 		return 1;
-
 	}
 
 	if ( $ignoreRFC1918 eq 'true' or $ignoreRFC1918 == 1 ) {
-
 		foreach my $ipaddress (@RFC1918Addresses) {
-
 			if ( $ip =~ /^$ipaddress/ ) {
-
 				return 1;
-
 			}
-
 		}
-
 	}
 
 	foreach $mxhosts (@MXBACKUP) {
-
 		if ( $ip =~ /^$mxhosts/ ) {
-
 			return 1;
-
 		}
-
 	}
 
 	return 0;
