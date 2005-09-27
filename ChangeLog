@@ -1,3 +1,108 @@
+2005-09-08  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/Spamikaze.pm:
+	whitespace (really just to test cvsmail)
+
+2005-09-07  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/Spamikaze/PgSQL_3.pm:
+	remove unused variable, clean up whitespace
+
+	* spamikaze/scripts/Spamikaze/PgSQL_3.pm, spamikaze/scripts/Spamikaze.pm:
+	Using this rule, the INSERT in ->storeip() will never really fail and we
+	can get rid of the failure handling code in perl.  We can also reenable
+	DBI's printing of failures.
+
+	CREATE OR REPLACE RULE upsert AS
+		ON INSERT TO blocklist
+		WHERE (EXISTS ( SELECT 1 FROM blocklist WHERE ip = NEW.ip))
+		DO INSTEAD
+			UPDATE blocklist SET expires = NEW.expires
+				WHERE ip = NEW.ip
+
+2005-09-06  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/Spamikaze.pm:
+	quiet the passivetrap output a bit, set PrintError to 0
+
+	* spamikaze/scripts/Spamikaze/PgSQL_3.pm:
+	check the returned value from ->execute explicitly
+
+	* spamikaze/cgi-bin/listing.cgi, spamikaze/scripts/Spamikaze/MySQL_2.pm:
+	Move time conversion into the database module.  This way we won't have
+	to do double conversion in order to make postgres work.  Both mysql and
+	postgresql now seem to work fine.
+
+	diff -u -d -u -r1.12 listing.cgi
+	--- cgi-bin/listing.cgi	4 Jul 2005 20:05:57 -0000	1.12
+	+++ cgi-bin/listing.cgi	6 Sep 2005 12:50:02 -0000
+	@@ -142,8 +142,7 @@
+
+	 	my $foundinfo = ' ';
+	 	foreach $time (sort keys %iplog) {
+	-		my $printtime = gmtime($time);
+	-		$foundinfo .= "<tr><td>$printtime</td>" .
+	+		$foundinfo .= "<tr><td>$time</td>" .
+	 				"<td>$iplog{$time}</td></tr>\n";
+	 	}
+
+	diff -u -d -u -r1.7 MySQL_2.pm
+	--- scripts/Spamikaze/MySQL_2.pm	25 Aug 2005 04:09:24 -0000	1.7
+	+++ scripts/Spamikaze/MySQL_2.pm	6 Sep 2005 12:50:02 -0000
+	@@ -264,6 +264,7 @@
+	 	$sth->bind_columns(undef, \$time);
+	 	while ($sth->fetch()) {
+	 		$found++;
+	+		$time = gmtime($time);
+	 		$iplog{$time} = 'spamtrap hit';
+	 	}
+	 	$sth->finish();
+	@@ -282,6 +283,7 @@
+	 	$sth->bind_columns(undef, \$time);
+	 	while ($sth->fetch()) {
+	 		$found++;
+	+		$time = gmtime($time);
+	 		$iplog{$time} = 'removed from list';
+	 	}
+	 	$sth->finish();
+
+	* spamikaze/scripts/Spamikaze/PgSQL_3.pm:
+	fix quoting so remove.cgi works
+
+	* spamikaze/scripts/Spamikaze/PgSQL_3.pm:
+	add pointer to schemas/spamikaze-pgsql-3.sql
+
+	* spamikaze/scripts/named.pl: s/dienice/nice/ - now it behaves
+
+	* spamikaze/scripts/Spamikaze/PgSQL_3.pm:
+	fix quoting in remove_from_blocklist function
+
+	* spamikaze/scripts/Spamikaze/PgSQL_3.pm, spamikaze/scripts/Spamikaze.pm:
+	ok, now things seem to work
+
+	* spamikaze/scripts/Spamikaze/PgSQL_3.pm:
+	add new (untested) postgres schema and database module
+
+	* spamikaze/country.sql, spamikaze/fqdn.sql, spamikaze/latest.sql, spamikaze/spamikaze-mysql.sql, spamikaze/spamikaze-mysql-update.sql, spamikaze/spamikaze-pg.sql:
+	move database schemas to schemas/ directory
+
+2005-09-04  Cor Gest  <cor@humbolt.nl.linux.org>
+
+	* ChangeLog: ChangeLog Updated
+
+2005-09-03  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/smtperror-exim:
+	make smtperror-exim also query the whitelists
+
+	* spamikaze/scripts/passivetrap.pl:
+	convert passivetrap to using the whitelist function in Spamikaze.pm
+
+	* spamikaze/scripts/Spamikaze.pm: oops, Spamikaze.pm is not an object
+
+	* spamikaze/scripts/Spamikaze.pm:
+	add whitelisted function to Spamikaze.pm
+
 2005-09-03  Rik van Riel  <riel@humbolt>
 
 	* spamikaze/scripts/smtperror-exim:
