@@ -1,3 +1,33 @@
+2005-09-27  Cor Gest  <cor@humbolt.nl.linux.org>
+
+	* ChangeLog: ChangeLog Updated
+
+2005-09-27  Cor Gest  <cor@humbolt.nl.linux.org>
+
+	* ChangeLog: ChangeLog Updated
+
+2005-09-08  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/Spamikaze.pm:
+	whitespace (really just to test cvsmail)
+
+2005-09-07  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/Spamikaze/PgSQL_3.pm:
+	remove unused variable, clean up whitespace
+
+	* spamikaze/schemas/spamikaze-pgsql-3.sql, spamikaze/scripts/Spamikaze/PgSQL_3.pm, spamikaze/scripts/Spamikaze.pm:
+	Using this rule, the INSERT in ->storeip() will never really fail and we
+	can get rid of the failure handling code in perl.  We can also reenable
+	DBI's printing of failures.
+
+	CREATE OR REPLACE RULE upsert AS
+		ON INSERT TO blocklist
+		WHERE (EXISTS ( SELECT 1 FROM blocklist WHERE ip = NEW.ip))
+		DO INSTEAD
+			UPDATE blocklist SET expires = NEW.expires
+				WHERE ip = NEW.ip
+
 2005-09-08  Rik van Riel  <riel@humbolt>
 
 	* spamikaze/scripts/Spamikaze.pm:
