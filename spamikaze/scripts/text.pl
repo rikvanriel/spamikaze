@@ -36,8 +36,8 @@ sub main {
 
 	my $outfile = $ARGV[0];
 
-	open( TEXTFILE, ">$outfile.new" )
-	  or dienice("Can't open $outfile for writing: $!");
+	open( TEXTFILE, ">$outfile.$$" )
+	  or dienice("Can't open $outfile.$$ for writing: $!");
 	flock( TEXTFILE, 2 );
 	seek( TEXTFILE, 0, 2 );
 
@@ -47,7 +47,7 @@ sub main {
 
 	close TEXTFILE;
 
-	if ( !rename "$outfile.new", "$outfile" ) {
+	if ( !rename "$outfile.$$", "$outfile" ) {
 		warn "rename $outfile.new to $outfile failed: $!\n";
 	}
 

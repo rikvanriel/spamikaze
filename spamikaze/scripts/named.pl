@@ -72,8 +72,8 @@ sub build_zone_header
 sub main {
 	my $ip;
 
-	open( ZONEFILE, ">$dnsbl_location.new" )
-	  or die("Can't open $dnsbl_location for writing: $!");
+	open( ZONEFILE, ">$dnsbl_location.$$" )
+	  or die("Can't open $dnsbl_location.$$ for writing: $!");
 	flock( ZONEFILE, 2 );
 	seek( ZONEFILE, 0, 2 );
 
@@ -96,8 +96,8 @@ sub main {
 
 	close ZONEFILE;
 
-	if ( !rename "$dnsbl_location.new", "$dnsbl_location" ) {
-		warn "rename $dnsbl_location.new to $dnsbl_location failed: $!\n";
+	if ( !rename "$dnsbl_location.$$", "$dnsbl_location" ) {
+		warn "rename $dnsbl_location.$$ to $dnsbl_location failed: $!\n";
 	}
 
 }
