@@ -47,3 +47,4 @@ Footer = /var/www/htdocs/spamikaze/footer.php
 ListName = Spamikaze-example
 ListingURL = /cgi-bin/listing.cgi
 RemovalURL = /cgi-bin/remove.cgi
+ListLatest = 20

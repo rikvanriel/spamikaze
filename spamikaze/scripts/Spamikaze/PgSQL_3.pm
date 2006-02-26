@@ -153,6 +153,36 @@ sub get_listing_info
 	return ($listed, %iplog);
 }
 
+sub get_latest($)
+{
+	my ($self, $num) = @_;
+	my %events;
+	my $ip;
+	my $time;
+	my $eventtext;
+	my $dbh;
+	my $sth;
+        my $sql;
+
+	$dbh = Spamikaze::DBConnect();
+
+	$sql = "SELECT eventtime, ip, eventtext FROM ipevents, eventtypes " .
+		"WHERE eventtypes.id = ipevents.eventid " .
+		"ORDER BY eventtime DESC LIMIT ?";
+	
+	$sth = $dbh->prepare($sql);
+	$sth->execute($num);
+	$sth->bind_columns(undef, \$time, \$ip, \$eventtext);
+	while ($sth->fetch()) {
+		$events{$time} = "$ip $eventtext";
+	}
+	$sth->finish();
+
+	$dbh->disconnect();
+
+	return %events;
+}
+
 sub new {
 	my $class = shift;
 	my $self = {};
