@@ -1,3 +1,21 @@
+2006-02-26  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/Spamikaze/PgSQL_3.pm, spamikaze/config/config.ini.example, spamikaze/scripts/Spamikaze.pm, spamikaze/cgi-bin/latest.cgi:
+	cgi script to fetch latest events, see http://psbl.surriel.com/latest
+
+2006-02-23  Rik van Riel  <riel@humbolt>
+
+	* spamikaze/scripts/named.pl, spamikaze/scripts/rbldnsd.pl, spamikaze/scripts/text.pl:
+	use .31464 (pid) as temp file extension instead of .new
+
+2005-12-07  Cor Gest  <cor@humbolt.nl.linux.org>
+
+	* ChangeLog: ChangeLog Updated
+
+2005-09-27  Cor Gest  <cor@humbolt.nl.linux.org>
+
+	* ChangeLog: ChangeLog Updated
+
 2005-09-27  Cor Gest  <cor@humbolt.nl.linux.org>
 
 	* ChangeLog: ChangeLog Updated
