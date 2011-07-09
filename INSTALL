@@ -2,7 +2,7 @@ Online Documentation
 --------------------
 
 Most of the Spamikaze documentation should be present online by now,
-at http://spamikaze.nl.linux.org/doc/   This document gives some extra
+at http://spamikaze.org/   This document gives some extra
 hints and hints on how to upgrade from the previous version.
 
 MySQL
@@ -111,7 +111,7 @@ Mail and Database Scripts
 
 Please check the online documentation:
 
-http://spamikaze.nl.linux.org/doc/
+http://spamikaze.org/
 
 
 Almost done, setting up the spamtraps and cronjobs: 
