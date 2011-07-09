@@ -1,3 +1,8 @@
+	Release Notes for Spamikaze 0.3
+
+- More efficient database layout for postgresql
+- development moved to a git tree
+
 	Release Notes for Spamikaze 0.2 beta
 
 - Most scripts can be configured using the configuration file,
