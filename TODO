@@ -2,24 +2,20 @@
 
 
 Before next release:
-  * integrate the postgres code by devdas
-  * add similar mysql code modularisation
-  * integrate query statistics
+  * use perl Module::Load::Conditional to only load the modules required
+  * integrate nntp spam (and non-spam) posting code
+  * update documentation for new config options
 
 For later versions:
+  * more scalable table layout for MySQL
+  * IPv6 support
+  * integrate query statistics
   * Add evidence table
   * the perl scripts in cgi-bin should be able to do the same as there 
     php ones.
   * sharing IP addresses with multiple spamikaze lists
-  * recognise mailing list and mailer daemon messages, do not
-    lists hosts sending those
   * (maybe) automatic escalation to netblocks if a lot of spam
     is received from netblocks
-  * teach named.pl to use nsupdate so nameservers can resync
-    using IXFR instead of AXFR
-	* getcountries.pl
-	* statscountry.pl
-	* stop using system()
 
 Wishlist:
 * Templating for the webinterface
