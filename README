@@ -27,8 +27,7 @@ Software Requirements
 Any *nix based box with the following software should be able to
 run:
 
-1. A database server (currently only MySQL is supported, future
-   versions 
+1. A database server (MySQL or PostgresQL)
 2. A webserver able to handle cgi scripts (perl) or php scripts.
 3. Perl with the following module(s):
     DBI, CGI
