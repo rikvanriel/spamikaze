@@ -176,6 +176,6 @@ SELECT pg_catalog.setval('eventtypes_id_seq', 1, false);
 -- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
 --
 
-COMMENT ON SCHEMA public IS 'Standard public schema';
+COMMENT ON SCHEMA public IS 'Spamikaze PgSQL_3 database schema';
 
 
