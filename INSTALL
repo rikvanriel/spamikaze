@@ -5,6 +5,14 @@ Most of the Spamikaze documentation should be present online by now,
 at http://spamikaze.org/   This document gives some extra
 hints and hints on how to upgrade from the previous version.
 
+PostgreSQL
+----------
+
+The PostgreSQL database schema is more efficient than the ones
+currently available for MySQL. PostgreSQL also seems to be better at
+handling large queries while other transactions are happening. This
+makes PostgreSQL the recommended database for Spamikaze.
+
 MySQL
 -----
 
