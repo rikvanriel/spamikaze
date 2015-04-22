@@ -154,7 +154,7 @@ sub process_mail
 	my ( $mail ) = @_;
 
 	if (&from_daemon($mail)) {
-		$Spamikaze::nntp->post_notspam($mail, 'from daemon');
+		Spamikaze::archive_notspam($mail, 'from daemon');
 		return 0;
 	}
 
@@ -163,12 +163,12 @@ sub process_mail
 		if ($ip && !Spamikaze::MXBackup($ip) &&
 					!Spamikaze::whitelisted($ip)) {
 			$Spamikaze::db->storeip($ip, 'received spamtrap mail');
-			$Spamikaze::nntp->post_spam($ip, $mail);
+			Spamikaze::archive_spam($ip, $mail);
 			return 1;
 		}
 	}
 
-	$Spamikaze::nntp->post_notspam($mail, 'no valid IP address');
+	Spamikaze::archive_notspam($mail, 'no valid IP address');
 	return 0;
 }
 

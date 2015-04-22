@@ -50,7 +50,7 @@ RemovalURL = /cgi-bin/remove.cgi
 ListLatest = 20
 
 [NNTP]
-Enabled = ''
+Enabled = 
 Server = news.mydomain.tld
 Groupbase = spamikaze
 From = spamikaze@mydomain.tld

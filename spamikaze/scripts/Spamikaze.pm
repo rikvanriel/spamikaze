@@ -22,7 +22,6 @@ use Net::DNS;
 
 use Spamikaze::MySQL_2;
 use Spamikaze::PgSQL_3;
-use Spamikaze:NNTP;
 
 my $dbuser;
 my $dbpwd;
@@ -62,6 +61,10 @@ our $web_listlatest;
 
 # nntp archival
 our $nntp;
+our $nntp_enabled;
+our $nntp_server;
+our $nntp_groupbase;
+our $nntp_from;
 
 my @RFC1918Addresses =
   ( '10\.', '172\.1[6-9]\.', '172\.2[0-9]\.', '172\.3[0-2]\.', '192\.168\.' );
@@ -233,6 +236,22 @@ sub whitelisted
 	return 0;
 }
 
+sub archive_spam
+{
+	my ($ip, $mail) = @_;
+	if ($nntp_enabled) {
+		$Spamikaze::nntp->post_spam($ip, $mail);
+	}
+}
+
+sub archive_notspam
+{
+	my ($mail, $reason) = @_;
+	if ($nntp_enabled) {
+		$Spamikaze::nntp->post_notspam($mail, $reason);
+	}
+}
+
 BEGIN {
 	&ConfigLoad();
 
@@ -242,7 +261,10 @@ BEGIN {
 	my $tmp = "Spamikaze::" . $dbmod;
 	$db = new $tmp;
 
-	$nntp = new Spamikaze::NNTP;
+	if ($nntp_enabled) {
+		require Spamikaze::NNTP;
+		$nntp = new Spamikaze::NNTP;
+	}
 }
 
 1;

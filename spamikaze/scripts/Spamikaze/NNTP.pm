@@ -12,31 +12,31 @@
 #
 # Methods to archive spam on an NNTP server.
 #
-package Spamikaze::PgSQL_3;
+package Spamikaze::NNTP;
 use strict;
 use warnings;
 use Env qw( HOME );
 use News::NNTPClient;
 
 my $news_header_notspam =
-"From: spamikaze <$nntp_from>
+"From: spamikaze <FROM>
 Subject: spamtrap mail REASON
-Newsgroups: $nntp_base.notspam
+Newsgroups: NNTPBASE.notspam
 
 ";
 
 sub post_notspam
 {
-	unless ($nntp_enabled) return;
+	unless ($Spamikaze::nntp_enabled) { return };
 
-	my $nntp = new News::NNTPClient("$nntp_server");
+	my $nntp = new News::NNTPClient("$Spamikaze::nntp_server");
 	$nntp->mode_reader();
 
 	my ( $spam, $reason ) = @_;
 	my $header = $news_header_notspam;
 	$header =~ s/REASON/$reason/m;
 
-	$nntp->group("$nntp_base.notspam");
+	$nntp->group("$Spamikaze::nntp_groupbase.notspam");
 
 	my @message = split /\n/, $header . $spam;
 	$nntp->post(@message);
@@ -44,17 +44,17 @@ sub post_notspam
 }
 
 my $news_header_spam =
-"From: spamikaze <$nntp_from>
+"From: spamikaze <FROM>
 Subject: IPADDRESS spamtrap mail
-Newsgroups: $nntp_base.OCTA
+Newsgroups: NNTPBASE.OCTA
 
 ";
 
 sub post_spam
 {
-	unless ($nntp_enabled) return;
+	unless ($Spamikaze::nntp_enabled) { return };
 
-	my $nntp = new News::NNTPClient("$nntp_server");
+	my $nntp = new News::NNTPClient("$Spamikaze::nntp_server");
 	$nntp->mode_reader();
 
 	my ( $ip, $spam ) = @_;
@@ -64,7 +64,7 @@ sub post_spam
 	$header =~ s/IPADDRESS/$ip/m;
 	$header =~ s/OCTA/$octa/m;
 
-	$nntp->group("surriel.spamtrap.$octa");
+	$nntp->group("$Spamikaze::nntp_groupbase.$octa");
 
 	my @message = split /\n/, $header . $spam;
 	$nntp->post(@message);
@@ -76,6 +76,13 @@ sub new
 	my $class = shift;
 	my $self = {};
 	bless $self, $class;
+
+	# set up the nntp headers
+	$news_header_spam =~ s/FROM/$Spamikaze::nntp_from/m;
+	$news_header_spam =~ s/NNTPBASE/$Spamikaze::nntp_groupbase/m;
+	$news_header_notspam =~ s/FROM/$Spamikaze::nntp_from/m;
+	$news_header_notspam =~ s/NNTPBASE/$Spamikaze::nntp_groupbase/m;
+
 	return $self;
 }
 
