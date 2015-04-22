@@ -2,7 +2,6 @@
 
 
 Before next release:
-  * use perl Module::Load::Conditional to only load the modules required
   * integrate nntp spam (and non-spam) posting code
   * update documentation for new config options
 
