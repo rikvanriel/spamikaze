@@ -22,6 +22,7 @@ use Net::DNS;
 
 use Spamikaze::MySQL_2;
 use Spamikaze::PgSQL_3;
+use Spamikaze:NNTP;
 
 my $dbuser;
 my $dbpwd;
@@ -58,6 +59,9 @@ our $web_listname;
 our $web_listingurl;
 our $web_removalurl;
 our $web_listlatest;
+
+# nntp archival
+our $nntp;
 
 my @RFC1918Addresses =
   ( '10\.', '172\.1[6-9]\.', '172\.2[0-9]\.', '172\.3[0-2]\.', '192\.168\.' );
@@ -121,6 +125,11 @@ sub ConfigLoad {
 	$web_listingurl = $cfg->val ('Web', 'ListingURL' );
 	$web_removalurl = $cfg->val ('Web', 'RemovalURL' );
 	$web_listlatest = $cfg->val ('Web', 'ListLatest' );
+
+	$nntp_enabled = $cfg->val ('NNTP', 'Enabled' );
+	$nntp_server = $cfg->val ('NNTP', 'Server' );
+	$nntp_groupbase = $cfg->val ('NNTP', 'Groupbase' );
+	$nntp_from = $cfg->val ('NNTP', 'From' );
 
 	#
 	# We need to check values !!!
@@ -232,6 +241,8 @@ BEGIN {
 
 	my $tmp = "Spamikaze::" . $dbmod;
 	$db = new $tmp;
+
+	$nntp = new Spamikaze::NNTP;
 }
 
 1;

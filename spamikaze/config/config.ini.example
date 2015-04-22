@@ -48,3 +48,9 @@ ListName = Spamikaze-example
 ListingURL = /cgi-bin/listing.cgi
 RemovalURL = /cgi-bin/remove.cgi
 ListLatest = 20
+
+[NNTP]
+Enabled = ''
+Server = news.mydomain.tld
+Groupbase = spamikaze
+From = spamikaze@mydomain.tld

@@ -25,7 +25,7 @@ Newsgroups: $nntp_base.notspam
 
 ";
 
-sub post_nntp_notspam
+sub post_notspam
 {
 	unless ($nntp_enabled) return;
 
@@ -50,7 +50,7 @@ Newsgroups: $nntp_base.OCTA
 
 ";
 
-sub post_nntp_spam
+sub post_spam
 {
 	unless ($nntp_enabled) return;
 
@@ -69,6 +69,14 @@ sub post_nntp_spam
 	my @message = split /\n/, $header . $spam;
 	$nntp->post(@message);
 	$nntp->quit();
+}
+
+sub new
+{
+	my $class = shift;
+	my $self = {};
+	bless $self, $class;
+	return $self;
 }
 
 BEGIN {
