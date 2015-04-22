@@ -32,7 +32,7 @@ sub post_notspam
 	my $nntp = new News::NNTPClient("$Spamikaze::nntp_server");
 	$nntp->mode_reader();
 
-	my ( $spam, $reason ) = @_;
+	my ( $self, $spam, $reason ) = @_;
 	my $header = $news_header_notspam;
 	$header =~ s/REASON/$reason/m;
 
@@ -57,7 +57,7 @@ sub post_spam
 	my $nntp = new News::NNTPClient("$Spamikaze::nntp_server");
 	$nntp->mode_reader();
 
-	my ( $ip, $spam ) = @_;
+	my ( $self, $ip, $spam ) = @_;
 	my $header = $news_header_spam;
 	$ip =~ /^(\d{1,3})\./;
 	my $octa = $1;
