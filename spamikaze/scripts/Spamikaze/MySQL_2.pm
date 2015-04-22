@@ -7,7 +7,7 @@
 # NO WARRANTY, see the file COPYING for details.
 #
 # This file is part of the spamikaze project:
-#     http://spamikaze.nl.linux.org/
+#     http://spamikaze.org/
 
 #
 # Database abstractions for MySQL schema from Spamikaze 0.2

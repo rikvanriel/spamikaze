@@ -10,7 +10,7 @@
 # NO WARRANTY, see the file COPYING for details.
 #
 # This file is part of the spamikaze project:
-#        http://spamikaze.nl.linux.org/
+#        http://spamikaze.org/
 #
 # generates named zone files from the spamikaze database, run this
 # from a cronjob every few minutes so removals from the list are fast

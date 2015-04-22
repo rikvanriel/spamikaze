@@ -1,9 +1,9 @@
 <table width="100%" cellpadding="0" cellspacing="5" border="0"><tr align=left>
-<td align=left><a href="http://spamikaze.nl.linux.org">
+<td align=left><a href="http://spamikaze.org">
 <img src="/spamikaze-small.jpg"
      alt="Powered by Spamikaze"></a></td>
 <td align=center><h1>Spamikaze Example List</h1></td>
-<td align=right><a href="http://spamikaze.nl.linux.org">
+<td align=right><a href="http://spamikaze.org">
 <img src="/spamikaze-small.jpg"
      alt="Powered by Spamikaze"></a></td>
 </tr></table>

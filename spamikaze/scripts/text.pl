@@ -10,7 +10,7 @@
 # NO WARRANTY, see the file COPYING for details.
 #
 # This file is part of the spamikaze project:
-#        http://spamikaze.nl.linux.org/
+#        http://spamikaze.org/
 #
 # generates a plain text file with IP addresses from the spamikaze database
 use strict;

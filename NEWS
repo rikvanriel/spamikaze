@@ -8,7 +8,7 @@
 - Most scripts can be configured using the configuration file,
   /etc/spamikaze/config
 - There is some documentation, available on the spamikaze web site:
-  http://spamikaze.nl.linux.org/doc/
+  http://spamikaze.org/
 - Expiry policy is more flexible now.
 - New database layout, with better performance and better future
   extensibility.
