@@ -8,8 +8,7 @@ For later versions:
   * more scalable table layout for MySQL
   * IPv6 support
   * integrate query statistics
-  * Add evidence table
-  * the perl scripts in cgi-bin should be able to do the same as there 
+  * the perl scripts in cgi-bin should be able to do the same as the
     php ones.
   * sharing IP addresses with multiple spamikaze lists
   * (maybe) automatic escalation to netblocks if a lot of spam
