@@ -2,8 +2,7 @@
 
 
 Before next release:
-  * integrate nntp spam (and non-spam) posting code
-  * update documentation for new config options
+  * ???
 
 For later versions:
   * more scalable table layout for MySQL
