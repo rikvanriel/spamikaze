@@ -46,7 +46,7 @@ sub post_notspam
 my $news_header_spam =
 "From: spamikaze <FROM>
 Subject: IPADDRESS spamtrap mail
-Newsgroups: NNTPBASE.OCTA
+Newsgroups: NNTPBASE.OCTA,NNTPBASE
 
 ";
 
@@ -79,7 +79,7 @@ sub new
 
 	# set up the nntp headers
 	$news_header_spam =~ s/FROM/$Spamikaze::nntp_from/m;
-	$news_header_spam =~ s/NNTPBASE/$Spamikaze::nntp_groupbase/m;
+	$news_header_spam =~ s/NNTPBASE/$Spamikaze::nntp_groupbase/mg;
 	$news_header_notspam =~ s/FROM/$Spamikaze::nntp_from/m;
 	$news_header_notspam =~ s/NNTPBASE/$Spamikaze::nntp_groupbase/m;
 
