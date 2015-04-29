@@ -22,6 +22,7 @@ sub pipe_mail
 {
 	my ( $self, $mail ) = @_;
 	my $program = $Spamikaze::pipe_program;
+	my $pid;
 
 	if ( $pid = fork ) {
 		# parent process:

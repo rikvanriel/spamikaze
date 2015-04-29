@@ -66,6 +66,10 @@ our $nntp_server;
 our $nntp_groupbase;
 our $nntp_from;
 
+# pipe to a helper program
+our $pipe;
+our $pipe_program;
+
 my @RFC1918Addresses =
   ( '10\.', '172\.1[6-9]\.', '172\.2[0-9]\.', '172\.3[0-2]\.', '192\.168\.' );
 
@@ -133,6 +137,8 @@ sub ConfigLoad {
 	$nntp_server = $cfg->val ('NNTP', 'Server' );
 	$nntp_groupbase = $cfg->val ('NNTP', 'Groupbase' );
 	$nntp_from = $cfg->val ('NNTP', 'From' );
+
+	$pipe_program = $cfg->val ('Pipe', 'Program' );
 
 	#
 	# We need to check values !!!
@@ -239,8 +245,13 @@ sub whitelisted
 sub archive_spam
 {
 	my ($ip, $mail) = @_;
+
 	if ($nntp_enabled) {
 		$Spamikaze::nntp->post_spam($ip, $mail);
+	}
+
+	if ($pipe_program) {
+		$Spamikaze::pipe->pipe_mail($mail);
 	}
 }
 
@@ -264,6 +275,11 @@ BEGIN {
 	if ($nntp_enabled) {
 		require Spamikaze::NNTP;
 		$nntp = new Spamikaze::NNTP;
+	}
+
+	if ($pipe_program) {
+		require Spamikaze::Pipe;
+		$pipe = new Spamikaze::Pipe;
 	}
 }
 

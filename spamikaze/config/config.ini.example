@@ -54,3 +54,7 @@ Enabled =
 Server = news.mydomain.tld
 Groupbase = spamikaze
 From = spamikaze@mydomain.tld
+
+[Pipe]
+# helper program to pipe spam email to on stdin
+Program =
