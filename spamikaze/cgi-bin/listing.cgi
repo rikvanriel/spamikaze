@@ -141,7 +141,7 @@ sub main
 	my ($listed, %iplog) = $Spamikaze::db->get_listing_info($ip);
 
 	my $foundinfo = ' ';
-	foreach $time (sort keys %iplog) {
+	foreach $time (reverse sort keys %iplog) {
 		$foundinfo .= "<tr><td>$time</td>" .
 				"<td>$iplog{$time}</td></tr>\n";
 	}
