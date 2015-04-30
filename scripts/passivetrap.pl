@@ -70,9 +70,6 @@ sub from_daemon
 	if ($mail =~ /^Subject:(\w\s)*automat(ic|ed) reply/mi) {
 		return 1;
 	}
-	if ($mail =~ /^List-Subscribe:.*@/mi) {
-		return 1;
-	}
 	if ($mail =~ /out of (the )?office/mi) {
 		return 1;
 	}
@@ -119,6 +116,15 @@ sub from_daemon
 		return 1;
 	}
 	if ($mail =~ /AppleID\@apple.com/mi) {
+		return 1;
+	}
+	if ($mail =~ /TO BECOME A MEMBER OF THE GROUP/mi) {
+		return 1;
+	}
+	if ($mail =~ /^This receipt verifies that the message has been/mi) {
+		return 1;
+	}
+	if ($mail =~ /Message-ID:X-YMail-OSG/mi) {
 		return 1;
 	}
 
