@@ -309,7 +309,7 @@ sub main
 	# warn the user...
 
 	print "usage: /path/to/passivetrap.pl [ -d directory ]\n";
-	print "see also http://spamikaze.nl.linux.org/doc/\n";
+	print "see also http://spamikaze.org/\n";
 	exit 1;
 }
 
