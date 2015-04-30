@@ -5,8 +5,8 @@ Before next release:
   * ???
 
 For later versions:
-  * more scalable table layout for MySQL
   * IPv6 support
+  * more scalable table layout for MySQL, similar to PostgreSQL 3 tables
   * integrate query statistics
   * sharing IP addresses with multiple spamikaze lists
   * (maybe) automatic escalation to netblocks if a lot of spam
