@@ -1,7 +1,7 @@
 	Release Notes for Spamikaze 0.3
 
 - More efficient database layout for postgresql, preferred over
-  any of the mysql schemes
+  any of the mysql schemas
 - Development has been moved to github.com
 - Documentation is now only on the wiki at http://spamikaze.org/
 
