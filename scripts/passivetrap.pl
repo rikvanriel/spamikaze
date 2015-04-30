@@ -237,11 +237,6 @@ sub maildir_daemon
 				# parent process
 				#
 				$numworkers++;
-
-				# wait a little before forking the next worker
-				if ($numworkers < $targetworkers) {
-					sleep 1;
-				}
 			} else {
 				#
 				# child process
@@ -257,28 +252,26 @@ sub maildir_daemon
 		# wait for worker processes to exit
 		# evaluate how many worker processes are required
 		#
-		if ($numworkers >= $targetworkers) {
-			my $child;
-			while (($child = waitpid(-1, WNOHANG)) > 0) {
-				my $nummails = $?;
-				$numworkers--;
+		my $child;
+		while (($child = waitpid(-1, WNOHANG)) > 0) {
+			my $nummails = $?;
+			$numworkers--;
 
-				# not keeping up? start more workers
-				# not much work? reduce the number of workers
-				if ($nummails > 1000 && $targetworkers < 20) {
-					$targetworkers++;
-				} elsif ($nummails < 50 && $targetworkers > 1) {
-					$targetworkers--;
-				}
+			# not keeping up? start more workers
+			# not much work? reduce the number of workers
+			if ($nummails > 1000 && $targetworkers < 20) {
+				$targetworkers++;
+			} elsif ($nummails < 50 && $targetworkers > 1) {
+				$targetworkers--;
 			}
+		}
 
-			if ($child == 0 && $numworkers >= $targetworkers) {
-				# wait a little for a child to exit
-				sleep 1;
-			} elsif ($child == -1 && $targetworkers == 1) {
-				# idle? sleep a little longer
-				sleep 3;
-			}
+		if ($child == 0) {
+			# wait a little for a child to exit
+			sleep 1;
+		} elsif ($child == -1 && $targetworkers == 1) {
+			# idle? sleep a little longer
+			sleep 3;
 		}
 	}
 	exit 1;
