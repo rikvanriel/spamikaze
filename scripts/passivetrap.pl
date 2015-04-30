@@ -16,6 +16,7 @@ use warnings;
 use FindBin;
 use Net::DNS;
 use lib "$FindBin::Bin";
+use POSIX "sys_wait_h";
 
 use Spamikaze;
 
@@ -219,13 +220,61 @@ sub process_dir
 sub maildir_daemon
 {
 	my ( $dir ) = @_;
+	my $numworkers = 0;
+	my $targetworkers = 1;
 
 	chdir $dir || die "$ARGV[-1] : couldn't chdir to $dir\n";
 
 	while (1) {
-		my $count = &process_dir($dir);
-		# print "processed $count messages\n";
-		sleep 3;
+		my $pid;
+
+		#
+		# parent process
+		# evaluate how many worker tasks to start
+		#
+		if ($numworkers >= $targetworkers) {
+			my $child;
+			while (($child = waitpid(-1, WNOHANG)) > 0) {
+				my $nummails = $?;
+				$numworkers--;
+
+				# not keeping up? start more workers
+				# not much work? reduce the number of workers
+				if ($nummails > 1000 && $targetworkers < 20) {
+					$targetworkers++;
+				} elsif ($nummails < 50 && $targetworkers > 1) {
+					$targetworkers--;
+				}
+			}
+
+			if ($child == 0 && $numworkers >= $targetworkers) {
+				# wait a little for another child to exit
+				sleep 1;
+			} elsif ($child == -1 && $targetworkers == 1) {
+				# idle? sleep a little longer
+				sleep 3;
+			}
+		}
+
+		if ($numworkers < $targetworkers && ($pid = fork)) {
+			#
+			# parent process
+			#
+			$numworkers++;
+
+			# wait a little before forking the next worker
+			if ($targetworkers > 1) {
+				sleep 1;
+			}
+
+		} elsif (!$pid) {
+			#
+			# child process
+			# return the number of emails processed
+			#
+			my $count = &process_dir($dir);
+			exit $count;
+		}
 	}
 	exit 1;
 }
