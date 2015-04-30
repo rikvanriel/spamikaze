@@ -31,9 +31,10 @@ sub pipe_mail
 	} elsif (defined $pid) {
 		# child process:
 		# feed mail to helper program
-		open PIPE, "| $program" or print "could not open $program\n";
+		open PIPE, "| $program" or exit 1;
 		print PIPE $mail;
 		close PIPE;
+		exit 0;
 	}
 }
 
