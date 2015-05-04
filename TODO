@@ -1,17 +1,14 @@
 	TODO items for spamikaze
 
 
-Before next release:
-  * ???
+For version 0.4:
+  * integrate evidence fetching cgi script
+  * more scalable table layout for MySQL, similar to PostgreSQL 3 tables
+  * IPv6 support (requires new MySQL table schema)
 
 For later versions:
-  * IPv6 support
-  * more scalable table layout for MySQL, similar to PostgreSQL 3 tables
   * integrate query statistics
   * sharing IP addresses with multiple spamikaze lists
   * (maybe) automatic escalation to netblocks if a lot of spam
     is received from netblocks
-
-Wishlist:
-* Templating for the webinterface
 
