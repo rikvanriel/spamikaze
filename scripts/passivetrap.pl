@@ -236,7 +236,7 @@ sub maildir_daemon
 		# parent process
 		# start a worker process if desired
 		#
-		if ($numworkers < $targetworkers) {
+		while ($numworkers < $targetworkers) {
 			my $pid;
 			if ($pid = fork) {
 				#
