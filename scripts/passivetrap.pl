@@ -208,7 +208,8 @@ sub process_dir
 		close MAIL;
 
 		if (!unlink $mailfile) {
-			die "cannot unlink $mailfile: $!\n";
+			# a sibling worker processed the spam before us
+			next;
 		}
 
 		&process_mail($email);
