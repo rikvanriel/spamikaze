@@ -216,7 +216,7 @@ sub process_dir
 		$count++;
 
 		# too busy? ensure more helpers get forked
-		if ($count > 100) {
+		if ($count > 50) {
 			return $count;
 		}
 	}
@@ -265,9 +265,9 @@ sub maildir_daemon
 
 			# not keeping up? start more workers
 			# not much work? reduce the number of workers
-			if ($nummails > 100 && $targetworkers < 50) {
+			if ($nummails > 50 && $targetworkers < 50) {
 				$targetworkers++;
-			} elsif ($nummails < 50 && $targetworkers > 1) {
+			} elsif ($nummails < 20 && $targetworkers > 1) {
 				$targetworkers--;
 			}
 		}
