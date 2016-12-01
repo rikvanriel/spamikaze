@@ -268,7 +268,7 @@ sub maildir_daemon
 			if ($nummails > 50 && $targetworkers < 250) {
 				$targetworkers++;
 			} elsif ($nummails < 20 && $targetworkers > 1) {
-				$targetworkers--;
+				$targetworkers /= 2;
 			}
 		}
 
