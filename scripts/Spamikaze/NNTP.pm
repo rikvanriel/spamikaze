@@ -29,7 +29,8 @@ sub post_notspam
 {
 	unless ($Spamikaze::nntp_enabled) { return };
 
-	my $nntp = new News::NNTPClient("$Spamikaze::nntp_server");
+	my $nntp = new News::NNTPClient("$Spamikaze::nntp_server",
+					Timeout=>10);
 	$nntp->mode_reader();
 
 	my ( $self, $spam, $reason ) = @_;
