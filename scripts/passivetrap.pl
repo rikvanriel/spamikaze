@@ -267,7 +267,7 @@ sub maildir_daemon
 			# not much work? reduce the number of workers
 			if ($nummails > 50 && $targetworkers < 250) {
 				$targetworkers++;
-			} elsif ($nummails < 20 && $targetworkers > 1) {
+			} elsif ($nummails < 40 && $targetworkers > 1) {
 				$targetworkers /= 2;
 			}
 		}

@@ -29,6 +29,8 @@ sub parselog
 		$ip = $1;
 	} elsif ($line =~ /SMTP protocol violation: synchronization error.* \[((\d{1,3}\.){3}\d{1,3})\] next input=/) {
 		$ip = $1;
+	} elsif ($line =~ /SMTP protocol error in .AUTH LOGIN.* \[((\d{1,3}\.){3}\d{1,3})\]/) {
+		$ip = $1;
 	}
 
 	return $ip;
@@ -36,7 +38,7 @@ sub parselog
 
 sub main
 {
-	my $file = File::Tail->new("/var/log/exim/reject.log");
+	my $file = File::Tail->new("/var/log/exim/main.log");
 	my $line;
 
 	while (defined($line=$file->read)) {
