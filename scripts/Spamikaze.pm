@@ -58,6 +58,7 @@ our $web_listname;
 our $web_listingurl;
 our $web_removalurl;
 our $web_listlatest;
+our $web_siteurl;
 
 # nntp archival
 our $nntp;
@@ -132,6 +133,7 @@ sub ConfigLoad {
 	$web_listingurl = $cfg->val ('Web', 'ListingURL' );
 	$web_removalurl = $cfg->val ('Web', 'RemovalURL' );
 	$web_listlatest = $cfg->val ('Web', 'ListLatest' );
+	$web_siteurl = $cfg->val ('Web', 'SiteURL' );
 
 	$nntp_enabled = $cfg->val ('NNTP', 'Enabled' );
 	$nntp_server = $cfg->val ('NNTP', 'Server' );

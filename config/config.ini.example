@@ -48,6 +48,7 @@ ListName = Spamikaze-example
 ListingURL = /cgi-bin/listing.cgi
 RemovalURL = /cgi-bin/remove.cgi
 ListLatest = 20
+SiteURL = https://example.com/
 
 [NNTP]
 Enabled = 

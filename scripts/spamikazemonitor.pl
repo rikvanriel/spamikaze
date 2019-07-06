@@ -16,6 +16,7 @@ use Net::DNS;
 use lib "$FindBin::Bin";
 use POSIX "sys_wait_h";
 use Time::Local;
+use LWP::Simple;
 
 use Spamikaze;
 
@@ -74,9 +75,28 @@ sub checknntp {
 	return $recentspam;
 }
 
+sub checkwebsite
+{
+	unless (defined($Spamikaze::web_siteurl)) {
+		return;
+	}
+
+	my $url = $Spamikaze::web_siteurl;
+	if (defined($Spamikaze::web_latest)) {
+		my $url = "$Spamikaze::web_siteurl"."$Spamikaze::web_latest";
+	}
+
+	my $rc = getstore($url, "/dev/null");
+
+	if (is_error($rc)) {
+		print "web server at $url returned error $rc\n";
+	}
+}
+
 sub main {
 	my $ip = &checkrecentevents;
 	&checknntp($ip);
+	&checkwebsite;
 }
 
 &main;
