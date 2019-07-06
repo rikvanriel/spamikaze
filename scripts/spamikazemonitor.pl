@@ -41,14 +41,18 @@ sub checkrecentevents {
 			# we received a spamtrap mail in the past hour
 			my $unixtime = &getunixtime($time);
 			if ($unixtime > $hourago) {
-				return;
+				return $ip;
 			}
 		}
 	}
 	print $Spamikaze::web_listname, ": no recent spamtrap mail received!\n";
+	return 0;
 }
 
 sub checknntp {
+	my ( $ip ) = @_;
+	my $recentspam = 0;
+	
 	unless ($Spamikaze::nntp_enabled) {
 		return;
 	}
@@ -56,12 +60,23 @@ sub checknntp {
 	my $nntp = new News::NNTPClient("$Spamikaze::nntp_server", 119,
 					Timeout=>10);
 	$nntp->mode_reader();
+	$ip =~ /^(\d{1,3})\./;
+	my $group = "$Spamikaze::nntp_groupbase". "." . $1;
+	foreach ($nntp->newnews("$group", time() - 3600)) {
+		$recentspam = 1;
+	}
 	$nntp->quit();
+
+	unless ($recentspam) {
+		exit "no recent spam found in $group\n";
+	}
+
+	return $recentspam;
 }
 
 sub main {
-	&checkrecentevents;
-	&checknntp;
+	my $ip = &checkrecentevents;
+	&checknntp($ip);
 }
 
 &main;
