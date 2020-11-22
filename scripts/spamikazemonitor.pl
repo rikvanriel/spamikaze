@@ -32,7 +32,7 @@ sub getunixtime {
 
 # throw an error if there are no recent spamtrap hits
 sub checkrecentevents {
-	my %events = $Spamikaze::db->get_latest($Spamikaze::web_listlatest);
+	my %events = $Spamikaze::db->get_latest(1000);
 	my $hourago = time() - 3600;
 	my $time;
 
