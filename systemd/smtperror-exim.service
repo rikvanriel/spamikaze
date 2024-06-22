@@ -1,0 +1,10 @@
+[Unit]
+Description=Spamikaze Exim SMTP error scanner
+After=exim.service
+
+[Service]
+ExecStart=/opt/spamikaze/scripts/smtperror-exim
+User=exim
+
+[Install]
+WantedBy=multi-user.target
