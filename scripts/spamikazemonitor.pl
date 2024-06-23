@@ -61,15 +61,17 @@ sub checknntp {
 	my $nntp = new News::NNTPClient("$Spamikaze::nntp_server", 119,
 					Timeout=>10);
 	$nntp->mode_reader();
+	$nntp->gmt(1);
 	$ip =~ /^(\d{1,3})\./;
-	my $group = "$Spamikaze::nntp_groupbase". "." . $1;
+	my $group = "$Spamikaze::nntp_groupbase" . "." . $1;
 	foreach ($nntp->newnews("$group", time() - 3600)) {
 		$recentspam = 1;
 	}
 	$nntp->quit();
 
 	unless ($recentspam) {
-		exit "no recent spam found in $group\n";
+		print "no recent spam found in $group\n";
+		exit 1;
 	}
 
 	return $recentspam;
