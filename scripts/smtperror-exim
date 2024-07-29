@@ -24,6 +24,7 @@ sub parselog
 {
 	my ( $line ) = @_;
 	my $ip = '';
+	my $reason = 'major smtp violation';
 
 	if ($line =~ /SMTP protocol violation: synchronization error.*from H=\[((\d{1,3}\.){3}\d{1,3})\]/) {
 		$ip = $1;
@@ -31,9 +32,12 @@ sub parselog
 		$ip = $1;
 	} elsif ($line =~ /SMTP protocol error in .AUTH LOGIN.* \[((\d{1,3}\.){3}\d{1,3})\]/) {
 		$ip = $1;
+	} elsif ($line =~ /\[((\d{1,3}\.){3}\d{1,3})\] F\=.* rejected RCPT .*: relay not permitted/) {
+		$ip = $1;
+		$reason = 'open relay test';
 	}
 
-	return $ip;
+	return ($ip, $reason);
 }
 
 sub main
@@ -42,10 +46,10 @@ sub main
 	my $line;
 
 	while (defined($line=$file->read)) {
-		my $ip = parselog($line);
+		my ($ip, $reason) = parselog($line);
 		if (defined($ip) and $ip ne '' and
 					 !Spamikaze::whitelisted($ip)) {
-			$Spamikaze::db->storeip($ip, 'major smtp violation');
+			$Spamikaze::db->storeip($ip, $reason);
 		}
 	}
 }
