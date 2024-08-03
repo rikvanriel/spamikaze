@@ -19,6 +19,7 @@ use DBI;
 use Config::IniFiles;
 use Env qw( HOME );
 use Net::DNS;
+use Try::Tiny;
 
 use Spamikaze::MySQL_2;
 use Spamikaze::PgSQL_3;
@@ -96,7 +97,19 @@ sub ConfigLoad {
 		exit 1;
 
 	}
+	try
+	{
+		ConfigRead($configfile);
+	} catch {
+		print "Failed to parse config file: $_";
+		exit 1;
+	}
 
+}
+
+
+sub ConfigRead {
+	my ($configfile) = @_;
 	my $cfg = new Config::IniFiles( -file => $configfile );
 
 	$dbhost = $cfg->val( 'Database', 'Host' );
@@ -153,11 +166,14 @@ sub Version {
 }
 
 sub DBConnect {
-	my $dbh =
-	  DBI->connect( "dbi:$dbtype:dbname=$dbbase;host=$dbhost;port=$dbport",
-		"$dbuser", "$dbpwd", { RaiseError => 1, AutoCommit => 0 } )
-	  || die "Database connection not made: $DBI::errstr";
-	return $dbh;
+	try {
+		my $dbh = DBI->connect( "dbi:$dbtype:dbname=$dbbase;host=$dbhost;port=$dbport",
+			"$dbuser", "$dbpwd", { RaiseError => 1, AutoCommit => 0 } );
+		return $dbh;
+	} catch {
+		print "Failed to connect to the database: $_";
+		exit 1;
+	}
 }
 
 sub GetDBType {
@@ -236,9 +252,13 @@ sub whitelisted
 	my $zone;
 
 	foreach $zone (@Spamikaze::whitelist_zones) {
-		my $query = $res->query($revip . "." . $zone, "A");
-		if (defined $query) {
-			return 1;
+		try {
+			my $query = $res->query($revip . "." . $zone, "A");
+			if (defined $query) {
+				return 1;
+			}
+		} catch {
+			print "query to $zone failed: @_";
 		}
 	}
 	return 0;
@@ -249,11 +269,19 @@ sub archive_spam
 	my ($ip, $mail) = @_;
 
 	if ($nntp_enabled) {
-		$Spamikaze::nntp->post_spam($ip, $mail);
+		try {
+			$Spamikaze::nntp->post_spam($ip, $mail);
+		} catch {
+			print "archiving spam to NNTP failed: $_";
+		}
 	}
 
 	if ($pipe_program) {
-		$Spamikaze::pipe->pipe_mail($mail);
+		try {
+			$Spamikaze::pipe->pipe_mail($mail);
+		} catch {
+			print "archiving spam to pipe failed: $_";
+		}
 	}
 }
 
@@ -261,7 +289,11 @@ sub archive_notspam
 {
 	my ($mail, $reason) = @_;
 	if ($nntp_enabled) {
-		$Spamikaze::nntp->post_notspam($mail, $reason);
+		try {
+			$Spamikaze::nntp->post_notspam($mail, $reason);
+		} catch {
+			print "archiving non-spam to NNTP failed: $_";
+		}
 	}
 }
 

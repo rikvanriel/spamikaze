@@ -17,6 +17,7 @@ use strict;
 use warnings;
 use Env qw( HOME );
 use POSIX "sys_wait_h";
+use Try::Tiny;
 
 sub pipe_mail
 {
@@ -31,10 +32,15 @@ sub pipe_mail
 	} elsif (defined $pid) {
 		# child process:
 		# feed mail to helper program
-		open PIPE, "| $program" or exit 1;
-		print PIPE $mail;
-		close PIPE;
-		exit 0;
+		try {
+			open PIPE, "| $program";
+			print PIPE $mail;
+			close PIPE;
+			exit 0;
+		} catch {
+			print "failed to execute $program: $_";
+			exit 1;
+		}
 	}
 }
 
