@@ -88,7 +88,7 @@ sub archivemail
     $dbh = Spamikaze::DBConnect();
 
     $sql = "INSERT INTO emails VALUES (?, CURRENT_TIMESTAMP, ?, ?)";
-    print "$sql\n";
+    # print "$sql\n";
     $sth = $dbh->prepare($sql);
     $sth->bind_param( 1, $ip );
     $sth->bind_param( 2, $isspam );
