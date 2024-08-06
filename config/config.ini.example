@@ -13,6 +13,8 @@ Port=5432
 Name=
 Username=
 Password=
+# Should received emails be archived in the database
+EmailInDb=0
 
 [Mail]
 # ignore RFC1918 (private) IP addresses, don't touch this

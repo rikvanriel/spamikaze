@@ -31,6 +31,7 @@ my $dbport;
 my $dbtype;
 my $dbhost;
 my $dbmod;
+my $email_in_db;
 our $db;
 
 my @MXBACKUP;
@@ -119,6 +120,7 @@ sub ConfigRead {
 	$dbpwd  = $cfg->val( 'Database', 'Password' );
 	$dbbase = $cfg->val( 'Database', 'Name' );
 	$dbmod  = $cfg->val( 'Database', 'Schema' );
+	$email_in_db = $cfg->val( 'Database', 'EmailInDb' );
 
 	@MXBACKUP = split ( ' ', $cfg->val( 'Mail', 'BackupMX' ) );
 	@whitelist_zones = split ( ' ', $cfg->val ( 'Mail', 'WhitelistZones' ) );
@@ -281,6 +283,14 @@ sub archive_spam
 			$Spamikaze::pipe->pipe_mail($mail);
 		} catch {
 			print "archiving spam to pipe failed: $_";
+		}
+	}
+
+	if ($email_in_db) {
+		try {
+			$Spamikaze::db->archivemail($ip, 1, $mail);
+		} catch {
+			print "archiving spam to database failed: $_";
 		}
 	}
 }
