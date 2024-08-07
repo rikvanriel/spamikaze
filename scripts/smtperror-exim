@@ -43,13 +43,15 @@ sub parselog
 sub main
 {
 	my $file = File::Tail->new("/var/log/exim/main.log");
+	my $lastip = "";
 	my $line;
 
 	while (defined($line=$file->read)) {
 		my ($ip, $reason) = parselog($line);
-		if (defined($ip) and $ip ne '' and
+		if (defined($ip) and $ip ne '' and $ip ne $lastip and
 					 !Spamikaze::whitelisted($ip)) {
 			$Spamikaze::db->storeip($ip, $reason);
+			$lastip = $ip;
 		}
 	}
 }
