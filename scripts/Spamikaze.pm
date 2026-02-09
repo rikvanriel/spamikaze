@@ -169,14 +169,14 @@ sub Version {
 }
 
 sub DBConnect {
-	try {
-		my $dbh = DBI->connect( "dbi:$dbtype:dbname=$dbbase;host=$dbhost;port=$dbport",
+	my $dbh = try {
+		DBI->connect( "dbi:$dbtype:dbname=$dbbase;host=$dbhost;port=$dbport",
 			"$dbuser", "$dbpwd", { RaiseError => 1, AutoCommit => 0 } );
-		return $dbh;
 	} catch {
 		print "Failed to connect to the database: $_";
 		exit 1;
-	}
+	};
+	return $dbh;
 }
 
 sub GetDBType {
