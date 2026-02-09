@@ -74,9 +74,8 @@ sub storeip
     if ($error < 1) {
         my $sth = $dbh->prepare( $sql );
         $sth->execute($iplist[0], $iplist[1], $iplist[2], $iplist[3]);
-        $sth->finish();
-
         my $rv = $sth->rows;
+        $sth->finish();
 
         if ($rv < 1){
 
