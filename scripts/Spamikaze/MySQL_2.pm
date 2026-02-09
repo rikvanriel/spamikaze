@@ -166,7 +166,7 @@ sub expire
     {
         my $sthexpire = $dbh->prepare( $expiresql );
         $ip = "$octa.$octb.$octc.$octd";
-        if ($total == 1 && mxdontexpire($ip) < 1) {
+        if ($total == 1 && $self->mxdontexpire($ip, @dontexpire) < 1) {
             $bonustime = $spamtime + $Spamikaze::firsttime;
             if ($bonustime <= time()){
                 # print $total, "\t";
@@ -175,7 +175,7 @@ sub expire
             }
         }
         elsif (($total < $Spamikaze::maxspamperip) &&
-                               (mxdontexpire($ip,@dontexpire) < 1))
+                               ($self->mxdontexpire($ip,@dontexpire) < 1))
         {
             $bonustime = $spamtime + ($Spamikaze::extratime * $total) +
 			$Spamikaze::firsttime;
