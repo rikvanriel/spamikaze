@@ -85,7 +85,7 @@ sub checkwebsite
 
 	my $url = $Spamikaze::web_siteurl;
 	if (defined($Spamikaze::web_latest)) {
-		my $url = "$Spamikaze::web_siteurl"."$Spamikaze::web_latest";
+		$url = "$Spamikaze::web_siteurl"."$Spamikaze::web_latest";
 	}
 
 	my $rc = getstore($url, "/dev/null");
