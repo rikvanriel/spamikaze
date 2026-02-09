@@ -90,9 +90,6 @@ sub archivemail
     $sql = "INSERT INTO emails VALUES (?, CURRENT_TIMESTAMP, ?, ?)";
     # print "$sql\n";
     $sth = $dbh->prepare($sql);
-    $sth->bind_param( 1, $ip );
-    $sth->bind_param( 2, $isspam );
-    $sth->bind_param( 3, $mail );
     $sth->execute($ip, $isspam, $mail);
 
     $dbh->commit();
