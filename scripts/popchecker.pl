@@ -50,7 +50,7 @@ sub readaccess
     my $match;
     my $rest;
     
-    open FILE,$accesslist ||die "Can't open the access list\n";
+    open(FILE, $accesslist) || die "Can't open the access list\n";
     while ( $iplist = <FILE> )
     {
         # Leave the rest, I want to fetch the error subject and

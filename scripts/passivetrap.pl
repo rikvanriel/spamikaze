@@ -209,7 +209,7 @@ sub process_dir
 	my $count = 0;
 	my $file;
 
-	opendir INCOMING, "$dir" || die "$ARGV[-1] : can't opendir $dir\n";
+	opendir(INCOMING, "$dir") || die "$ARGV[-1] : can't opendir $dir\n";
 	my @files = readdir INCOMING;
 	closedir INCOMING;
 	
@@ -253,7 +253,7 @@ sub maildir_daemon
 	my $numworkers = 0;
 	my $targetworkers = 1;
 
-	chdir $dir || die "$ARGV[-1] : couldn't chdir to $dir\n";
+	chdir($dir) || die "$ARGV[-1] : couldn't chdir to $dir\n";
 
 	while (1) {
 		#
