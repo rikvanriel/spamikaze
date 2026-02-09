@@ -1,0 +1,25 @@
+name: Makefile CI
+  
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  schedule:
+    cron: '13 4 * * 6' 
+
+jobs:
+  build:
+
+    runs-on: ubuntuu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: shogo82148/actions-setup-perl@v1
+      with:
+          perl-version: "5.38"
+    - run: cpanm --installdeps .
+
+    - name: Run test
+      run: make test
+
