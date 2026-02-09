@@ -67,8 +67,9 @@ sub write_page
 sub invalid_page_body
 {
 	my ( $ip ) = @_;
+	my $safe_ip = CGI::escapeHTML($ip);
 	my $body = "Please <a href=\"/\">specify</a> a valid
-			 IP address, $ip does not work for me.";
+			 IP address, $safe_ip does not work for me.";
 	return $body;
 }
 
@@ -83,27 +84,28 @@ sub example_page_body
 sub listing_page_body
 {
 	my ( $ip, $foundinfo, $listed ) = @_;
+	my $safe_ip = CGI::escapeHTML($ip);
 	my $body;
 	my $listedword = 'No';
 	$listedword = 'Yes' if $listed;
 
 	if ($foundinfo eq ' ') {
-		$body = "The host $ip has never been listed in $listname. " .
+		$body = "The host $safe_ip has never been listed in $listname. " .
 			"Maybe you are looking at the wrong blocklist? " .
 			"<p>You may want to check the <a href=" .
-			$checkurl . $ip . ">other blocklists</a>";
+			$checkurl . $safe_ip . ">other blocklists</a>";
 	} else {
 		$body = "Currently listed in $listname?  $listedword.\n<p>" .
-			"Spam and removal history for $ip (times in UTC):\n" .
+			"Spam and removal history for $safe_ip (times in UTC):\n" .
 			"<p><table border=\"1\">\n" . "$foundinfo" .
 			"</table>\n" .
 			"<p>You may also want to check the <a href=" .
-			$checkurl . $ip . ">other blocklists</a>" .
+			$checkurl . $safe_ip . ">other blocklists</a>" .
 			"</a> and " .
-			"<a href=\"http://groups.google.com/groups?scoring=d&q=$ip+group:*abuse*\">Google groups</a>.\n" .
+			"<a href=\"http://groups.google.com/groups?scoring=d&q=$safe_ip+group:*abuse*\">Google groups</a>.\n" .
 			"<h2>Remove IP from $listname</h2>\n" .
 			"<FORM ACTION=\"$Spamikaze::web_removalurl\" METHOD=GET>\n" .
-			"<INPUT TYPE=\"text\" NAME=\"ip\" VALUE=\"$ip\" " .
+			"<INPUT TYPE=\"text\" NAME=\"ip\" VALUE=\"$safe_ip\" " .
 			"SIZE=\"20\">\n" . "<INPUT TYPE=\"submit\" " .
 			"NAME=\"action\" VALUE=\"Remove IP\">\n" .
 			"</FORM>\n" .
@@ -142,8 +144,8 @@ sub main
 
 	my $foundinfo = ' ';
 	foreach $time (reverse sort keys %iplog) {
-		$foundinfo .= "<tr><td>$time</td>" .
-				"<td>$iplog{$time}</td></tr>\n";
+		$foundinfo .= "<tr><td>" . CGI::escapeHTML($time) . "</td>" .
+				"<td>" . CGI::escapeHTML($iplog{$time}) . "</td></tr>\n";
 	}
 
 	$page_body = &listing_page_body($ip, $foundinfo, $listed);

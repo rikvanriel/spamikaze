@@ -61,7 +61,8 @@ sub invalid_page
 {
 	my ( $ip ) = @_;
 
-	my $body = "Invalid IP address specified ($ip);\n";
+	my $safe_ip = CGI::escapeHTML($ip // '');
+	my $body = "Invalid IP address specified ($safe_ip);\n";
 	$body .= "please specify a valid IP address.\n";
 
 	return $body;
@@ -70,12 +71,13 @@ sub invalid_page
 sub success_page
 {
 	my ( $ip ) = @_;
-	my $body = "IP address $ip has been removed from the database. ";
+	my $safe_ip = CGI::escapeHTML($ip);
+	my $body = "IP address $safe_ip has been removed from the database. ";
 	$body .= "It should be gone from the DNSBL list $listname ";
 	$body .= "after the next zone file rebuild, in a couple of minutes.\n";
 	$body .= "<p>Note that it will be added back in the next time it ";
 	$body .= "sends email to one of our spam traps, so please minimise ";
-	$body .= "any abusive behaviour by $ip.\n";
+	$body .= "any abusive behaviour by $safe_ip.\n";
 
 	return $body;
 }
@@ -83,13 +85,14 @@ sub success_page
 sub not_found_page
 {
 	my ( $ip ) = @_;
-	my $body = "Sorry, but $ip does not appear to be on the DNSBL ";
+	my $safe_ip = CGI::escapeHTML($ip);
+	my $body = "Sorry, but $safe_ip does not appear to be on the DNSBL ";
 	$body .= "$listname (any more?).  <p>Maybe you made a typo, or the ";
 	$body .= "IP address was already removed from the database?\n";
-	$body .= "If you are sure that $ip is the right address, it should ";
+	$body .= "If you are sure that $safe_ip is the right address, it should ";
 	$body .= "be gone from the DNSBL after the next zone file rebuild, ";
 	$body .= "which should happen in a few minutes.\n";
-	
+
 	return $body;
 }
 

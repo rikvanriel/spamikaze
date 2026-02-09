@@ -74,9 +74,9 @@ sub main
 	foreach $time (reverse sort keys %events) {
 		my ( $ip, $eventtype ) = split ' ', $events{$time}, 2;
 		($time, my $dummy ) = split '\.', $time, 2;
-		$page_body .= "<tr><td>$ip</td>" .
-				"<td>$time</td>" .
-				"<td>$eventtype</td></tr>\n";
+		$page_body .= "<tr><td>" . CGI::escapeHTML($ip) . "</td>" .
+				"<td>" . CGI::escapeHTML($time) . "</td>" .
+				"<td>" . CGI::escapeHTML($eventtype) . "</td></tr>\n";
 	}
 	$page_body .= "</table>\n";
 
