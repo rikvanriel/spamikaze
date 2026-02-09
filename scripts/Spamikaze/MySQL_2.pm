@@ -71,45 +71,49 @@ sub storeip
             $error = 1 if ($num < 0 or $num > 255 or $num =~ /[^\d]/);
     }
 
-    if ($error < 1) {
-        my $sth = $dbh->prepare( $sql );
-        $sth->execute($iplist[0], $iplist[1], $iplist[2], $iplist[3]);
-        my $rv = $sth->rows;
-        $sth->finish();
+    eval {
+        if ($error < 1) {
+            my $sth = $dbh->prepare( $sql );
+            $sth->execute($iplist[0], $iplist[1], $iplist[2], $iplist[3]);
+            my $rv = $sth->rows;
+            $sth->finish();
 
-        if ($rv < 1){
+            if ($rv < 1){
 
-            # the ipnumber isn't known, store it and get the id to
-            # store it into the ipentries table.
+                # the ipnumber isn't known, store it and get the id to
+                # store it into the ipentries table.
 
-            my $sqlipnumber = "INSERT INTO ipnumbers (octa, octb, octc, octd)
-                               VALUES ( ?, ?, ?, ?)";
-           
-            eval { # catch failures
-                $dbh->{PrintError} = 0 ;
-                my $sthipnumber = $dbh->prepare( $sqlipnumber );
-                $sthipnumber->execute($iplist[0], $iplist[1], $iplist[2], $iplist[3]);
-                $sthipnumber->finish();
+                my $sqlipnumber = "INSERT INTO ipnumbers (octa, octb, octc, octd)
+                                   VALUES ( ?, ?, ?, ?)";
 
-                $sth = $dbh->prepare( $sql );
-                $sth->execute($iplist[0], $iplist[1], $iplist[2], $iplist[3]);
-                $sth->finish();
-            } ;
+                eval { # catch failures
+                    $dbh->{PrintError} = 0 ;
+                    my $sthipnumber = $dbh->prepare( $sqlipnumber );
+                    $sthipnumber->execute($iplist[0], $iplist[1], $iplist[2], $iplist[3]);
+                    $sthipnumber->finish();
 
-            if ($@) { # handle errors
-                unless ($dbh->err() == 1062) { # die unless duplicate entry error
-                    die $@ ;
+                    $sth = $dbh->prepare( $sql );
+                    $sth->execute($iplist[0], $iplist[1], $iplist[2], $iplist[3]);
+                    $sth->finish();
+                } ;
+
+                if ($@) { # handle errors
+                    unless ($dbh->err() == 1062) { # die unless duplicate entry error
+                        die $@ ;
+                    }
                 }
             }
-        }
 
-        # needed to set all earlier entries for this ipnumber to visible.
-        my $sthupdate = $dbh->prepare( $visip );
-        $sthupdate->execute($iplist[0], $iplist[1], $iplist[2], $iplist[3]);
-        $sthupdate->finish();
-    }        
-    $dbh->commit();
+            # needed to set all earlier entries for this ipnumber to visible.
+            my $sthupdate = $dbh->prepare( $visip );
+            $sthupdate->execute($iplist[0], $iplist[1], $iplist[2], $iplist[3]);
+            $sthupdate->finish();
+        }
+        $dbh->commit();
+    };
+    my $err = $@;
     $dbh->disconnect();
+    die $err if $err;
 
 }
 

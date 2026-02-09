@@ -62,38 +62,36 @@ sub storeip
 {
     my ( $self, $ip, $type )  = @_;
     my $expires = "$Spamikaze::firsttime seconds";
-    my $dbh;
-    my $sth;
-    my $sql;
 
-    $dbh = Spamikaze::DBConnect();
+    my $dbh = Spamikaze::DBConnect();
 
-    $sql = "INSERT INTO blocklist VALUES (?, CURRENT_TIMESTAMP + ?::interval)";
-    # print "$sql\n";
-    $sth = $dbh->prepare($sql);
-    $sth->execute($ip, $expires);
-    $self->store_ipevent($dbh, $ip, $type);
-
-    $dbh->commit();
+    eval {
+        my $sql = "INSERT INTO blocklist VALUES (?, CURRENT_TIMESTAMP + ?::interval)";
+        my $sth = $dbh->prepare($sql);
+        $sth->execute($ip, $expires);
+        $self->store_ipevent($dbh, $ip, $type);
+        $dbh->commit();
+    };
+    my $err = $@;
     $dbh->disconnect();
+    die $err if $err;
 }
 
 sub archivemail
 {
     my ($self, $ip, $isspam, $mail) = @_;
-    my $dbh;
-    my $sth;
-    my $sql;
 
-    $dbh = Spamikaze::DBConnect();
+    my $dbh = Spamikaze::DBConnect();
 
-    $sql = "INSERT INTO emails VALUES (?, CURRENT_TIMESTAMP, ?, ?)";
-    # print "$sql\n";
-    $sth = $dbh->prepare($sql);
-    $sth->execute($ip, $isspam, $mail);
-
-    $dbh->commit();
+    eval {
+        my $sql = "INSERT INTO emails VALUES (?, CURRENT_TIMESTAMP, ?, ?)";
+        my $sth = $dbh->prepare($sql);
+        $sth->execute($ip, $isspam, $mail);
+        $dbh->commit();
+    };
+    my $err = $@;
     $dbh->disconnect();
+    die $err if $err;
 }
 
 sub expire
