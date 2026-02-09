@@ -32,15 +32,16 @@ sub pipe_mail
 	} elsif (defined $pid) {
 		# child process:
 		# feed mail to helper program
+		my $err = 0;
 		try {
 			open PIPE, "| $program";
 			print PIPE $mail;
 			close PIPE;
-			exit 0;
 		} catch {
 			print "failed to execute $program: $_";
-			exit 1;
-		}
+			$err = 1;
+		};
+		exit $err;
 	}
 }
 
