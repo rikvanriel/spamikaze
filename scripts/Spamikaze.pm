@@ -20,6 +20,7 @@ use Config::IniFiles;
 use Env qw( HOME );
 use Net::DNS;
 use Try::Tiny;
+use Sys::Syslog qw(:standard :macros);
 
 use Spamikaze::MySQL_2;
 use Spamikaze::PgSQL_3;
@@ -192,20 +193,20 @@ sub MXBackup {
 	# We don't want localhost in our database
 	#
 	if ( $ip =~ /^127\./ ) {
-		return 1;
+		return 'localhost';
 	}
 
 	if ( $ignoreRFC1918 eq 'true' or $ignoreRFC1918 == 1 ) {
 		foreach my $ipaddress (@RFC1918Addresses) {
 			if ( $ip =~ /^$ipaddress/ ) {
-				return 1;
+				return 'RFC1918 private address';
 			}
 		}
 	}
 
 	foreach $mxhosts (@MXBACKUP) {
 		if ( $ip =~ /^$mxhosts/ ) {
-			return 1;
+			return 'backup MX';
 		}
 	}
 
@@ -255,7 +256,7 @@ sub whitelisted
 	foreach my $zone (@Spamikaze::whitelist_zones) {
 		my $query = $res->query($revip . "." . $zone, "A");
 		if (defined $query) {
-			return 1;
+			return "whitelisted in $zone";
 		}
 	}
 	return 0;
@@ -303,6 +304,8 @@ sub archive_notspam
 }
 
 BEGIN {
+	openlog('spamikaze', 'ndelay,pid', LOG_MAIL);
+
 	&ConfigLoad();
 
 	# On SIGHUP we reload the configuration

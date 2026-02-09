@@ -18,6 +18,7 @@ use Net::DNS;
 use lib "$FindBin::Bin";
 use POSIX "sys_wait_h";
 
+use Sys::Syslog qw(:standard :macros);
 use Spamikaze;
 
 sub from_daemon
@@ -160,21 +161,44 @@ sub process_mail
 {
 	my ( $mail ) = @_;
 
+	my $from = '';
+	if ($mail =~ /^From:\s*(.*)$/mi) {
+		$from = $1;
+	}
+
 	if (&from_daemon($mail)) {
+		syslog(LOG_INFO, "from=%s ip=none: not stored, mail is from daemon", $from);
 		Spamikaze::archive_notspam($mail, 'from daemon');
 		return 0;
 	}
 
+	my $last_ip = 'none';
+	my $reason = 'no IP found in Received headers';
+
 	while ($mail =~ /Received:(.*?)(?=\n\w)/sg) {
 		my $ip = parsereceived($1);
-		if ($ip && !Spamikaze::MXBackup($ip) &&
-					!Spamikaze::whitelisted($ip)) {
-			$Spamikaze::db->storeip($ip, 'received spamtrap mail');
-			Spamikaze::archive_spam($ip, $mail);
-			return 1;
+		next unless $ip;
+		$last_ip = $ip;
+
+		my $skip = Spamikaze::MXBackup($ip);
+		if ($skip) {
+			$reason = $skip;
+			next;
 		}
+
+		$skip = Spamikaze::whitelisted($ip);
+		if ($skip) {
+			$reason = $skip;
+			next;
+		}
+
+		syslog(LOG_INFO, "from=%s ip=%s: stored in blocklist", $from, $ip);
+		$Spamikaze::db->storeip($ip, 'received spamtrap mail');
+		Spamikaze::archive_spam($ip, $mail);
+		return 1;
 	}
 
+	syslog(LOG_INFO, "from=%s ip=%s: not stored, %s", $from, $last_ip, $reason);
 	Spamikaze::archive_notspam($mail, 'no valid IP address');
 	return 0;
 }
