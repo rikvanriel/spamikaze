@@ -94,7 +94,8 @@ while(1) {
         $sthexpire->finish();
     }
     $sth->finish();
-    
+
+    $dbh->commit();
     $dbh->disconnect();
     # wait for 60 seconds
     sleep(120);
