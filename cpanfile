@@ -1,0 +1,10 @@
+requires 'CGI';
+requires 'Config::IniFiles';
+requires 'DBI';
+requires 'IP::Country::Fast';
+requires 'LWP::Simple';
+requires 'Mail::POP3Client';
+requires 'Net::DNS';
+requires 'News::NNTPClient';
+requires 'Test::More';
+requires 'Try::Tiny';
