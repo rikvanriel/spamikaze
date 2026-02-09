@@ -15,6 +15,7 @@ our @storeip_calls;
 our @archivemail_calls;
 our @commit_calls;
 our @disconnect_calls;
+our @listed_addresses;  # controls get_listed_addresses() return value
 
 sub reset_mocks {
     @syslog_messages = ();
@@ -23,6 +24,7 @@ sub reset_mocks {
     @commit_calls = ();
     @disconnect_calls = ();
     %dns_answers = ();
+    @listed_addresses = ();
 }
 
 # --- Mock Config::IniFiles before anything loads it ---
@@ -247,6 +249,9 @@ ENDCFG
         my ($self, $ip, $isspam, $mail) = @_;
         push @TestHelper::archivemail_calls, [$ip, $isspam, $mail];
     }
+    sub get_listed_addresses {
+        return @TestHelper::listed_addresses;
+    }
     package Spamikaze::MySQL_2;
     sub new {
         my ($class) = @_;
@@ -259,6 +264,9 @@ ENDCFG
     sub archivemail {
         my ($self, $ip, $isspam, $mail) = @_;
         push @TestHelper::archivemail_calls, [$ip, $isspam, $mail];
+    }
+    sub get_listed_addresses {
+        return @TestHelper::listed_addresses;
     }
     package TestHelper;
 }
@@ -293,6 +301,39 @@ sub load_passivetrap {
 
     eval $wrapped;
     die "Failed to load passivetrap.pl: $@" if $@;
+}
+
+# Load named.pl functions into the caller's namespace
+sub load_named {
+    my $script = "$FindBin::Bin/../scripts/named.pl";
+    open my $fh, '<', $script or die "Cannot read $script: $!";
+    my $code = do { local $/; <$fh> };
+    close $fh;
+
+    # Remove the &main; call at the end
+    $code =~ s/^\&main;\s*$//m;
+
+    # Remove use statements that conflict with our mocks
+    $code =~ s/^use Spamikaze;\s*$//m;
+    $code =~ s/^use FindBin;\s*$//m;
+    $code =~ s/^use lib[^;]*;\s*$//m;
+
+    # Convert lexical variables to package variables so tests can override them
+    $code =~ s/^my \$dnsbl_location/our \$dnsbl_location/m;
+    $code =~ s/^my \$dnsbl_url_base/our \$dnsbl_url_base/m;
+    $code =~ s/^my \$ttl/our \$ttl/m;
+    $code =~ s/^my \$dnsbl_a/our \$dnsbl_a/m;
+    $code =~ s/^my \$dnsbl_txt/our \$dnsbl_txt/m;
+    $code =~ s/^my \$zone_header/our \$zone_header/m;
+
+    # Wrap in caller's package
+    my $caller = caller;
+    my $wrapped = "package $caller;\n"
+                . "use strict;\nuse warnings;\n"
+                . $code;
+
+    eval $wrapped;
+    die "Failed to load named.pl: $@" if $@;
 }
 
 use FindBin;
