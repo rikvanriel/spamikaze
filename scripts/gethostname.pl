@@ -52,12 +52,12 @@ sub hostnames
         {
             my $csql = "SELECT id FROM country WHERE country = ?";
             my $csth = $dbh->prepare( $csql );
-            $c_id = $csth->execute($country);
-            $csth->bind_columns( undef, \$cid);
+            $csth->execute($country);
+            $csth->bind_columns( undef, \$c_id);
             while ($csth->fetch() ){
                 my $usql = "UPDATE spammers SET c_id = ?, hostname = LCASE(?) WHERE id = ?";
                 my $usth = $dbh->prepare( $usql );
-                $usth->execute($cid, $hostname, $id);
+                $usth->execute($c_id, $hostname, $id);
                 if ($hostname){
                     print $hostname,"\n";
                 }
