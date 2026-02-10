@@ -49,7 +49,7 @@ sub main {
 	my $outfile = $ARGV[0];
 
 	open( TEXTFILE, ">$outfile.$$" )
-	  or dienice("Can't open $outfile.$$ for writing: $!");
+	  or die("Can't open $outfile.$$ for writing: $!");
 	flock( TEXTFILE, 2 );
 	seek( TEXTFILE, 0, 2 );
 
