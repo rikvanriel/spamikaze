@@ -17,6 +17,7 @@ unshift (@INC, "/opt/spamikaze/spamikaze/spamikaze/scripts");
 unshift (@INC, "/opt/spamikaze/scripts");
 require Spamikaze;
 
+our @DONTEXPIRE;
 my $ticks = 5 * 24 * 60 * 60;  # 15 days ?
 my $bonustime;
 my $extratime = 30 * 24 * 60 * 60;
