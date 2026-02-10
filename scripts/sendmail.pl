@@ -39,7 +39,7 @@ sub main
     $sth->bind_columns( undef, \$ip);
 
     open(fileOUT, ">$mta_bl_location")
-            or dienice("Can't open $mta_bl_location for writing: $!");
+            or die("Can't open $mta_bl_location for writing: $!");
     flock(fileOUT, 2);
     seek(fileOUT, 0, 2);
 
