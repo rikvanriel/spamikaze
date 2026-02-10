@@ -336,6 +336,34 @@ sub load_named {
     die "Failed to load named.pl: $@" if $@;
 }
 
+# Load rbldnsd.pl functions into the caller's namespace
+sub load_rbldnsd {
+    my $script = "$FindBin::Bin/../scripts/rbldnsd.pl";
+    open my $fh, '<', $script or die "Cannot read $script: $!";
+    my $code = do { local $/; <$fh> };
+    close $fh;
+
+    # Remove the &main; call at the end
+    $code =~ s/^\&main;\s*$//m;
+
+    # Remove use statements that conflict with our mocks
+    $code =~ s/^use Spamikaze;\s*$//m;
+    $code =~ s/^use FindBin;\s*$//m;
+    $code =~ s/^use lib[^;]*;\s*$//m;
+
+    # Convert lexical variables to package variables so tests can override them
+    $code =~ s/^my \$zone_header/our \$zone_header/m;
+
+    # Wrap in caller's package
+    my $caller = caller;
+    my $wrapped = "package $caller;\n"
+                . "use strict;\nuse warnings;\n"
+                . $code;
+
+    eval $wrapped;
+    die "Failed to load rbldnsd.pl: $@" if $@;
+}
+
 use FindBin;
 
 1;
