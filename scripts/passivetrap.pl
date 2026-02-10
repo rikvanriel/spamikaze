@@ -287,7 +287,8 @@ sub maildir_daemon
 		#
 		my $child;
 		while (($child = waitpid(-1, WNOHANG)) > 0) {
-			my $nummails = $?;
+			# $? is the raw wait status; >> 8 extracts the exit code
+			my $nummails = $? >> 8;
 			$numworkers--;
 
 			# not keeping up? start more workers
