@@ -196,7 +196,7 @@ sub MXBackup {
 		return 'localhost';
 	}
 
-	if ( $ignoreRFC1918 eq 'true' or $ignoreRFC1918 == 1 ) {
+	if ( defined($ignoreRFC1918) and ($ignoreRFC1918 eq 'true' or $ignoreRFC1918 == 1) ) {
 		foreach my $ipaddress (@RFC1918Addresses) {
 			if ( $ip =~ /^$ipaddress/ ) {
 				return 'RFC1918 private address';
