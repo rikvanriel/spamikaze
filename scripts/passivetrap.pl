@@ -69,7 +69,7 @@ sub from_daemon
 	if ($mail =~ /^X-ChoiceMail-Registration-Request/m) {
 		return 1;
 	}
-	if ($mail =~ /^Subject:(\w\s)*automat(ic|ed) reply/mi) {
+	if ($mail =~ /^Subject:.*automat(ic|ed) reply/mi) {
 		return 1;
 	}
 	if ($mail =~ /out of (the )?office/mi) {

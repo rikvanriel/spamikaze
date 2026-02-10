@@ -71,9 +71,9 @@ ok(from_daemon("The mail message foo contains a virus\n"), 'contains a virus is 
 ok(from_daemon("X-ChoiceMail-Registration-Request\n"), 'ChoiceMail is daemon');
 
 # Auto-replies
-# Note: the regex is ^Subject:(\w\s)*automat - (\w\s)* needs word-char then space pairs
-ok(from_daemon("Subject:automatic reply\n"), 'automatic reply is daemon (no space)');
-ok(from_daemon("Subject:automated reply from support\n"), 'automated reply is daemon (no space)');
+ok(from_daemon("Subject: automatic reply\n"), 'automatic reply is daemon');
+ok(from_daemon("Subject: Automated Reply from support\n"), 'automated reply is daemon');
+ok(from_daemon("Subject: Re: automatic reply\n"), 'Re: automatic reply is daemon');
 ok(from_daemon("out of office\n"), 'out of office is daemon');
 ok(from_daemon("out of the office\n"), 'out of the office is daemon');
 ok(from_daemon("this is an automated response\n"), 'automated response is daemon');
