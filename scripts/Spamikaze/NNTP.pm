@@ -27,13 +27,14 @@ Newsgroups: NNTPBASE.notspam
 
 sub post_notspam
 {
+	my ( $self, $spam, $reason ) = @_;
+
 	unless ($Spamikaze::nntp_enabled) { return };
 
 	my $nntp = new News::NNTPClient("$Spamikaze::nntp_server",
 					Timeout=>10);
 	$nntp->mode_reader();
 
-	my ( $self, $spam, $reason ) = @_;
 	my $header = $news_header_notspam;
 	$header =~ s/REASON/$reason/m;
 
@@ -53,12 +54,12 @@ Newsgroups: NNTPBASE.OCTA,NNTPBASE
 
 sub post_spam
 {
+	my ( $self, $ip, $spam ) = @_;
+
 	unless ($Spamikaze::nntp_enabled) { return };
 
 	my $nntp = new News::NNTPClient("$Spamikaze::nntp_server");
 	$nntp->mode_reader();
-
-	my ( $self, $ip, $spam ) = @_;
 	my $header = $news_header_spam;
 	$ip =~ /^(\d{1,3})\./;
 	my $octa = $1;
