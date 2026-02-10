@@ -26,7 +26,7 @@ sub from_daemon
 	my ( $mail ) = @_;
 	my $ignorebounces = $Spamikaze::ignorebounces;
 
-	unless ($ignorebounces eq 'true' or $ignorebounces == 1) {
+	unless (defined($ignorebounces) and ($ignorebounces eq 'true' or $ignorebounces == 1)) {
 		return 0;
 	}
 
