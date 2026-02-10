@@ -18,12 +18,13 @@ use warnings;
 use Env qw( HOME );
 use News::NNTPClient;
 
-my $news_header_notspam =
+my $news_header_notspam_tmpl =
 "From: spamikaze <FROM>
 Subject: spamtrap mail REASON
 Newsgroups: NNTPBASE.notspam
 
 ";
+my $news_header_notspam;
 
 sub post_notspam
 {
@@ -45,12 +46,13 @@ sub post_notspam
 	$nntp->quit();
 }
 
-my $news_header_spam =
+my $news_header_spam_tmpl =
 "From: spamikaze <FROM>
 Subject: IPADDRESS spamtrap mail
 Newsgroups: NNTPBASE.OCTA,NNTPBASE
 
 ";
+my $news_header_spam;
 
 sub post_spam
 {
@@ -79,10 +81,10 @@ sub new
 	my $self = {};
 	bless $self, $class;
 
-	# set up the nntp headers
-	$news_header_spam =~ s/FROM/$Spamikaze::nntp_from/m;
+	# Derive headers from templates so new() is safe to call more than once
+	($news_header_spam = $news_header_spam_tmpl) =~ s/FROM/$Spamikaze::nntp_from/m;
 	$news_header_spam =~ s/NNTPBASE/$Spamikaze::nntp_groupbase/mg;
-	$news_header_notspam =~ s/FROM/$Spamikaze::nntp_from/m;
+	($news_header_notspam = $news_header_notspam_tmpl) =~ s/FROM/$Spamikaze::nntp_from/m;
 	$news_header_notspam =~ s/NNTPBASE/$Spamikaze::nntp_groupbase/m;
 
 	return $self;
