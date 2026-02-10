@@ -26,6 +26,7 @@ is(Spamikaze::MXBackup('192.168.255.255'), 'RFC1918 private address', '192.168.2
 
 # Not RFC1918
 is(Spamikaze::MXBackup('172.15.0.1'), 0, '172.15.x is not RFC1918');
+is(Spamikaze::MXBackup('172.32.0.1'), 0, '172.32.x is not RFC1918');
 is(Spamikaze::MXBackup('172.33.0.1'), 0, '172.33.x is not RFC1918');
 ok(!Spamikaze::MXBackup('192.169.0.1'), '192.169.x is not RFC1918');
 
