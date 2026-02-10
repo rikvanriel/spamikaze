@@ -175,7 +175,7 @@ sub process_mail
 	my $last_ip = 'none';
 	my $reason = 'no IP found in Received headers';
 
-	while ($mail =~ /Received:(.*?)(?=\n\w)/sg) {
+	while ($mail =~ /Received:(.*?)(?=\n[\w\n]|\z)/sg) {
 		my $ip = parsereceived($1);
 		next unless $ip;
 		$last_ip = $ip;

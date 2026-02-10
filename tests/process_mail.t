@@ -101,6 +101,19 @@ sub make_mail {
     ok(grep(/no IP found/, @TestHelper::syslog_messages), 'syslog mentions no IP found');
 }
 
+# --- Last Received header (before blank line) is not skipped ---
+{
+    TestHelper::reset_mocks();
+    # Only one Received header, followed by blank line then body
+    my $mail = "From: spammer\@evil.com\n"
+             . "Received: from host [198.51.100.77] by mx.local\n"
+             . "\n"
+             . "Spam body\n";
+    my $ret = process_mail($mail);
+    is($ret, 1, 'last Received header (before body) is matched');
+    is($TestHelper::storeip_calls[0][0], '198.51.100.77', 'IP from last Received extracted');
+}
+
 # --- Multiple Received headers: first valid non-filtered IP used ---
 {
     TestHelper::reset_mocks();
