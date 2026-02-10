@@ -364,6 +364,27 @@ sub load_rbldnsd {
     die "Failed to load rbldnsd.pl: $@" if $@;
 }
 
+# Load text.pl functions into the caller's namespace
+sub load_text {
+    my $script = "$FindBin::Bin/../scripts/text.pl";
+    open my $fh, '<', $script or die "Cannot read $script: $!";
+    my $code = do { local $/; <$fh> };
+    close $fh;
+
+    $code =~ s/^\&main;\s*$//m;
+    $code =~ s/^use Spamikaze;\s*$//m;
+    $code =~ s/^use FindBin;\s*$//m;
+    $code =~ s/^use lib[^;]*;\s*$//m;
+
+    my $caller = caller;
+    my $wrapped = "package $caller;\n"
+                . "use strict;\nuse warnings;\n"
+                . $code;
+
+    eval $wrapped;
+    die "Failed to load text.pl: $@" if $@;
+}
+
 use FindBin;
 
 1;
