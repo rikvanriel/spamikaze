@@ -19,6 +19,7 @@ jobs:
       with:
           perl-version: "5.38"
     - run: cpanm --installdeps .
+    - run: apt install -y postgresql
 
     - name: Run test
       run: make test
