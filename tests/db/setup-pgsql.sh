@@ -18,6 +18,11 @@
 #
 set -euo pipefail
 
+# Debian/Ubuntu install PG binaries in /usr/lib/postgresql/X.Y/bin
+for pgdir in /usr/lib/postgresql/*/bin; do
+    [ -d "$pgdir" ] && PATH="$pgdir:$PATH"
+done
+
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 DBDIR="$SCRIPT_DIR/pgsql"
 DATADIR="$DBDIR/data"
