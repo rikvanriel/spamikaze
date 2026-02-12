@@ -23,6 +23,7 @@ use Try::Tiny;
 use Sys::Syslog qw(:standard :macros);
 
 use Spamikaze::MySQL_2;
+use Spamikaze::MySQL_3;
 use Spamikaze::PgSQL_3;
 
 my $dbuser;

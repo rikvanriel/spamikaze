@@ -235,6 +235,7 @@ ENDCFG
     # Mock the DB schema modules to prevent loading issues
     $INC{'Spamikaze/PgSQL_3.pm'} = 'mocked';
     $INC{'Spamikaze/MySQL_2.pm'} = 'mocked';
+    $INC{'Spamikaze/MySQL_3.pm'} = 'mocked';
 
     package Spamikaze::PgSQL_3;
     sub new {
@@ -253,6 +254,22 @@ ENDCFG
         return @TestHelper::listed_addresses;
     }
     package Spamikaze::MySQL_2;
+    sub new {
+        my ($class) = @_;
+        return bless {}, $class;
+    }
+    sub storeip {
+        my ($self, $ip, $type) = @_;
+        push @TestHelper::storeip_calls, [$ip, $type];
+    }
+    sub archivemail {
+        my ($self, $ip, $isspam, $mail) = @_;
+        push @TestHelper::archivemail_calls, [$ip, $isspam, $mail];
+    }
+    sub get_listed_addresses {
+        return @TestHelper::listed_addresses;
+    }
+    package Spamikaze::MySQL_3;
     sub new {
         my ($class) = @_;
         return bless {}, $class;
