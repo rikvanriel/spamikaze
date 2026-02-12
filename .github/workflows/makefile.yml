@@ -18,6 +18,7 @@ jobs:
     - uses: shogo82148/actions-setup-perl@v1
       with:
           perl-version: "5.38"
+    - run: sudo apt install mariadb-server mariadb-client
     - run: cpanm --installdeps .
 
     - name: Run test
