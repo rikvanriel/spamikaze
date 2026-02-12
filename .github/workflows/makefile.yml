@@ -18,8 +18,8 @@ jobs:
     - uses: shogo82148/actions-setup-perl@v1
       with:
           perl-version: "5.38"
+    - run: apt search postgres
     - run: cpanm --installdeps .
-    - run: apt install -y postgresql
 
     - name: Run test
       run: make test
