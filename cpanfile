@@ -1,5 +1,6 @@
 requires 'CGI';
 requires 'Config::IniFiles';
+requires 'DBD::MySQL';
 requires 'DBD::Pg';
 requires 'DBI';
 requires 'IP::Country::Fast';
