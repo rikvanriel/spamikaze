@@ -45,7 +45,7 @@ INSERT INTO eventtypes (id, eventtext) VALUES
 CREATE TABLE ipevents (
   ip VARCHAR(45) NOT NULL,
   eventtime DATETIME NOT NULL,
-  eventid SMALLINT NOT NULL,
+  eventid INT NOT NULL,
   KEY idx_ipevents_ip (ip),
   KEY idx_ipevents_eventtime (eventtime),
   KEY idx_ipevents_eventid (eventid),
