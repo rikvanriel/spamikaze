@@ -1,10 +1,9 @@
 	TODO items for spamikaze
 
 
-For version 0.4:
+For version 1.0:
   * integrate evidence fetching cgi script
-  * more scalable table layout for MySQL, similar to PostgreSQL 3 tables
-  * IPv6 support (requires new MySQL table schema)
+  * IPv6 support (in MySQL 3 & Postgresql 3 table schemas)
 
 For later versions:
   * integrate query statistics
