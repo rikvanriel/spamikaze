@@ -345,4 +345,38 @@ package main;
         'expire.pl main: passes @DONTEXPIRE to expire');
 }
 
+# ============================================================
+# PgSQL_3::expire works for IPv6 /64 prefixes in blocklist
+# (same DELETE WHERE expires < CURRENT_TIMESTAMP, format-agnostic)
+# ============================================================
+{
+    my $db = Spamikaze::PgSQL_3->new();
+
+    MockDB::reset();
+    $db->expire();
+
+    # The expire SQL does not reference any specific IP format —
+    # it deletes all rows where expires < CURRENT_TIMESTAMP.
+    # Verify the SQL is format-agnostic (no IP literals or casts).
+    is(scalar @MockDB::do_calls, 1, 'PgSQL_3 expire IPv6: one DO call');
+    like($MockDB::do_calls[0]{sql}, qr/DELETE FROM blocklist WHERE expires/i,
+        'PgSQL_3 expire IPv6: time-based DELETE (format-agnostic)');
+    unlike($MockDB::do_calls[0]{sql}, qr/\bip\b.*=/i,
+        'PgSQL_3 expire IPv6: no IP-specific filtering');
+}
+
+# ============================================================
+# MySQL_2::mxdontexpire does not match IPv6 (returns 0)
+# because it is octet-based — IPv6 addresses won't match
+# IPv4 regex patterns in the dontexpire list.
+# ============================================================
+{
+    my $db = Spamikaze::MySQL_2->new();
+
+    is($db->mxdontexpire('2001:db8::1', '127.0.0.2'), 0,
+        'mxdontexpire: IPv6 address does not match IPv4 dontexpire pattern');
+    is($db->mxdontexpire('2001:db8::1'), 0,
+        'mxdontexpire: IPv6 with empty dontexpire list returns 0');
+}
+
 done_testing();

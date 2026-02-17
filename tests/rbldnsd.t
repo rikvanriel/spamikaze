@@ -157,4 +157,47 @@ sub generate_zone {
     like($zone_header, qr/\$NS/, 'zone_header contains NS');
 }
 
+# ===== IPv6: /64 prefix output with CIDR notation =====
+
+{
+    my $zone = generate_zone('2001:0db8:1234:5678:0000:0000:0000:0000');
+    like($zone, qr{2001:0db8:1234:5678:0000:0000:0000:0000/64}m,
+        'IPv6: /64 prefix gets /64 suffix');
+}
+
+# ===== IPv6: single /64 in zone =====
+
+{
+    my $zone = generate_zone('2001:0db8:abcd:ef01:0000:0000:0000:0000');
+    like($zone, qr{2001:0db8:abcd:ef01:0000:0000:0000:0000/64}m,
+        'IPv6 single: present with /64');
+    my @lines = split /\n/, $zone;
+    is(scalar @lines, 5, 'IPv6 single: 4 header + 1 IP');
+}
+
+# ===== IPv6: mixed IPv4 and IPv6 =====
+
+{
+    my $zone = generate_zone('198.51.100.1', '2001:0db8:1234:5678:0000:0000:0000:0000');
+    like($zone, qr/^198\.51\.100\.1$/m, 'mixed: IPv4 present without /64');
+    like($zone, qr{2001:0db8:1234:5678:0000:0000:0000:0000/64}m,
+        'mixed: IPv6 present with /64');
+    unlike($zone, qr{198\.51\.100\.1/64}m, 'mixed: IPv4 does NOT get /64');
+    my @lines = split /\n/, $zone;
+    is(scalar @lines, 6, 'mixed: 4 header + 2 IPs');
+}
+
+# ===== IPv6: multiple /64 prefixes =====
+
+{
+    my $zone = generate_zone(
+        '2001:0db8:1234:5678:0000:0000:0000:0000',
+        '2001:0db8:abcd:ef01:0000:0000:0000:0000',
+    );
+    like($zone, qr{2001:0db8:1234:5678:0000:0000:0000:0000/64}m,
+        'multi IPv6: first prefix present');
+    like($zone, qr{2001:0db8:abcd:ef01:0000:0000:0000:0000/64}m,
+        'multi IPv6: second prefix present');
+}
+
 done_testing();

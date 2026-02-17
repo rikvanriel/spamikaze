@@ -112,4 +112,30 @@ sub generate_text {
     unlike($text2, qr/1\.1\.1\.1/, 'old content not present');
 }
 
+# ===== IPv6: address output as-is (no /64 suffix) =====
+
+{
+    my $text = generate_text('2001:0db8:1234:5678:0000:0000:0000:0000');
+    is($text, "2001:0db8:1234:5678:0000:0000:0000:0000\n",
+        'IPv6: output as-is, one line');
+}
+
+# ===== IPv6: mixed IPv4 and IPv6 =====
+
+{
+    my $text = generate_text('198.51.100.1', '2001:0db8:abcd:ef01:0000:0000:0000:0000');
+    my @lines = split /\n/, $text;
+    is(scalar @lines, 2, 'mixed: 2 lines');
+    is($lines[0], '198.51.100.1', 'mixed: IPv4 correct');
+    is($lines[1], '2001:0db8:abcd:ef01:0000:0000:0000:0000', 'mixed: IPv6 correct');
+}
+
+# ===== IPv6: no CIDR or extra formatting =====
+
+{
+    my $text = generate_text('2001:0db8:1234:5678:0000:0000:0000:0000');
+    unlike($text, qr{/64}, 'IPv6 in text.pl: no /64 suffix (unlike rbldnsd)');
+    unlike($text, qr/\*/, 'IPv6 in text.pl: no wildcard (unlike named)');
+}
+
 done_testing();
