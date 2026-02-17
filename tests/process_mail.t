@@ -144,4 +144,57 @@ sub make_mail {
     is($TestHelper::storeip_calls[0][1], 'received spamtrap mail', 'storeip type is correct');
 }
 
+# --- IPv6 Received header: storeip called with full IP ---
+{
+    TestHelper::reset_mocks();
+    # Build a mail with an IPv6 Received header
+    my $mail = "Received: from sender.example.com (host [IPv6:2001:db8:1234:5678::1]) by mx.local\n"
+             . "From: spammer\@evil.com\n"
+             . "Subject: Test\n"
+             . "\nBuy cheap pills!\n";
+    my $ret = process_mail($mail);
+    is($ret, 1, 'IPv6: process_mail returns 1');
+    is(scalar @TestHelper::storeip_calls, 1, 'IPv6: storeip called once');
+    is($TestHelper::storeip_calls[0][0], '2001:db8:1234:5678::1',
+        'IPv6: storeip called with full IPv6 address');
+    is($TestHelper::storeip_calls[0][1], 'received spamtrap mail',
+        'IPv6: storeip type is correct');
+}
+
+# --- IPv6 localhost: skipped ---
+{
+    TestHelper::reset_mocks();
+    my $mail = "Received: from host [IPv6:::1] by mx.local\n"
+             . "From: spammer\@evil.com\n"
+             . "Subject: Test\n"
+             . "\nSpam!\n";
+    my $ret = process_mail($mail);
+    is($ret, 0, 'IPv6 localhost returns 0');
+    is(scalar @TestHelper::storeip_calls, 0, 'IPv6 localhost: storeip not called');
+}
+
+# --- IPv6 link-local: skipped ---
+{
+    TestHelper::reset_mocks();
+    my $mail = "Received: from host [IPv6:fe80::1] by mx.local\n"
+             . "From: spammer\@evil.com\n"
+             . "Subject: Test\n"
+             . "\nSpam!\n";
+    my $ret = process_mail($mail);
+    is($ret, 0, 'IPv6 link-local returns 0');
+    is(scalar @TestHelper::storeip_calls, 0, 'IPv6 link-local: storeip not called');
+}
+
+# --- IPv6 ULA: skipped ---
+{
+    TestHelper::reset_mocks();
+    my $mail = "Received: from host [IPv6:fd00::1] by mx.local\n"
+             . "From: spammer\@evil.com\n"
+             . "Subject: Test\n"
+             . "\nSpam!\n";
+    my $ret = process_mail($mail);
+    is($ret, 0, 'IPv6 ULA returns 0');
+    is(scalar @TestHelper::storeip_calls, 0, 'IPv6 ULA: storeip not called');
+}
+
 done_testing();

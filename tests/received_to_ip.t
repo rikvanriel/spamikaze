@@ -72,4 +72,32 @@ is(parsereceived('from host by mx'), '',
 is(received_to_ip('from host [IPv6:2002:abcd:ef01:0:0:0:0:1] by mx'), '2002:abcd:ef01:0:0:0:0:1',
     'pure IPv6 2002: address');
 
+# --- IPv6 tests for expanded regex ---
+
+# fd00 ULA prefix (was not matched by old regex)
+is(received_to_ip('from host [IPv6:fd00::1] by mx'), 'fd00::1',
+    'IPv6 ULA fd00:: address');
+
+# fe80 link-local
+is(received_to_ip('from host [IPv6:fe80::abcd:1234] by mx'), 'fe80::abcd:1234',
+    'IPv6 link-local fe80:: address');
+
+# Fully expanded IPv6
+is(received_to_ip('from host [IPv6:2001:0db8:1234:5678:0000:0000:0000:0001] by mx'),
+    '2001:0db8:1234:5678:0000:0000:0000:0001',
+    'IPv6 fully expanded address');
+
+# IPv6 in parentheses
+is(received_to_ip('from host (IPv6:2001:db8::99) by mx'), '2001:db8::99',
+    'IPv6 in parentheses');
+
+# IPv4-mapped IPv6 should return the IPv4 part
+is(received_to_ip('from host [IPv6:::ffff:1.2.3.4] by mx'), '1.2.3.4',
+    'IPv4-mapped IPv6 ::ffff:1.2.3.4 returns IPv4');
+
+# Compressed IPv6 with multiple zero groups
+is(received_to_ip('from host [IPv6:2001:db8:85a3::8a2e:370:7334] by mx'),
+    '2001:db8:85a3::8a2e:370:7334',
+    'IPv6 compressed with multiple zero groups');
+
 done_testing();

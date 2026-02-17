@@ -65,10 +65,17 @@ sub storeip
 
     my $dbh = Spamikaze::DBConnect();
 
+    # For IPv6, store /64 prefix in blocklist, full IP in ipevents
+    my $blocklist_ip = $ip;
+    if (Spamikaze::IsIPv6($ip)) {
+        my $prefix = Spamikaze::IPv6ToPrefix64($ip);
+        $blocklist_ip = $prefix if defined $prefix;
+    }
+
     eval {
         my $sql = "INSERT INTO blocklist VALUES (?, CURRENT_TIMESTAMP + ?::interval)";
         my $sth = $dbh->prepare($sql);
-        $sth->execute($ip, $expires);
+        $sth->execute($blocklist_ip, $expires);
         $self->store_ipevent($dbh, $ip, $type);
         $dbh->commit();
     };
@@ -111,16 +118,23 @@ sub remove_from_db($)
 	my $rows_affected;
 	my $dbh;
 
+	# For IPv6, convert to /64 prefix for blocklist operations
+	my $blocklist_ip = $ip;
+	if (Spamikaze::IsIPv6($ip)) {
+		my $prefix = Spamikaze::IPv6ToPrefix64($ip);
+		$blocklist_ip = $prefix if defined $prefix;
+	}
+
 	# DBI connect params.
 	$dbh = Spamikaze::DBConnect();
-        $rows_affected = $dbh->do("DELETE FROM blocklist WHERE ip = ?", undef, $ip);
+        $rows_affected = $dbh->do("DELETE FROM blocklist WHERE ip = ?", undef, $blocklist_ip);
 	if ($rows_affected > 0) {
-		$self->store_ipevent($dbh, $ip, "removed through website");
+		$self->store_ipevent($dbh, $blocklist_ip, "removed through website");
 	}
         $dbh->commit();
 	$dbh->disconnect();
 
-	return $rows_affected;    
+	return $rows_affected;
 }
 
 sub get_listing_info
@@ -134,35 +148,63 @@ sub get_listing_info
 	my $dbh;
 	my $sth;
         my $sql;
-    
+
 	$dbh = Spamikaze::DBConnect();
 
-	#
-	# First, get all the events for this IP address
-	#
-	$sql = "SELECT eventtime, eventtext FROM ipevents, eventtypes WHERE
-			ipevents.ip = ? AND ipevents.eventid = eventtypes.id";
+	if (Spamikaze::IsIPv6($ip)) {
+		my $prefix = Spamikaze::IPv6ToPrefix64($ip);
 
-	$sth = $dbh->prepare($sql);
-	$sth->execute($ip);
-	$sth->bind_columns(undef, \$time, \$eventtext);
-	while ($sth->fetch()) {
-		$found++;
-		$iplog{$time} = $eventtext;
-	}
-	$sth->finish();
+		# Get all events for IPs within this /64
+		$sql = "SELECT ip, eventtime, eventtext FROM ipevents, eventtypes WHERE
+				ip <<= ?::inet AND ipevents.eventid = eventtypes.id";
 
-	#
-	# is the IP currently listed?
-	#
-	$sql = "SELECT expires FROM blocklist WHERE ip = ?";
-	$sth = $dbh->prepare($sql);
-	$sth->execute($ip);
-	$sth->bind_columns(\$time);
-	while ($sth->fetch()) {
-		$listed = 1;
+		my $event_ip;
+		$sth = $dbh->prepare($sql);
+		$sth->execute("$prefix/64");
+		$sth->bind_columns(undef, \$event_ip, \$time, \$eventtext);
+		while ($sth->fetch()) {
+			$found++;
+			$iplog{$time} = "$event_ip $eventtext";
+		}
+		$sth->finish();
+
+		# Is the /64 prefix currently listed?
+		$sql = "SELECT expires FROM blocklist WHERE ip = ?";
+		$sth = $dbh->prepare($sql);
+		$sth->execute($prefix);
+		$sth->bind_columns(\$time);
+		while ($sth->fetch()) {
+			$listed = 1;
+		}
+		$sth->finish();
+	} else {
+		#
+		# First, get all the events for this IP address
+		#
+		$sql = "SELECT eventtime, eventtext FROM ipevents, eventtypes WHERE
+				ipevents.ip = ? AND ipevents.eventid = eventtypes.id";
+
+		$sth = $dbh->prepare($sql);
+		$sth->execute($ip);
+		$sth->bind_columns(undef, \$time, \$eventtext);
+		while ($sth->fetch()) {
+			$found++;
+			$iplog{$time} = $eventtext;
+		}
+		$sth->finish();
+
+		#
+		# is the IP currently listed?
+		#
+		$sql = "SELECT expires FROM blocklist WHERE ip = ?";
+		$sth = $dbh->prepare($sql);
+		$sth->execute($ip);
+		$sth->bind_columns(\$time);
+		while ($sth->fetch()) {
+			$listed = 1;
+		}
+		$sth->finish();
 	}
-	$sth->finish();
 
 	$dbh->disconnect();
 

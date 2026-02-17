@@ -37,4 +37,22 @@ is(Spamikaze::MXBackup('203.0.113.1'), 'backup MX', 'configured backup MX IP');
 is(Spamikaze::MXBackup('198.51.100.1'), 0, 'normal public IP returns 0');
 is(Spamikaze::MXBackup('8.8.8.8'), 0, '8.8.8.8 returns 0');
 
+# --- IPv6: localhost ---
+is(Spamikaze::MXBackup('::1'), 'localhost', '::1 is localhost');
+is(Spamikaze::MXBackup('0000:0000:0000:0000:0000:0000:0000:0001'), 'localhost',
+    'fully expanded ::1 is localhost');
+
+# --- IPv6: link-local (fe80::/10) ---
+is(Spamikaze::MXBackup('fe80::1'), 'link-local address', 'fe80::1 is link-local');
+is(Spamikaze::MXBackup('fe80::abcd:1234:5678:9abc'), 'link-local address',
+    'fe80::abcd:... is link-local');
+
+# --- IPv6: unique local address (fc00::/7) ---
+is(Spamikaze::MXBackup('fd00::1'), 'unique local address', 'fd00::1 is ULA');
+is(Spamikaze::MXBackup('fc00::1'), 'unique local address', 'fc00::1 is ULA');
+
+# --- IPv6: normal public address ---
+is(Spamikaze::MXBackup('2001:db8::1'), 0, 'IPv6 public address returns 0');
+is(Spamikaze::MXBackup('2001:db8:1234:5678::1'), 0, 'IPv6 public address returns 0');
+
 done_testing();

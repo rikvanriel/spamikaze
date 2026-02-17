@@ -139,7 +139,7 @@ sub received_to_ip
 
 	if ($rcvd =~ /[\[\(](?:IPv6.*?:)?(\d{1,3}(\.\d{1,3}){3})[\]\)]/g) {
 		return $1;
-	} elsif ($rcvd =~ /\[IPv6:((3ffe|2001|2002)(:[\da-f]{0,4}){3,7})/ig) {
+	} elsif ($rcvd =~ /[\[\(]IPv6:([0-9a-fA-F:]+)[\]\)]/i) {
 		return $1;
 	} elsif ($rcvd =~ /(\d{1,3}(\.\d{1,3}){3})/g) {
 		return $1;

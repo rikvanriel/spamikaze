@@ -64,4 +64,23 @@ $TestHelper::dns_answers{"255.0.0.192.wl.example.com/A"} = 1;
 is(Spamikaze::whitelisted('192.0.0.255'), 'whitelisted in wl.example.com',
     'IP with high octets reversed correctly');
 
+# --- IPv6 nibble reversal ---
+# 2001:0db8:1234:5678:0000:0000:0000:0001
+# Nibbles reversed: 1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.7.6.5.4.3.2.1.8.b.d.0.1.0.0.2
+TestHelper::reset_mocks();
+$TestHelper::dns_answers{"1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.7.6.5.4.3.2.1.8.b.d.0.1.0.0.2.wl.example.com/A"} = 1;
+is(Spamikaze::whitelisted('2001:db8:1234:5678::1'), 'whitelisted in wl.example.com',
+    'IPv6 nibble reversal in whitelist query');
+
+# IPv6 not found in whitelist
+TestHelper::reset_mocks();
+is(Spamikaze::whitelisted('2001:db8::99'), 0,
+    'IPv6 not in any whitelist zone returns 0');
+
+# IPv6 loopback nibble reversal: ::1 → 1.0.0.0...0.0.0.0
+TestHelper::reset_mocks();
+$TestHelper::dns_answers{"1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.wl.example.com/A"} = 1;
+is(Spamikaze::whitelisted('::1'), 'whitelisted in wl.example.com',
+    'IPv6 loopback nibble reversal');
+
 done_testing();

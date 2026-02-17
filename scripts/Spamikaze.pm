@@ -186,6 +186,69 @@ sub GetDBType {
 
 }
 
+sub IsIPv6 {
+	my ($ip) = @_;
+	return (defined $ip && $ip =~ /:/);
+}
+
+sub NormalizeIPv6 {
+	my ($ip) = @_;
+	return undef unless defined $ip;
+
+	# Reject IPv4-mapped addresses — caller should treat as IPv4
+	if ($ip =~ /^::ffff:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$/i) {
+		return undef;
+	}
+
+	# Remove leading/trailing whitespace
+	$ip =~ s/^\s+|\s+$//g;
+
+	# Reject if there are characters outside hex digits and colons
+	return undef if $ip =~ /[^0-9a-fA-F:]/;
+
+	# Reject empty
+	return undef if $ip eq '';
+
+	# Expand :: notation
+	if ($ip =~ /::/) {
+		# Count existing groups
+		my @halves = split(/::/, $ip, 2);
+		my @left  = $halves[0] ne '' ? split(/:/, $halves[0]) : ();
+		my @right = (defined $halves[1] && $halves[1] ne '') ? split(/:/, $halves[1]) : ();
+		my $missing = 8 - scalar(@left) - scalar(@right);
+		return undef if $missing < 1;
+		my @middle = ('0') x $missing;
+		$ip = join(':', @left, @middle, @right);
+	}
+
+	my @groups = split(/:/, $ip);
+	return undef unless scalar(@groups) == 8;
+
+	my @expanded;
+	for my $g (@groups) {
+		return undef if length($g) > 4 || length($g) == 0;
+		return undef if $g =~ /[^0-9a-fA-F]/;
+		push @expanded, sprintf('%04x', hex($g));
+	}
+
+	return join(':', @expanded);
+}
+
+sub IPv6ToPrefix64 {
+	my ($ip) = @_;
+	my $norm = NormalizeIPv6($ip);
+	return undef unless defined $norm;
+
+	my @groups = split(/:/, $norm);
+	# Zero out the lower 64 bits (last 4 groups)
+	return join(':', @groups[0..3], '0000', '0000', '0000', '0000');
+}
+
+sub ValidIPv6 {
+	my ($ip) = @_;
+	return defined(NormalizeIPv6($ip)) ? 1 : 0;
+}
+
 sub MXBackup {
 	my ($ip) = @_;
 	my $mxhosts;
@@ -195,6 +258,39 @@ sub MXBackup {
 	#
 	if ( $ip =~ /^127\./ ) {
 		return 'localhost';
+	}
+
+	if (IsIPv6($ip)) {
+		my $norm = NormalizeIPv6($ip);
+		if (defined $norm) {
+			# IPv6 loopback ::1
+			if ($norm eq '0000:0000:0000:0000:0000:0000:0000:0001') {
+				return 'localhost';
+			}
+
+			if ( defined($ignoreRFC1918) and ($ignoreRFC1918 eq 'true' or $ignoreRFC1918 == 1) ) {
+				# fe80::/10 link-local
+				my $first16 = hex(substr($norm, 0, 4));
+				if (($first16 & 0xffc0) == 0xfe80) {
+					return 'link-local address';
+				}
+				# fc00::/7 unique local address
+				if (($first16 & 0xfe00) == 0xfc00) {
+					return 'unique local address';
+				}
+			}
+
+			# Backup MX prefix matching on normalized form
+			foreach $mxhosts (@MXBACKUP) {
+				if (IsIPv6($mxhosts)) {
+					my $normmx = NormalizeIPv6($mxhosts);
+					if (defined $normmx && $norm =~ /^\Q$normmx\E/) {
+						return 'backup MX';
+					}
+				}
+			}
+		}
+		return 0;
 	}
 
 	if ( defined($ignoreRFC1918) and ($ignoreRFC1918 eq 'true' or $ignoreRFC1918 == 1) ) {
@@ -232,8 +328,8 @@ sub ValidIP {
 	my ($octa, $octb, $octc, $octd) = SplitIP($ip);
 
 	if (!defined($octa)) {
-		# not of the form ddd.ddd.ddd.ddd
-		return 0;
+		# not of the form ddd.ddd.ddd.ddd — try IPv6
+		return ValidIPv6($ip);
 	}
 
 	# all numbers are in range
@@ -251,7 +347,21 @@ sub ValidIP {
 sub whitelisted
 {
 	my ( $revip ) = @_;
-	$revip =~ s/(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/$4.$3.$2.$1/;
+
+	if (IsIPv6($revip)) {
+		my $norm = NormalizeIPv6($revip);
+		if (defined $norm) {
+			# Remove colons, reverse nibbles, join with dots
+			my $hex = $norm;
+			$hex =~ s/://g;
+			$revip = join('.', reverse split(//, $hex));
+		} else {
+			return 0;
+		}
+	} else {
+		$revip =~ s/(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/$4.$3.$2.$1/;
+	}
+
 	my $res = new Net::DNS::Resolver;
 
 	foreach my $zone (@Spamikaze::whitelist_zones) {

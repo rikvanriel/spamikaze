@@ -57,7 +57,11 @@ sub main {
 	print TEXTFILE $zone_header;
 
 	foreach $ip ($Spamikaze::db->get_listed_addresses()) {
-		print TEXTFILE $ip, "\n";
+		if (Spamikaze::IsIPv6($ip)) {
+			print TEXTFILE $ip, "/64\n";
+		} else {
+			print TEXTFILE $ip, "\n";
+		}
 	}
 	close TEXTFILE;
 

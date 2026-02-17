@@ -49,6 +49,13 @@ sub get_listed_addresses {
 sub store_ipevent
 {
     my ( $self, $dbh, $ip, $type )  = @_;
+
+    # Normalize IPv6 for consistent storage
+    if (Spamikaze::IsIPv6($ip)) {
+        my $norm = Spamikaze::NormalizeIPv6($ip);
+        $ip = $norm if defined $norm;
+    }
+
     my $sql = "INSERT INTO ipevents (ip, eventtime, eventid)
                VALUES (?, NOW(), (SELECT id FROM eventtypes WHERE eventtext = ?))";
 
@@ -62,6 +69,13 @@ sub storeip
     my ( $self, $ip, $type )  = @_;
     my $firsttime = $Spamikaze::firsttime;
 
+    # For IPv6, store /64 prefix in blocklist, full (normalized) IP in ipevents
+    my $blocklist_ip = $ip;
+    if (Spamikaze::IsIPv6($ip)) {
+        my $prefix = Spamikaze::IPv6ToPrefix64($ip);
+        $blocklist_ip = $prefix if defined $prefix;
+    }
+
     my $dbh = Spamikaze::DBConnect();
 
     eval {
@@ -69,7 +83,7 @@ sub storeip
                    VALUES (?, DATE_ADD(NOW(), INTERVAL ? SECOND))
                    ON DUPLICATE KEY UPDATE expires = DATE_ADD(NOW(), INTERVAL ? SECOND)";
         my $sth = $dbh->prepare($sql);
-        $sth->execute($ip, $firsttime, $firsttime);
+        $sth->execute($blocklist_ip, $firsttime, $firsttime);
         $sth->finish;
         $self->store_ipevent($dbh, $ip, $type);
         $dbh->commit();
@@ -82,6 +96,12 @@ sub storeip
 sub archivemail
 {
     my ($self, $ip, $isspam, $mail) = @_;
+
+    # Normalize IPv6 for consistent storage
+    if (Spamikaze::IsIPv6($ip)) {
+        my $norm = Spamikaze::NormalizeIPv6($ip);
+        $ip = $norm if defined $norm;
+    }
 
     my $dbh = Spamikaze::DBConnect();
 
@@ -113,10 +133,17 @@ sub remove_from_db
 	my $rows_affected;
 	my $dbh;
 
+	# For IPv6, convert to /64 prefix for blocklist operations
+	my $blocklist_ip = $ip;
+	if (Spamikaze::IsIPv6($ip)) {
+		my $prefix = Spamikaze::IPv6ToPrefix64($ip);
+		$blocklist_ip = $prefix if defined $prefix;
+	}
+
 	$dbh = Spamikaze::DBConnect();
-	$rows_affected = $dbh->do("DELETE FROM blocklist WHERE ip = ?", undef, $ip);
+	$rows_affected = $dbh->do("DELETE FROM blocklist WHERE ip = ?", undef, $blocklist_ip);
 	if ($rows_affected > 0) {
-		$self->store_ipevent($dbh, $ip, "removed through website");
+		$self->store_ipevent($dbh, $blocklist_ip, "removed through website");
 	}
 	$dbh->commit();
 	$dbh->disconnect();
@@ -138,32 +165,62 @@ sub get_listing_info
 
 	$dbh = Spamikaze::DBConnect();
 
-	#
-	# First, get all the events for this IP address
-	#
-	$sql = "SELECT eventtime, eventtext FROM ipevents, eventtypes WHERE
-			ipevents.ip = ? AND ipevents.eventid = eventtypes.id";
+	if (Spamikaze::IsIPv6($ip)) {
+		my $prefix = Spamikaze::IPv6ToPrefix64($ip);
+		# First 19 chars of expanded prefix = first 4 groups with colons
+		my $like_pattern = substr($prefix, 0, 19) . ':%';
 
-	$sth = $dbh->prepare($sql);
-	$sth->execute($ip);
-	$sth->bind_columns(undef, \$time, \$eventtext);
-	while ($sth->fetch()) {
-		$found++;
-		$iplog{$time} = $eventtext;
-	}
-	$sth->finish();
+		# Get all events for IPs within this /64
+		$sql = "SELECT ip, eventtime, eventtext FROM ipevents, eventtypes WHERE
+				ipevents.ip LIKE ? AND ipevents.eventid = eventtypes.id";
 
-	#
-	# is the IP currently listed?
-	#
-	$sql = "SELECT expires FROM blocklist WHERE ip = ?";
-	$sth = $dbh->prepare($sql);
-	$sth->execute($ip);
-	$sth->bind_columns(\$time);
-	while ($sth->fetch()) {
-		$listed = 1;
+		my $event_ip;
+		$sth = $dbh->prepare($sql);
+		$sth->execute($like_pattern);
+		$sth->bind_columns(undef, \$event_ip, \$time, \$eventtext);
+		while ($sth->fetch()) {
+			$found++;
+			$iplog{$time} = "$event_ip $eventtext";
+		}
+		$sth->finish();
+
+		# Is the /64 prefix currently listed?
+		$sql = "SELECT expires FROM blocklist WHERE ip = ?";
+		$sth = $dbh->prepare($sql);
+		$sth->execute($prefix);
+		$sth->bind_columns(\$time);
+		while ($sth->fetch()) {
+			$listed = 1;
+		}
+		$sth->finish();
+	} else {
+		#
+		# First, get all the events for this IP address
+		#
+		$sql = "SELECT eventtime, eventtext FROM ipevents, eventtypes WHERE
+				ipevents.ip = ? AND ipevents.eventid = eventtypes.id";
+
+		$sth = $dbh->prepare($sql);
+		$sth->execute($ip);
+		$sth->bind_columns(undef, \$time, \$eventtext);
+		while ($sth->fetch()) {
+			$found++;
+			$iplog{$time} = $eventtext;
+		}
+		$sth->finish();
+
+		#
+		# is the IP currently listed?
+		#
+		$sql = "SELECT expires FROM blocklist WHERE ip = ?";
+		$sth = $dbh->prepare($sql);
+		$sth->execute($ip);
+		$sth->bind_columns(\$time);
+		while ($sth->fetch()) {
+			$listed = 1;
+		}
+		$sth->finish();
 	}
-	$sth->finish();
 
 	$dbh->disconnect();
 

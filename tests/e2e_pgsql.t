@@ -640,6 +640,104 @@ sub make_spam_mail {
         'lifecycle: get_latest includes removal event');
 }
 
+# ===== IPv6: storeip stores /64 prefix in blocklist, full IP in ipevents =====
+
+{
+    clear_db();
+
+    $Spamikaze::db->storeip('2001:db8:1234:5678::1', 'received spamtrap mail');
+
+    # The /64 prefix should be in blocklist
+    my $row = get_blocklist_ip('2001:0db8:1234:5678:0000:0000:0000:0000');
+    ok(defined $row, 'IPv6 storeip: /64 prefix is in blocklist');
+
+    # The full IP should be in ipevents
+    my $dbh = Spamikaze::DBConnect();
+    my $sth = $dbh->prepare(
+        "SELECT e.eventtext FROM ipevents i"
+      . " JOIN eventtypes e ON i.eventid = e.id"
+      . " WHERE i.ip = ?::inet");
+    $sth->execute('2001:db8:1234:5678::1');
+    my ($eventtext) = $sth->fetchrow_array();
+    $sth->finish();
+    $dbh->disconnect();
+    is($eventtext, 'received spamtrap mail', 'IPv6 storeip: full IP in ipevents');
+}
+
+# ===== IPv6: two IPs in same /64 share one blocklist entry =====
+
+{
+    clear_db();
+
+    $Spamikaze::db->storeip('2001:db8:1234:5678::1', 'received spamtrap mail');
+    $Spamikaze::db->storeip('2001:db8:1234:5678::2', 'received spamtrap mail');
+
+    is(count_rows('blocklist'), 1, 'IPv6 same /64: one blocklist entry');
+    is(count_rows('ipevents'), 2, 'IPv6 same /64: two ipevents');
+}
+
+# ===== IPv6: get_listing_info shows all IPs in /64 =====
+
+{
+    clear_db();
+
+    $Spamikaze::db->storeip('2001:db8:1234:5678::1', 'received spamtrap mail');
+    sleep(1);
+    $Spamikaze::db->storeip('2001:db8:1234:5678::ffff', 'received spamtrap mail');
+
+    my ($listed, %iplog) = $Spamikaze::db->get_listing_info('2001:db8:1234:5678::1');
+    is($listed, 1, 'IPv6 get_listing_info: prefix is listed');
+    is(scalar keys %iplog, 2, 'IPv6 get_listing_info: shows 2 events in /64');
+
+    # Event values should include the individual IPs
+    my @vals = values %iplog;
+    ok(grep(/2001:db8:1234:5678::1/, @vals),
+        'IPv6 get_listing_info: first IP in events');
+    ok(grep(/2001:db8:1234:5678::ffff/, @vals),
+        'IPv6 get_listing_info: second IP in events');
+}
+
+# ===== IPv6: remove_from_db deletes /64 =====
+
+{
+    clear_db();
+
+    $Spamikaze::db->storeip('2001:db8:1234:5678::1', 'received spamtrap mail');
+    is(count_rows('blocklist'), 1, 'IPv6 remove: IP stored first');
+
+    my $rows = $Spamikaze::db->remove_from_db('2001:db8:1234:5678::99');
+    cmp_ok($rows, '==', 1, 'IPv6 remove_from_db: returns 1 (same /64)');
+    is(count_rows('blocklist'), 0, 'IPv6 remove_from_db: blocklist empty');
+}
+
+# ===== IPv6: process_mail end-to-end =====
+
+{
+    clear_db();
+    @syslog_messages = ();
+
+    my $mail = "Received: from sender.example.com (sender [IPv6:2001:db8:abcd:ef01::42])"
+             . " by trap.example.com\n"
+             . "From: spammer\@evil.com\n"
+             . "Subject: IPv6 spam\n"
+             . "\n"
+             . "Buy our product!\n";
+
+    my $result = process_mail($mail);
+    is($result, 1, 'IPv6 process_mail: returns 1');
+
+    # /64 prefix in blocklist
+    ok(defined get_blocklist_ip('2001:0db8:abcd:ef01:0000:0000:0000:0000'),
+        'IPv6 process_mail: /64 prefix in blocklist');
+
+    # Full IP in ipevents (via get_listing_info)
+    my ($listed, %iplog) = $Spamikaze::db->get_listing_info('2001:db8:abcd:ef01::42');
+    is($listed, 1, 'IPv6 process_mail: listed');
+    my @vals = values %iplog;
+    ok(grep(/2001:db8:abcd:ef01::42/, @vals),
+        'IPv6 process_mail: full IP in events');
+}
+
 # ===== Cleanup =====
 
 clear_db();

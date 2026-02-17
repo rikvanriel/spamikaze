@@ -88,22 +88,34 @@ sub listing_page_body
 	my $body;
 	my $listedword = 'No';
 	$listedword = 'Yes' if $listed;
+	my $is_ipv6 = Spamikaze::IsIPv6($ip);
+
+	# For IPv6, show the /64 prefix in the display
+	my $display_ip = $safe_ip;
+	if ($is_ipv6) {
+		my $prefix = Spamikaze::IPv6ToPrefix64($ip);
+		$display_ip = CGI::escapeHTML($prefix) . "/64" if defined $prefix;
+	}
 
 	if ($foundinfo eq ' ') {
-		$body = "The host $safe_ip has never been listed in $listname. " .
-			"Maybe you are looking at the wrong blocklist? " .
-			"<p>You may want to check the <a href=" .
-			$checkurl . $safe_ip . ">other blocklists</a>";
+		$body = "The host $display_ip has never been listed in $listname. " .
+			"Maybe you are looking at the wrong blocklist? ";
+		unless ($is_ipv6) {
+			$body .= "<p>You may want to check the <a href=" .
+				$checkurl . $safe_ip . ">other blocklists</a>";
+		}
 	} else {
 		$body = "Currently listed in $listname?  $listedword.\n<p>" .
-			"Spam and removal history for $safe_ip (times in UTC):\n" .
+			"Spam and removal history for $display_ip (times in UTC):\n" .
 			"<p><table border=\"1\">\n" . "$foundinfo" .
-			"</table>\n" .
-			"<p>You may also want to check the <a href=" .
-			$checkurl . $safe_ip . ">other blocklists</a>" .
-			"</a> and " .
-			"<a href=\"http://groups.google.com/groups?scoring=d&q=$safe_ip+group:*abuse*\">Google groups</a>.\n" .
-			"<h2>Remove IP from $listname</h2>\n" .
+			"</table>\n";
+		unless ($is_ipv6) {
+			$body .= "<p>You may also want to check the <a href=" .
+				$checkurl . $safe_ip . ">other blocklists</a>" .
+				"</a> and " .
+				"<a href=\"http://groups.google.com/groups?scoring=d&q=$safe_ip+group:*abuse*\">Google groups</a>.\n";
+		}
+		$body .= "<h2>Remove IP from $listname</h2>\n" .
 			"<FORM ACTION=\"$Spamikaze::web_removalurl\" METHOD=GET>\n" .
 			"<INPUT TYPE=\"text\" NAME=\"ip\" VALUE=\"$safe_ip\" " .
 			"SIZE=\"20\">\n" . "<INPUT TYPE=\"submit\" " .
