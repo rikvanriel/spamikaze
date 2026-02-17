@@ -320,8 +320,10 @@ package main;
     die "Failed to load expire.pl: $@" if $@;
 
     # Verify @DONTEXPIRE is set
+    no warnings 'once';
     is_deeply(\@ExpireTest::DONTEXPIRE, ['127.0.0.2'],
         'expire.pl: @DONTEXPIRE defaults to 127.0.0.2');
+    use warnings 'once';
 
     # Replace $Spamikaze::db with a tracking mock
     my @expire_args;
