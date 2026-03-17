@@ -121,10 +121,12 @@ sub expire
 {
     my ($self, @dontexpire) = @_;
 
-    my $days = $Spamikaze::email_expire_days // 60;
+    my $email_days = $Spamikaze::email_expire_days // 60;
+    my $event_days = $Spamikaze::ipevents_expire_days // 730;
     my $dbh = Spamikaze::DBConnect();
     $dbh->do("DELETE FROM blocklist WHERE expires < NOW()");
-    $dbh->do("DELETE FROM emails WHERE `time` < DATE_SUB(NOW(), INTERVAL ? DAY)", undef, $days);
+    $dbh->do("DELETE FROM emails WHERE `time` < DATE_SUB(NOW(), INTERVAL ? DAY)", undef, $email_days);
+    $dbh->do("DELETE FROM ipevents WHERE eventtime < DATE_SUB(NOW(), INTERVAL ? DAY)", undef, $event_days);
     $dbh->commit();
     $dbh->disconnect();
 }

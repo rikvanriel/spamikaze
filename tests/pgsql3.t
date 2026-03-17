@@ -174,9 +174,10 @@ isa_ok($db, 'Spamikaze::PgSQL_3', 'new() returns blessed object');
     MockDB::reset();
     $db->expire();
 
-    is(scalar @MockDB::do_calls, 2, 'expire: 2 do calls (blocklist + emails)');
+    is(scalar @MockDB::do_calls, 3, 'expire: 3 do calls (blocklist + emails + ipevents)');
     like($MockDB::do_calls[0]{sql}, qr/DELETE FROM blocklist WHERE expires/, 'expire: DELETE SQL');
     like($MockDB::do_calls[1]{sql}, qr/DELETE FROM emails/i, 'expire: emails DELETE SQL');
+    like($MockDB::do_calls[2]{sql}, qr/DELETE FROM ipevents/i, 'expire: ipevents DELETE SQL');
     is(scalar @MockDB::committed, 1, 'expire: commits once');
     is(scalar @MockDB::disconnected, 1, 'expire: disconnects once');
 }

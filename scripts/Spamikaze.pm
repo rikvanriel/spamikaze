@@ -46,6 +46,7 @@ our $firsttime;
 our $extratime;
 our $maxspamperip;
 our $email_expire_days;
+our $ipevents_expire_days;
 
 # named.pl
 our $dnsbl_domain;
@@ -134,6 +135,7 @@ sub ConfigRead {
 	$extratime = $cfg->val ( 'Expire', 'ExtraTime' );
 	$maxspamperip = $cfg->val ( 'Expire', 'MaxSpamPerIp' );
 	$email_expire_days = $cfg->val ( 'Expire', 'EmailExpireDays' ) // 60;
+	$ipevents_expire_days = $cfg->val ( 'Expire', 'IpEventsExpireDays' ) // 730;
 	# convert listing times from hours to seconds
 	$firsttime *= 3600;
 	$extratime *= 3600;

@@ -135,7 +135,7 @@ package main;
     MockDB::reset();
     $db->expire('127.0.0.2');
 
-    is(scalar @MockDB::do_calls, 2, 'PgSQL_3 expire: two DO calls (blocklist + emails)');
+    is(scalar @MockDB::do_calls, 3, 'PgSQL_3 expire: three DO calls (blocklist + emails + ipevents)');
     like($MockDB::do_calls[0]{sql}, qr/DELETE FROM blocklist/i,
         'PgSQL_3 expire: DELETE FROM blocklist SQL');
     like($MockDB::do_calls[0]{sql}, qr/expires\s*<\s*CURRENT_TIMESTAMP/i,
@@ -146,12 +146,12 @@ package main;
     # --- expire with no dontexpire args (PgSQL_3 ignores them anyway) ---
     MockDB::reset();
     $db->expire();
-    is(scalar @MockDB::do_calls, 2, 'PgSQL_3 expire: works with no dontexpire args');
+    is(scalar @MockDB::do_calls, 3, 'PgSQL_3 expire: works with no dontexpire args');
 
     # --- expire with multiple dontexpire args ---
     MockDB::reset();
     $db->expire('127.0.0.2', '10.0.0.0');
-    is(scalar @MockDB::do_calls, 2, 'PgSQL_3 expire: works with multiple dontexpire args');
+    is(scalar @MockDB::do_calls, 3, 'PgSQL_3 expire: works with multiple dontexpire args');
 }
 
 # ============================================================
@@ -371,7 +371,7 @@ package main;
     # The expire SQL does not reference any specific IP format —
     # it deletes all rows where expires < CURRENT_TIMESTAMP.
     # Verify the SQL is format-agnostic (no IP literals or casts).
-    is(scalar @MockDB::do_calls, 2, 'PgSQL_3 expire IPv6: two DO calls (blocklist + emails)');
+    is(scalar @MockDB::do_calls, 3, 'PgSQL_3 expire IPv6: three DO calls (blocklist + emails + ipevents)');
     like($MockDB::do_calls[0]{sql}, qr/DELETE FROM blocklist WHERE expires/i,
         'PgSQL_3 expire IPv6: time-based DELETE (format-agnostic)');
     unlike($MockDB::do_calls[0]{sql}, qr/\bip\b.*=/i,
@@ -393,45 +393,56 @@ package main;
 }
 
 # ============================================================
-# PgSQL_3::expire - also expires old emails
+# PgSQL_3::expire - also expires old emails and ipevents
 # ============================================================
 {
     my $db = Spamikaze::PgSQL_3->new();
 
-    # --- Default email expiry (60 days) ---
+    # --- Default expiry values ---
     MockDB::reset();
     $Spamikaze::email_expire_days = undef;
+    $Spamikaze::ipevents_expire_days = undef;
     $db->expire();
 
-    is(scalar @MockDB::do_calls, 2, 'PgSQL_3 expire: two DO calls (blocklist + emails)');
+    is(scalar @MockDB::do_calls, 3, 'PgSQL_3 expire: three DO calls (blocklist + emails + ipevents)');
     like($MockDB::do_calls[1]{sql}, qr/DELETE FROM emails/i,
         'PgSQL_3 expire: second DELETE targets emails');
     like($MockDB::do_calls[1]{sql}, qr/INTERVAL '1 day'/i,
         'PgSQL_3 expire: emails DELETE uses interval');
     is($MockDB::do_calls[1]{params}[0], 60,
         'PgSQL_3 expire: default email expiry is 60 days');
+    like($MockDB::do_calls[2]{sql}, qr/DELETE FROM ipevents/i,
+        'PgSQL_3 expire: third DELETE targets ipevents');
+    like($MockDB::do_calls[2]{sql}, qr/INTERVAL '1 day'/i,
+        'PgSQL_3 expire: ipevents DELETE uses interval');
+    is($MockDB::do_calls[2]{params}[0], 730,
+        'PgSQL_3 expire: default ipevents expiry is 730 days');
 
-    # --- Configured email expiry (30 days) ---
+    # --- Configured expiry values ---
     MockDB::reset();
     $Spamikaze::email_expire_days = 30;
+    $Spamikaze::ipevents_expire_days = 365;
     $db->expire();
 
     is($MockDB::do_calls[1]{params}[0], 30,
         'PgSQL_3 expire: respects EmailExpireDays config (30 days)');
+    is($MockDB::do_calls[2]{params}[0], 365,
+        'PgSQL_3 expire: respects IpEventsExpireDays config (365 days)');
 }
 
 # ============================================================
-# MySQL_3::expire - deletes expired blocklist entries and old emails
+# MySQL_3::expire - deletes expired blocklist entries, emails, and ipevents
 # ============================================================
 {
     my $db = Spamikaze::MySQL_3->new();
 
-    # --- Default email expiry (60 days) ---
+    # --- Default expiry values ---
     MockDB::reset();
     $Spamikaze::email_expire_days = undef;
+    $Spamikaze::ipevents_expire_days = undef;
     $db->expire();
 
-    is(scalar @MockDB::do_calls, 2, 'MySQL_3 expire: two DO calls (blocklist + emails)');
+    is(scalar @MockDB::do_calls, 3, 'MySQL_3 expire: three DO calls (blocklist + emails + ipevents)');
     like($MockDB::do_calls[0]{sql}, qr/DELETE FROM blocklist/i,
         'MySQL_3 expire: first DELETE targets blocklist');
     like($MockDB::do_calls[1]{sql}, qr/DELETE FROM emails/i,
@@ -440,14 +451,23 @@ package main;
         'MySQL_3 expire: emails DELETE uses DATE_SUB INTERVAL DAY');
     is($MockDB::do_calls[1]{params}[0], 60,
         'MySQL_3 expire: default email expiry is 60 days');
+    like($MockDB::do_calls[2]{sql}, qr/DELETE FROM ipevents/i,
+        'MySQL_3 expire: third DELETE targets ipevents');
+    like($MockDB::do_calls[2]{sql}, qr/DATE_SUB\s*\(.*INTERVAL.*DAY/i,
+        'MySQL_3 expire: ipevents DELETE uses DATE_SUB INTERVAL DAY');
+    is($MockDB::do_calls[2]{params}[0], 730,
+        'MySQL_3 expire: default ipevents expiry is 730 days');
 
-    # --- Configured email expiry (90 days) ---
+    # --- Configured expiry values ---
     MockDB::reset();
     $Spamikaze::email_expire_days = 90;
+    $Spamikaze::ipevents_expire_days = 365;
     $db->expire();
 
     is($MockDB::do_calls[1]{params}[0], 90,
         'MySQL_3 expire: respects EmailExpireDays config (90 days)');
+    is($MockDB::do_calls[2]{params}[0], 365,
+        'MySQL_3 expire: respects IpEventsExpireDays config (365 days)');
 }
 
 done_testing();
