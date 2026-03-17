@@ -167,11 +167,13 @@ isa_ok($db, 'Spamikaze::MySQL_3', 'new() returns blessed object');
     MockDB::reset();
     $db->expire('127.0.0.2');
 
-    is(scalar @MockDB::do_calls, 1, 'expire: one DO call');
+    is(scalar @MockDB::do_calls, 2, 'expire: two DO calls (blocklist + emails)');
     like($MockDB::do_calls[0]{sql}, qr/DELETE FROM blocklist/i,
         'expire: DELETE FROM blocklist');
     like($MockDB::do_calls[0]{sql}, qr/expires\s*<\s*NOW\(\)/i,
         'expire: uses NOW() comparison');
+    like($MockDB::do_calls[1]{sql}, qr/DELETE FROM emails/i,
+        'expire: second DELETE targets emails');
     is(scalar @MockDB::committed, 1, 'expire: commits');
     is(scalar @MockDB::disconnected, 1, 'expire: disconnects');
 }
@@ -180,7 +182,7 @@ isa_ok($db, 'Spamikaze::MySQL_3', 'new() returns blessed object');
 {
     MockDB::reset();
     $db->expire();
-    is(scalar @MockDB::do_calls, 1, 'expire: works with no args');
+    is(scalar @MockDB::do_calls, 2, 'expire: works with no args');
 }
 
 # ===== remove_from_db =====

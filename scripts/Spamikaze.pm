@@ -45,6 +45,7 @@ our @whitelist_zones;
 our $firsttime;
 our $extratime;
 our $maxspamperip;
+our $email_expire_days;
 
 # named.pl
 our $dnsbl_domain;
@@ -132,6 +133,7 @@ sub ConfigRead {
 	$firsttime = $cfg->val ( 'Expire', 'FirstTime' );
 	$extratime = $cfg->val ( 'Expire', 'ExtraTime' );
 	$maxspamperip = $cfg->val ( 'Expire', 'MaxSpamPerIp' );
+	$email_expire_days = $cfg->val ( 'Expire', 'EmailExpireDays' ) // 60;
 	# convert listing times from hours to seconds
 	$firsttime *= 3600;
 	$extratime *= 3600;

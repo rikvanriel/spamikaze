@@ -105,9 +105,11 @@ sub expire
 {
     my ($self, @dontexpire) = @_;
 
+    my $days = $Spamikaze::email_expire_days // 60;
     my $dbh = Spamikaze::DBConnect();
     # print "DELETE FROM blocklist WHERE expires < CURRENT_TIMESTAMP\n";
     $dbh->do("DELETE FROM blocklist WHERE expires < CURRENT_TIMESTAMP");
+    $dbh->do("DELETE FROM emails WHERE \"time\" < CURRENT_TIMESTAMP - (? * INTERVAL '1 day')", undef, $days);
     $dbh->commit();
     $dbh->disconnect();
 }
