@@ -33,6 +33,10 @@ FirstTime = 360
 ExtraTime = 360
 # after this many spams, don't expire a host from the database automatically
 MaxSpamPerIp = 10
+# number of days to keep archived emails in the database (PgSQL_3/MySQL_3 only)
+EmailExpireDays = 60
+# number of days to keep IP events in the database (PgSQL_3/MySQL_3 only)
+IpEventsExpireDays = 730
 
 [DNSBL]
 Domain = spamikaze.example.com
