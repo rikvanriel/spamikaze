@@ -14,13 +14,30 @@ permissions:
 jobs:
   build:
 
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # oldest perl we still need to support: CentOS 9's system perl
+          - perl-version: '5.32'
+            label: '5.32 (CentOS 9)'
+          # Debian 13 (trixie)'s system perl
+          - perl-version: '5.40'
+            label: '5.40 (Debian 13)'
+          # Debian 14 (forky) and CentOS 10's system perl
+          - perl-version: '5.42'
+            label: '5.42 (Debian 14 / CentOS 10)'
+          - perl-version: 'latest'
+            label: 'latest'
+
+    name: Perl ${{ matrix.label }}
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
     - uses: shogo82148/actions-setup-perl@v1
       with:
-          perl-version: 'latest'
+          perl-version: ${{ matrix.perl-version }}
     - run: sudo apt install mariadb-server mariadb-client
     - run: cpanm --installdeps .
 
